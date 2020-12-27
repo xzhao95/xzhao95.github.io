@@ -163,6 +163,95 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/27/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="赵依婷">
+      <meta itemprop="description" content="打工都是人上人！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="赵依婷">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/12/27/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/" class="post-title-link" itemprop="url">博客搭建记录</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-12-27 17:10:57 / 修改时间：18:02:24" itemprop="dateCreated datePublished" datetime="2020-12-27T17:10:57+08:00">2020-12-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">web前端</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>博客系统： Hexo<br>部署环境：github page</p>
+</blockquote>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>前端接触有三年了，想搭建个属于自己的博客记录工作记录学习。通过网上的教程搭建了这个博客，记录一下搭建过程。</p>
+<h1 id="搭建前提"><a href="#搭建前提" class="headerlink" title="搭建前提"></a>搭建前提</h1><ol>
+<li>node安装<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node -v</span><br><span class="line">v12<span class="number">.18</span><span class="number">.2</span></span><br></pre></td></tr></table></figure></li>
+<li>git安装<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git --version</span><br><span class="line">git version <span class="number">2.24</span><span class="number">.3</span></span><br></pre></td></tr></table></figure></li>
+<li>github账号注册</li>
+<li>重点：Hexo安装</li>
+</ol>
+<p>hexo托管在国外，下载慢，可通过国内淘宝镜像进行安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">npm config <span class="built_in">set</span> registry https://registry.npm.taobao.org</span><br><span class="line">npm config get registry //**这个是用来检查换成功没**</span><br><span class="line"></span><br><span class="line">npm install hexo-cli -g</span><br><span class="line">npm install hexo-deployer-git --save //部署至github上的插件，初始化后安装</span><br></pre></td></tr></table></figure>
+<h1 id="搭建正题"><a href="#搭建正题" class="headerlink" title="搭建正题"></a>搭建正题</h1><h2 id="本地初始化"><a href="#本地初始化" class="headerlink" title="本地初始化"></a>本地初始化</h2><pre><code><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1. 文件夹新建</span><br><span class="line">mkdir blog</span><br><span class="line"><span class="built_in">cd</span> blog</span><br><span class="line">2. 初始化</span><br><span class="line">hexo init</span><br><span class="line">3. 安装发布插件</span><br><span class="line">npm install hexo-deployer-git --save</span><br><span class="line">4. 查看</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure></code></pre>
+<h2 id="发布至github"><a href="#发布至github" class="headerlink" title="发布至github"></a>发布至github</h2><ol>
+<li>需要在github上建一个仓库，仓库名需命名为 (用户名).github.io</li>
+<li>配置本地文件<br>找到_config.yml文件<br><img src="https://cdn.nlark.com/yuque/0/2020/png/207294/1609062474775-f6cd3327-5e66-4add-a6ac-f2bcae75c5a4.png#align=left&display=inline&height=573&margin=%5Bobject%20Object%5D&name=%E6%88%AA%E5%B1%8F2020-12-27%20%E4%B8%8B%E5%8D%885.46.15.png&originHeight=573&originWidth=1057&size=113864&status=done&style=none&width=1057" alt="截屏2020-12-27 下午5.46.15.png"><br>修改deploy部分<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Deployment</span></span><br><span class="line"><span class="comment">## Docs: https://hexo.io/docs/one-command-deployment</span></span><br><span class="line"><span class="attr">deploy:</span></span><br><span class="line"><span class="attr">type:</span> <span class="string">&#x27;git&#x27;</span></span><br><span class="line"><span class="attr">repo:</span> <span class="string">git@github.com:xzhao95/xzhao95.github.io.git</span></span><br><span class="line"><span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure></li>
+<li>本地运行命令<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo generate -deploy</span><br></pre></td></tr></table></figure>
+如果提示<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">ERROR Deployer not found:</span> <span class="string">git</span></span><br></pre></td></tr></table></figure>
+那就再安装一次发布插件</li>
+</ol>
+<h2 id="查看"><a href="#查看" class="headerlink" title="查看"></a>查看</h2><p>路由：<a target="_blank" rel="noopener" href="https://xzhao95.github.io/">https://(用户名).github.io/</a><br>发布后需等待3-5分钟。<br>网上有看到一帖，说是仓库名命名为(用户名).github.com，不需要等待就能立即查看到更改，还未试验。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>搭建过程还是很简单哒，全程大部分时间都是安装等待，等待ing。。。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/23/hello-world/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -293,9 +382,21 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-count">2</span>
           <span class="site-state-item-name">日志</span>
         </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>

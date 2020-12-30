@@ -163,7 +163,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/27/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/30/iview-%E7%A9%BF%E6%A2%AD%E6%A1%86%E6%90%9C%E7%B4%A2%E6%A1%86%E5%86%85%E5%AE%B9%E6%B8%85%E9%99%A4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/uploads/avatar.jpeg">
@@ -177,7 +177,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/12/27/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/" class="post-title-link" itemprop="url">博客搭建记录</a>
+            <a href="/2020/12/30/iview-%E7%A9%BF%E6%A2%AD%E6%A1%86%E6%90%9C%E7%B4%A2%E6%A1%86%E5%86%85%E5%AE%B9%E6%B8%85%E9%99%A4/" class="post-title-link" itemprop="url">iview 穿梭框搜索框内容清除</a>
         </h2>
 
         <div class="post-meta">
@@ -188,8 +188,93 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-12-27 17:10:57 / 修改时间：18:02:24" itemprop="dateCreated datePublished" datetime="2020-12-27T17:10:57+08:00">2020-12-27</time>
+              <time title="创建时间：2020-12-30 16:08:36 / 修改时间：16:10:43" itemprop="dateCreated datePublished" datetime="2020-12-30T16:08:36+08:00">2020-12-30</time>
             </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">web前端</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web%E5%89%8D%E7%AB%AF/%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA/" itemprop="url" rel="index"><span itemprop="name">查漏补缺</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>iview版本：3.0</p>
+</blockquote>
+<h2 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h2><p>模态框中的穿梭框，在关闭时，需要清空搜索框中的内容；查询了iview文档，并没有提供相应方法<br></p>
+<h2 id="解决思路："><a href="#解决思路：" class="headerlink" title="解决思路："></a>解决思路：</h2><p>查看iview源码<br><br>可在search组件中看到，可在父组件进行搜索值query的操作<br><br><img src="/2020/12/30/iview-%E7%A9%BF%E6%A2%AD%E6%A1%86%E6%90%9C%E7%B4%A2%E6%A1%86%E5%86%85%E5%AE%B9%E6%B8%85%E9%99%A4/1.png" alt="截屏2020-12-29 上午10.22.21.png"><br><br>在list组件中引用了search组件，可通过源码确认!<br><a href="2.png">截屏2020-12-29 上午10.28.30.png</a><br><br>list的父组件是transfer组件，也就是最终的父组件<br><br><img src="/2020/12/30/iview-%E7%A9%BF%E6%A2%AD%E6%A1%86%E6%90%9C%E7%B4%A2%E6%A1%86%E5%86%85%E5%AE%B9%E6%B8%85%E9%99%A4/3.png" alt="截屏2020-12-29 上午10.31.09.png"><br><br>节点树结构：<br><br><img src="/2020/12/30/iview-%E7%A9%BF%E6%A2%AD%E6%A1%86%E6%90%9C%E7%B4%A2%E6%A1%86%E5%86%85%E5%AE%B9%E6%B8%85%E9%99%A4/4.png" alt="截屏2020-12-29 上午10.53.44.png"><br><br>可通过打印transfer节点确认：<br><br><img src="/2020/12/30/iview-%E7%A9%BF%E6%A2%AD%E6%A1%86%E6%90%9C%E7%B4%A2%E6%A1%86%E5%86%85%E5%AE%B9%E6%B8%85%E9%99%A4/5.png" alt="截屏2020-12-29 上午10.35.54.png"></p>
+<h2 id="解决方法："><a href="#解决方法：" class="headerlink" title="解决方法："></a>解决方法：</h2><p>因为有左右两个搜索框，所以需要赋值2遍。位置可通过transfer源码确认，也可通过打印出来的节点查询</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">this</span>.$refs.courseTransfer.$children[<span class="number">0</span>].query = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line"><span class="built_in">this</span>.$refs.courseTransfer.$children[<span class="number">2</span>].query = <span class="string">&#x27;&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>这种方法毕竟不是正规iview提供的方法，存在一定的风险。iview升级后需注意结构是否存在变化。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/29/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95-%E6%9C%AC%E5%9C%B0%E6%90%AD%E5%BB%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="赵依婷">
+      <meta itemprop="description" content="打工都是人上人！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="赵依婷">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/12/29/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95-%E6%9C%AC%E5%9C%B0%E6%90%AD%E5%BB%BA/" class="post-title-link" itemprop="url">博客搭建记录-本地搭建</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-29 18:01:17" itemprop="dateCreated datePublished" datetime="2020-12-29T18:01:17+08:00">2020-12-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-30 16:12:09" itemprop="dateModified" datetime="2020-12-30T16:12:09+08:00">2020-12-30</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -226,79 +311,13 @@
 <h1 id="搭建正题"><a href="#搭建正题" class="headerlink" title="搭建正题"></a>搭建正题</h1><h2 id="本地初始化"><a href="#本地初始化" class="headerlink" title="本地初始化"></a>本地初始化</h2><pre><code><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1. 文件夹新建</span><br><span class="line">mkdir blog</span><br><span class="line"><span class="built_in">cd</span> blog</span><br><span class="line">2. 初始化</span><br><span class="line">hexo init</span><br><span class="line">3. 安装发布插件</span><br><span class="line">npm install hexo-deployer-git --save</span><br><span class="line">4. 查看</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure></code></pre>
 <h2 id="发布至github"><a href="#发布至github" class="headerlink" title="发布至github"></a>发布至github</h2><ol>
 <li>需要在github上建一个仓库，仓库名需命名为 (用户名).github.io</li>
-<li>配置本地文件<br>找到_config.yml文件<br><img src="https://cdn.nlark.com/yuque/0/2020/png/207294/1609062474775-f6cd3327-5e66-4add-a6ac-f2bcae75c5a4.png#align=left&display=inline&height=573&margin=%5Bobject%20Object%5D&name=%E6%88%AA%E5%B1%8F2020-12-27%20%E4%B8%8B%E5%8D%885.46.15.png&originHeight=573&originWidth=1057&size=113864&status=done&style=none&width=1057" alt="截屏2020-12-27 下午5.46.15.png"><br>修改deploy部分<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Deployment</span></span><br><span class="line"><span class="comment">## Docs: https://hexo.io/docs/one-command-deployment</span></span><br><span class="line"><span class="attr">deploy:</span></span><br><span class="line"><span class="attr">type:</span> <span class="string">&#x27;git&#x27;</span></span><br><span class="line"><span class="attr">repo:</span> <span class="string">git@github.com:xzhao95/xzhao95.github.io.git</span></span><br><span class="line"><span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure></li>
+<li>配置本地文件<br>找到_config.yml文件<br><img src="/2020/12/29/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95-%E6%9C%AC%E5%9C%B0%E6%90%AD%E5%BB%BA/1.png" alt="图1"><br>修改deploy部分<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Deployment</span></span><br><span class="line"><span class="comment">## Docs: https://hexo.io/docs/one-command-deployment</span></span><br><span class="line"><span class="attr">deploy:</span></span><br><span class="line"><span class="attr">type:</span> <span class="string">&#x27;git&#x27;</span></span><br><span class="line"><span class="attr">repo:</span> <span class="string">git@github.com:xzhao95/xzhao95.github.io.git</span></span><br><span class="line"><span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure></li>
 <li>本地运行命令<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo generate -deploy</span><br></pre></td></tr></table></figure>
 如果提示<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">ERROR Deployer not found:</span> <span class="string">git</span></span><br></pre></td></tr></table></figure>
 那就再安装一次发布插件</li>
 </ol>
 <h2 id="查看"><a href="#查看" class="headerlink" title="查看"></a>查看</h2><p>路由：<a target="_blank" rel="noopener" href="https://xzhao95.github.io/">https://(用户名).github.io/</a><br>发布后需等待3-5分钟。<br>网上有看到一帖，说是仓库名命名为(用户名).github.com，不需要等待就能立即查看到更改，还未试验。</p>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>搭建过程还是很简单哒，全程大部分时间都是安装等待，等待ing。。。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/23/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-      <meta itemprop="name" content="赵依婷">
-      <meta itemprop="description" content="打工都是人上人！">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="赵依婷">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/23/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-12-23 10:53:53" itemprop="dateCreated datePublished" datetime="2020-12-23T10:53:53+08:00">2020-12-23</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 
       
     </div>
@@ -389,13 +408,13 @@
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

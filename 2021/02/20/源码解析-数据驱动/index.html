@@ -20,31 +20,35 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="打工都是人上人！">
-<meta property="og:type" content="website">
-<meta property="og:title" content="赵依婷">
-<meta property="og:url" content="http://example.com/index.html">
+  <meta name="description" content="Vue.js的核心思想：数据驱动是指视图是由数据驱动生成的，通过修改数据对视图进行修改，而不是直接操作DOM   一、 new Vue初始化，首先在内部初始化一个function，_init方法会在initMixin中定义，做一些基础功能的初始化，例如生命周期的初始化、props、data的初始化等，之后就是调用$mount执行挂载函数 12345678910111213141516171819">
+<meta property="og:type" content="article">
+<meta property="og:title" content="源码解析--数据驱动">
+<meta property="og:url" content="http://example.com/2021/02/20/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8/index.html">
 <meta property="og:site_name" content="赵依婷">
-<meta property="og:description" content="打工都是人上人！">
+<meta property="og:description" content="Vue.js的核心思想：数据驱动是指视图是由数据驱动生成的，通过修改数据对视图进行修改，而不是直接操作DOM   一、 new Vue初始化，首先在内部初始化一个function，_init方法会在initMixin中定义，做一些基础功能的初始化，例如生命周期的初始化、props、data的初始化等，之后就是调用$mount执行挂载函数 12345678910111213141516171819">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/02/20/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8/13524162-5fb811b66355bbd8.png">
+<meta property="article:published_time" content="2021-02-20T10:06:59.000Z">
+<meta property="article:modified_time" content="2021-02-20T10:09:50.619Z">
 <meta property="article:author" content="赵依婷">
 <meta property="article:tag" content="赵依婷 博客">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/02/20/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8/13524162-5fb811b66355bbd8.png">
 
-<link rel="canonical" href="http://example.com/">
+<link rel="canonical" href="http://example.com/2021/02/20/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>赵依婷</title>
+  <title>源码解析--数据驱动 | 赵依婷</title>
   
 
 
@@ -157,89 +161,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/20/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90--%E7%9F%A5%E8%AF%86%E8%A1%A5%E5%85%85/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-      <meta itemprop="name" content="赵依婷">
-      <meta itemprop="description" content="打工都是人上人！">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="赵依婷">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/02/20/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90--%E7%9F%A5%E8%AF%86%E8%A1%A5%E5%85%85/" class="post-title-link" itemprop="url">vue2.0源码解析--知识补充</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-02-20 18:06:59 / 修改时间：18:10:32" itemprop="dateCreated datePublished" datetime="2021-02-20T18:06:59+08:00">2021-02-20</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">web前端</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web%E5%89%8D%E7%AB%AF/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
 
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="一、函数柯里化"><a href="#一、函数柯里化" class="headerlink" title="一、函数柯里化"></a>一、函数柯里化</h1><blockquote>
-<p>wiki：是把接受多个参数的函数变换成接受一个单一参数（最初函数的第一个参数）的函数，并且返回接受余下的参数而且返回结果的新函数的技术。</p>
-</blockquote>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 柯里化之前</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sum</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line">sum(<span class="number">1</span>, <span class="number">2</span>); <span class="comment">//返回3</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 柯里化之后</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getSum</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">getSum(<span class="number">1</span>)(<span class="number">2</span>);  <span class="comment">//返回3</span></span><br></pre></td></tr></table></figure>
-<p>由于Vue.js为适配不同平台，如果不使用柯里化技巧，需要多次使用判断语句进行判断，在已确认环境的情况下，会增加很多不必要的判断。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(web环境) &#123;&#125;</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span>(weex环境) &#123;&#125;</span><br></pre></td></tr></table></figure>
-<p>而使用柯里化函数技巧后，就能将公共部分提取出来，差异化部分只需通过参数进行区分</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createPatchFunction</span>(<span class="params">backend</span>) </span>&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">patch</span>(<span class="params">oldVnode</span>) </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -255,10 +180,9 @@
       <meta itemprop="name" content="赵依婷">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/02/20/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8/" class="post-title-link" itemprop="url">源码解析--数据驱动</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          源码解析--数据驱动
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -282,7 +206,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <blockquote>
+        <blockquote>
 <p>Vue.js的核心思想：数据驱动<br>是指视图是由数据驱动生成的，通过修改数据对视图进行修改，而不是直接操作DOM</p>
 </blockquote>
 <p><img src="/2021/02/20/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8/13524162-5fb811b66355bbd8.png" alt="13524162-5fb811b66355bbd8.png"></p>
@@ -324,300 +248,33 @@
 <p>该笔记为Vue.js技术揭秘课程的学习笔记，源码复盘记录。</p>
 </blockquote>
 
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/22/html2canvas%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/">
+        
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-      <meta itemprop="name" content="赵依婷">
-      <meta itemprop="description" content="打工都是人上人！">
-    </span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="赵依婷">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/01/22/html2canvas%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" class="post-title-link" itemprop="url">html2canvas踩坑记录</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-01-22 17:50:55" itemprop="dateCreated datePublished" datetime="2021-01-22T17:50:55+08:00">2021-01-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-15 14:49:08" itemprop="dateModified" datetime="2021-02-15T14:49:08+08:00">2021-02-15</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">web前端</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web%E5%89%8D%E7%AB%AF/%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA/" itemprop="url" rel="index"><span itemprop="name">查漏补缺</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="1-ios系统不支持，转化的canvas为空"><a href="#1-ios系统不支持，转化的canvas为空" class="headerlink" title="1. ios系统不支持，转化的canvas为空"></a>1. ios系统不支持，转化的canvas为空</h3><p><strong>问题描述：</strong><br>最新版的html2canvas在ios系统微信内置浏览器上，调用失败，转化的canvas为空。<br><strong>解决方法：</strong><br>将html2canvas版本降低为<strong>【1.0.0-rc.4】</strong></p>
-<h3 id="2-图片只截取了一半，最终成图不完整"><a href="#2-图片只截取了一半，最终成图不完整" class="headerlink" title="2. 图片只截取了一半，最终成图不完整"></a>2. 图片只截取了一半，最终成图不完整</h3><p><strong>问题描述：</strong><br>在页面有滚动的情况下，截取到图片只截取了一部分，节点没有从顶部截取<br><strong>解决办法：</strong></p>
-<ol>
-<li>截取前可以先滚动到顶部<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">&#x27;#poster&#x27;</span>).scrollTop(<span class="number">0</span>);</span><br></pre></td></tr></table></figure></li>
-<li>当遇到需要截取的图片过长时，即使滚动到顶部，因为html2canvas只截取可视部分，所以截取的图片也是不完整，只有一部分。查了网上资料参考了<a target="_blank" rel="noopener" href="https://www.cnblogs.com/yanweidie/p/5203943.html">焰尾迭</a>的方法，修改源码，主要使用户调用时能自定义需要截取dom的宽高.</li>
-</ol>
-<p>源码：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> renderDocument(node.ownerDocument, options, node.ownerDocument.defaultView.innerWidth, node.ownerDocument.defaultView.innerHeight, index).then(<span class="function"><span class="keyword">function</span>(<span class="params">canvas</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span>(options.onrendered) === <span class="string">&quot;function&quot;</span>) &#123;</span><br><span class="line">    log(<span class="string">&quot;options.onrendered is deprecated, html2canvas returns a Promise containing the canvas&quot;</span>);</span><br><span class="line">    options.onrendered(canvas);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> canvas;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>修改为：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//2016-02-18修改源码,解决BUG 对于部分不能截屏不能全屏添加自定义宽高的参数以支持</span></span><br><span class="line"><span class="keyword">var</span> width = options.width != <span class="literal">null</span> ? options.width : node.ownerDocument.defaultView.innerWidth;</span><br><span class="line"><span class="keyword">var</span> height = options.height != <span class="literal">null</span> ? options.height : node.ownerDocument.defaultView.innerHeight;</span><br><span class="line"><span class="keyword">return</span> renderDocument(node.ownerDocument, options, width, height, index).then(<span class="function"><span class="keyword">function</span> (<span class="params">canvas</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span>(options.onrendered) === <span class="string">&quot;function&quot;</span>) &#123;</span><br><span class="line">    log(<span class="string">&quot;options.onrendered is deprecated, html2canvas returns a Promise containing the canvas&quot;</span>);</span><br><span class="line">    options.onrendered(canvas);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> canvas;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>调用方法：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">html2canvas(<span class="built_in">document</span>.querySelector(<span class="string">&#x27;#poster&#x27;</span>),&#123;</span><br><span class="line">  backgroundColor: <span class="string">&quot;transparent&quot;</span>,</span><br><span class="line">  height: $(<span class="string">&#x27;#poster&#x27;</span>).outerHeight(),</span><br><span class="line">  width: w,</span><br><span class="line">&#125;).then(<span class="function"><span class="params">canvas</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">var</span> dataURL = canvas.toDataURL()</span><br><span class="line">  <span class="keyword">var</span> str = dataURL.split(<span class="string">&#x27;base64,&#x27;</span>)[<span class="number">1</span>]</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<h3 id="3-转化的图片模糊，原有的二维码都无法扫描读取"><a href="#3-转化的图片模糊，原有的二维码都无法扫描读取" class="headerlink" title="3. 转化的图片模糊，原有的二维码都无法扫描读取"></a>3. 转化的图片模糊，原有的二维码都无法扫描读取</h3><p><strong>问题描述：</strong><br>html2canvas直接转化的图片模糊，模糊到啥程度呢，就是图片上带有的高清二维码都模糊到无法扫取信息了。<br><strong>解决办法：</strong><br>可以选择放大dom，将他放置到放大的canvas画布上<br>看代码：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建一个新的canvas</span></span><br><span class="line"><span class="keyword">var</span> canvas2 = <span class="built_in">document</span>.createElement(<span class="string">&quot;canvas&quot;</span>);</span><br><span class="line"><span class="comment">//获取宽高</span></span><br><span class="line"><span class="keyword">var</span> w = $(<span class="string">&#x27;#record-page&#x27;</span>)[<span class="number">0</span>].offsetWidth;</span><br><span class="line"><span class="keyword">var</span> h = $(<span class="string">&#x27;#record-page&#x27;</span>)[<span class="number">0</span>].offsetHeight;</span><br><span class="line"><span class="comment">// // 将canvas画布放大若干倍，然后盛放在较小的容器内，就显得不模糊了</span></span><br><span class="line">canvas2.width = w * <span class="number">2</span>;</span><br><span class="line">canvas2.height = h * <span class="number">2</span>;</span><br><span class="line">canvas2.style.width = w + <span class="string">&quot;px&quot;</span>;</span><br><span class="line">canvas2.style.height = h + <span class="string">&quot;px&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// //可以按照自己的需求，对context的参数修改,translate指的是偏移量</span></span><br><span class="line"><span class="keyword">var</span> context = canvas2.getContext(<span class="string">&quot;2d&quot;</span>);</span><br><span class="line"><span class="comment">// context.scale(1.85, 1.78);</span></span><br><span class="line">context.scale(<span class="number">2</span>, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">html2canvas(<span class="built_in">document</span>.querySelector(<span class="string">&#x27;#record-page&#x27;</span>),&#123;</span><br><span class="line">  scale: <span class="number">2</span>,</span><br><span class="line">  backgroundColor: <span class="string">&quot;transparent&quot;</span>,</span><br><span class="line">  height: h,</span><br><span class="line">  width: w,</span><br><span class="line">  canvas: canvas2,</span><br><span class="line">  dpi: <span class="built_in">window</span>.devicePixelRatio * <span class="number">2</span>, <span class="comment">// window.devicePixelRatio是设备像素比</span></span><br><span class="line">&#125;).then(<span class="function"><span class="params">canvas</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">var</span> dataURL = canvas.toDataURL()</span><br><span class="line">  <span class="keyword">var</span> str = dataURL.split(<span class="string">&#x27;base64,&#x27;</span>)[<span class="number">1</span>]</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>新问题：会发现图片出现偏移<br>解决：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取元素相对于视窗的偏移量</span></span><br><span class="line"><span class="keyword">var</span> rect = $(<span class="string">&#x27;#record-page&#x27;</span>).get(<span class="number">0</span>).getBoundingClientRect();</span><br><span class="line">context.translate(<span class="string">&#x27;-&#x27;</span> + rect.left, <span class="string">&#x27;-&#x27;</span> + rect.top);</span><br></pre></td></tr></table></figure>
-<h3 id="4-图片跨域问题"><a href="#4-图片跨域问题" class="headerlink" title="4. 图片跨域问题"></a>4. 图片跨域问题</h3><p><strong>问题描述：</strong><br>当dom中使用外部图片时，转化时会出现图片跨域问题，画布污染，截图无法生成<br><strong>解决办法：</strong></p>
-<ol>
-<li>html2canvas有参数可以定义，用户解决图片跨域问题<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">html2canvas(<span class="built_in">document</span>.querySelector(<span class="string">&#x27;#record-page&#x27;</span>),&#123;</span><br><span class="line">  allowTaint: <span class="literal">false</span>,</span><br><span class="line">  useCORS:  <span class="literal">true</span>,   <span class="comment">//解决图片跨域问题</span></span><br><span class="line">  backgroundColor: <span class="string">&quot;transparent&quot;</span>,</span><br><span class="line">  height: h,</span><br><span class="line">  width: w,</span><br><span class="line">&#125;).then(<span class="function"><span class="params">canvas</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">var</span> dataURL = canvas.toDataURL()</span><br><span class="line">  <span class="keyword">var</span> str = dataURL.split(<span class="string">&#x27;base64,&#x27;</span>)[<span class="number">1</span>]</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
-<li>如果方法1没有解决问题，可以将使用外部链接的图片先转化为base64格式，再进行dom的转换。<h3 id="5-dom节点的二次编辑"><a href="#5-dom节点的二次编辑" class="headerlink" title="5.  dom节点的二次编辑"></a>5.  dom节点的二次编辑</h3></li>
-</ol>
-<p><strong>问题描述：</strong><br>生成海报前需对dom节点进行二次编辑，即在原先的页面上需增加新样式，如二维码等，再生成一个新的海报，新的改动在原先的节点上不能展示出来。<br><strong>解决办法：</strong></p>
-<ol>
-<li>复制一个新的节点出来，在新节点上进行改动</li>
-<li>新节点加入到body的最底层上，html2canvas需要从页面上寻找节点，所以这一步不能少<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> el = $(<span class="string">&#x27;#record-page&#x27;</span>).clone(<span class="literal">true</span>);</span><br><span class="line">el.find(<span class="string">&#x27;.no-work-tip&#x27;</span>).remove();   <span class="comment">// 海报上不能显示提示语句</span></span><br><span class="line">el.css(&#123;<span class="string">&quot;position&quot;</span>: <span class="string">&#x27;absolute&#x27;</span>, <span class="string">&quot;top&quot;</span>: <span class="string">&#x27;0px&#x27;</span>, <span class="string">&quot;z-index&quot;</span>: <span class="string">&quot;-1&quot;</span>&#125;);  <span class="comment">//设置为底层</span></span><br><span class="line">$(<span class="string">&quot;body&quot;</span>).append(el);</span><br><span class="line">html2canvas(el[<span class="number">0</span>]).then(<span class="function"><span class="params">canvas</span> =&gt;</span> &#123;</span><br><span class="line">  el.remove();    <span class="comment">// canvas生成后需要移除新节点</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
-</ol>
-
-      
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/01/22/html2canvas%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" rel="prev" title="html2canvas踩坑记录">
+      <i class="fa fa-chevron-left"></i> html2canvas踩坑记录
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/02/20/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90--%E7%9F%A5%E8%AF%86%E8%A1%A5%E5%85%85/" rel="next" title="vue2.0源码解析--知识补充">
+      vue2.0源码解析--知识补充 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/30/iview-%E7%A9%BF%E6%A2%AD%E6%A1%86%E6%90%9C%E7%B4%A2%E6%A1%86%E5%86%85%E5%AE%B9%E6%B8%85%E9%99%A4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-      <meta itemprop="name" content="赵依婷">
-      <meta itemprop="description" content="打工都是人上人！">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="赵依婷">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/30/iview-%E7%A9%BF%E6%A2%AD%E6%A1%86%E6%90%9C%E7%B4%A2%E6%A1%86%E5%86%85%E5%AE%B9%E6%B8%85%E9%99%A4/" class="post-title-link" itemprop="url">iview 穿梭框搜索框内容清除</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-12-30 16:08:36 / 修改时间：16:19:19" itemprop="dateCreated datePublished" datetime="2020-12-30T16:08:36+08:00">2020-12-30</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">web前端</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web%E5%89%8D%E7%AB%AF/%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA/" itemprop="url" rel="index"><span itemprop="name">查漏补缺</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <blockquote>
-<p>iview版本：3.0</p>
-</blockquote>
-<h2 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h2><p>模态框中的穿梭框，在关闭时，需要清空搜索框中的内容；查询了iview文档，并没有提供相应方法<br></p>
-<h2 id="解决思路："><a href="#解决思路：" class="headerlink" title="解决思路："></a>解决思路：</h2><p>查看iview源码<br><br>可在search组件中看到，可在父组件进行搜索值query的操作<br><br><img src="/2020/12/30/iview-%E7%A9%BF%E6%A2%AD%E6%A1%86%E6%90%9C%E7%B4%A2%E6%A1%86%E5%86%85%E5%AE%B9%E6%B8%85%E9%99%A4/1.png" alt="截屏2020-12-29 上午10.22.21.png"><br><br>在list组件中引用了search组件，可通过源码确认<br><img src="/2020/12/30/iview-%E7%A9%BF%E6%A2%AD%E6%A1%86%E6%90%9C%E7%B4%A2%E6%A1%86%E5%86%85%E5%AE%B9%E6%B8%85%E9%99%A4/2.png" alt="截屏2020-12-29 上午10.28.30.png"><br><br>list的父组件是transfer组件，也就是最终的父组件<br><br><img src="/2020/12/30/iview-%E7%A9%BF%E6%A2%AD%E6%A1%86%E6%90%9C%E7%B4%A2%E6%A1%86%E5%86%85%E5%AE%B9%E6%B8%85%E9%99%A4/3.png" alt="截屏2020-12-29 上午10.31.09.png"><br><br>节点树结构：<br></p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">transfer</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">List</span>&gt;</span><span class="comment">&lt;!-- 左列表 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Search</span>&gt;</span><span class="tag">&lt;/<span class="name">Search</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">List</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Operation</span>&gt;</span><span class="tag">&lt;/<span class="name">Operation</span>&gt;</span><span class="comment">&lt;!-- 中间的操作按钮 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">List</span>&gt;</span><span class="comment">&lt;!-- 右列表 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Search</span>&gt;</span><span class="tag">&lt;/<span class="name">Search</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">List</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">transfer</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>可通过打印transfer节点确认：<br><br><img src="/2020/12/30/iview-%E7%A9%BF%E6%A2%AD%E6%A1%86%E6%90%9C%E7%B4%A2%E6%A1%86%E5%86%85%E5%AE%B9%E6%B8%85%E9%99%A4/5.png" alt="截屏2020-12-29 上午10.35.54.png"></p>
-<h2 id="解决方法："><a href="#解决方法：" class="headerlink" title="解决方法："></a>解决方法：</h2><p>因为有左右两个搜索框，所以需要赋值2遍。位置可通过transfer源码确认，也可通过打印出来的节点查询</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">this</span>.$refs.courseTransfer.$children[<span class="number">0</span>].query = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line"><span class="built_in">this</span>.$refs.courseTransfer.$children[<span class="number">2</span>].query = <span class="string">&#x27;&#x27;</span>;</span><br></pre></td></tr></table></figure>
-<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>这种方法毕竟不是正规iview提供的方法，存在一定的风险。iview升级后需注意结构是否存在变化。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/29/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95-%E6%9C%AC%E5%9C%B0%E6%90%AD%E5%BB%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-      <meta itemprop="name" content="赵依婷">
-      <meta itemprop="description" content="打工都是人上人！">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="赵依婷">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/29/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95-%E6%9C%AC%E5%9C%B0%E6%90%AD%E5%BB%BA/" class="post-title-link" itemprop="url">博客搭建记录-本地搭建</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-12-29 18:01:17" itemprop="dateCreated datePublished" datetime="2020-12-29T18:01:17+08:00">2020-12-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-12-30 16:12:09" itemprop="dateModified" datetime="2020-12-30T16:12:09+08:00">2020-12-30</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">web前端</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <blockquote>
-<p>博客系统： Hexo<br>部署环境：github page</p>
-</blockquote>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>前端接触有三年了，想搭建个属于自己的博客记录工作记录学习。通过网上的教程搭建了这个博客，记录一下搭建过程。</p>
-<h1 id="搭建前提"><a href="#搭建前提" class="headerlink" title="搭建前提"></a>搭建前提</h1><ol>
-<li>node安装<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node -v</span><br><span class="line">v12<span class="number">.18</span><span class="number">.2</span></span><br></pre></td></tr></table></figure></li>
-<li>git安装<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git --version</span><br><span class="line">git version <span class="number">2.24</span><span class="number">.3</span></span><br></pre></td></tr></table></figure></li>
-<li>github账号注册</li>
-<li>重点：Hexo安装</li>
-</ol>
-<p>hexo托管在国外，下载慢，可通过国内淘宝镜像进行安装</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">npm config <span class="built_in">set</span> registry https://registry.npm.taobao.org</span><br><span class="line">npm config get registry //**这个是用来检查换成功没**</span><br><span class="line"></span><br><span class="line">npm install hexo-cli -g</span><br><span class="line">npm install hexo-deployer-git --save //部署至github上的插件，初始化后安装</span><br></pre></td></tr></table></figure>
-<h1 id="搭建正题"><a href="#搭建正题" class="headerlink" title="搭建正题"></a>搭建正题</h1><h2 id="本地初始化"><a href="#本地初始化" class="headerlink" title="本地初始化"></a>本地初始化</h2><pre><code><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1. 文件夹新建</span><br><span class="line">mkdir blog</span><br><span class="line"><span class="built_in">cd</span> blog</span><br><span class="line">2. 初始化</span><br><span class="line">hexo init</span><br><span class="line">3. 安装发布插件</span><br><span class="line">npm install hexo-deployer-git --save</span><br><span class="line">4. 查看</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure></code></pre>
-<h2 id="发布至github"><a href="#发布至github" class="headerlink" title="发布至github"></a>发布至github</h2><ol>
-<li>需要在github上建一个仓库，仓库名需命名为 (用户名).github.io</li>
-<li>配置本地文件<br>找到_config.yml文件<br><img src="/2020/12/29/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95-%E6%9C%AC%E5%9C%B0%E6%90%AD%E5%BB%BA/1.png" alt="图1"><br>修改deploy部分<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Deployment</span></span><br><span class="line"><span class="comment">## Docs: https://hexo.io/docs/one-command-deployment</span></span><br><span class="line"><span class="attr">deploy:</span></span><br><span class="line"><span class="attr">type:</span> <span class="string">&#x27;git&#x27;</span></span><br><span class="line"><span class="attr">repo:</span> <span class="string">git@github.com:xzhao95/xzhao95.github.io.git</span></span><br><span class="line"><span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure></li>
-<li>本地运行命令<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo generate -deploy</span><br></pre></td></tr></table></figure>
-如果提示<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">ERROR Deployer not found:</span> <span class="string">git</span></span><br></pre></td></tr></table></figure>
-那就再安装一次发布插件</li>
-</ol>
-<h2 id="查看"><a href="#查看" class="headerlink" title="查看"></a>查看</h2><p>路由：<a target="_blank" rel="noopener" href="https://xzhao95.github.io/">https://(用户名).github.io/</a><br>发布后需等待3-5分钟。<br>网上有看到一帖，说是仓库名命名为(用户名).github.com，不需要等待就能立即查看到更改，还未试验。</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>搭建过程还是很简单哒，全程大部分时间都是安装等待，等待ing。。。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-
   
 
 
@@ -670,6 +327,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81-new-Vue"><span class="nav-number">1.</span> <span class="nav-text">一、 new Vue</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81-mount"><span class="nav-number">2.</span> <span class="nav-text">二、$mount</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81render"><span class="nav-number">3.</span> <span class="nav-text">三、render</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E3%80%81VNode"><span class="nav-number">4.</span> <span class="nav-text">四、VNode</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%94%E3%80%81createElement"><span class="nav-number">5.</span> <span class="nav-text">五、createElement</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%AD%E3%80%81update"><span class="nav-number">6.</span> <span class="nav-text">六、update</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

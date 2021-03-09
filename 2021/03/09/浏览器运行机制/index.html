@@ -20,18 +20,25 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="打工都是人上人！">
-<meta property="og:type" content="website">
-<meta property="og:title" content="赵依婷">
-<meta property="og:url" content="http://example.com/tags/js/index.html">
+  <meta name="description" content="前言看了Vue的nextTick，对宏任务与微任务有了一个大概的了解，但对浏览器的全部运行流程还是一知半解。通过阅读其他人的博客内容，梳理了下整体的知识点，方便后续的理解。其内容主要是包含浏览器的多进程 -&gt; 渲染多线程 -&gt; JS单线程 -&gt; JS运行机制 概念梳理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浏览器运行机制">
+<meta property="og:url" content="http://example.com/2021/03/09/%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6/index.html">
 <meta property="og:site_name" content="赵依婷">
-<meta property="og:description" content="打工都是人上人！">
+<meta property="og:description" content="前言看了Vue的nextTick，对宏任务与微任务有了一个大概的了解，但对浏览器的全部运行流程还是一知半解。通过阅读其他人的博客内容，梳理了下整体的知识点，方便后续的理解。其内容主要是包含浏览器的多进程 -&gt; 渲染多线程 -&gt; JS单线程 -&gt; JS运行机制 概念梳理">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/03/09/%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6/mind.png">
+<meta property="og:image" content="http://example.com/2021/03/09/%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6/1.png">
+<meta property="og:image" content="http://example.com/2021/03/09/%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6/2.png">
+<meta property="og:image" content="http://example.com/2021/03/09/%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6/3.png">
+<meta property="article:published_time" content="2021-03-09T11:51:24.000Z">
+<meta property="article:modified_time" content="2021-03-09T11:54:04.451Z">
 <meta property="article:author" content="赵依婷">
 <meta property="article:tag" content="赵依婷 博客">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/03/09/%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6/mind.png">
 
-<link rel="canonical" href="http://example.com/tags/js/">
+<link rel="canonical" href="http://example.com/2021/03/09/%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6/">
 
 
 <script id="page-configurations">
@@ -39,12 +46,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>标签: js | 赵依婷</title>
+  <title>浏览器运行机制 | 赵依婷</title>
   
 
 
@@ -157,191 +164,102 @@
         <div class="content-wrap">
           
 
-          <div class="content tag">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h2 class="collection-header">js
-          <small>标签</small>
-        </h2>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/09/%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="赵依婷">
+      <meta itemprop="description" content="打工都是人上人！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="赵依婷">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          浏览器运行机制
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-09 19:51:24 / 修改时间：19:54:04" itemprop="dateCreated datePublished" datetime="2021-03-09T19:51:24+08:00">2021-03-09</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2021</span>
-    </div>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>看了Vue的nextTick，对宏任务与微任务有了一个大概的了解，但对浏览器的全部运行流程还是一知半解。通过阅读其他人的博客内容，梳理了下整体的知识点，方便后续的理解。<br>其内容主要是包含浏览器的多进程 -&gt; 渲染多线程 -&gt; JS单线程 -&gt; JS运行机制</p>
+<h1 id="概念梳理"><a href="#概念梳理" class="headerlink" title="概念梳理"></a>概念梳理</h1><p><img src="/2021/03/09/%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6/mind.png" alt="浏览器.png"></p>
+<a id="more"></a>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-03-06T16:07:35+08:00"
-              content="2021-03-06">
-          03-06
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/03/06/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92-%E9%80%92%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97/" itemprop="url">
-            <span itemprop="name">动态规划-递增子序列</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-03-06T16:00:20+08:00"
-              content="2021-03-06">
-          03-06
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/" itemprop="url">
-            <span itemprop="name">源码解析--响应式(二)</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-03-01T17:16:27+08:00"
-              content="2021-03-01">
-          03-01
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/03/01/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%B8%80/" itemprop="url">
-            <span itemprop="name">源码解析--响应式（一）</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-02-28T12:51:04+08:00"
-              content="2021-02-28">
-          02-28
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/02/28/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E7%BB%84%E4%BB%B6%E5%8C%96/" itemprop="url">
-            <span itemprop="name">源码解析--组件化</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-02-24T11:43:52+08:00"
-              content="2021-02-24">
-          02-24
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/02/24/es6-proxy/" itemprop="url">
-            <span itemprop="name">es6 proxy</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-02-20T18:06:59+08:00"
-              content="2021-02-20">
-          02-20
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/02/20/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90--%E7%9F%A5%E8%AF%86%E8%A1%A5%E5%85%85/" itemprop="url">
-            <span itemprop="name">vue2.0源码解析--知识补充</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-02-20T18:06:59+08:00"
-              content="2021-02-20">
-          02-20
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/02/20/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8/" itemprop="url">
-            <span itemprop="name">源码解析--数据驱动</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-01-22T17:50:55+08:00"
-              content="2021-01-22">
-          01-22
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/01/22/html2canvas%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" itemprop="url">
-            <span itemprop="name">html2canvas踩坑记录</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
+<h1 id="内容补充"><a href="#内容补充" class="headerlink" title="内容补充"></a>内容补充</h1><h3 id="Browser进程和浏览器内核（Renderer进程）的通信过程"><a href="#Browser进程和浏览器内核（Renderer进程）的通信过程" class="headerlink" title="Browser进程和浏览器内核（Renderer进程）的通信过程"></a>Browser进程和浏览器内核（Renderer进程）的通信过程</h3><ul>
+<li>Browser进程收到用户请求，首先需要获取页面内容（譬如通过网络下载资源），随后将该任务通过RendererHost接口传递给Render进程</li>
+<li>Renderer进程的Renderer接口收到消息，简单解释后，交给渲染线程，然后开始渲染<ul>
+<li>渲染线程接收请求，加载网页并渲染网页，这其中可能需要Browser进程获取资源和需要GPU进程来帮助渲染</li>
+<li>当然可能会有JS线程操作DOM（这样可能会造成回流并重绘）</li>
+<li>最后Render进程将结果传递给Browser进程</li>
+</ul>
+</li>
+<li>Browser进程接收到结果并将结果绘制出来</li>
+</ul>
+<p><img src="/2021/03/09/%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6/1.png" alt="1.png"></p>
+<h2 id="渲染流程图"><a href="#渲染流程图" class="headerlink" title="渲染流程图"></a>渲染流程图</h2><p><img src="/2021/03/09/%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6/2.png" alt="2.png"></p>
+<h2 id="事件循环：macrotask与microtask"><a href="#事件循环：macrotask与microtask" class="headerlink" title="事件循环：macrotask与microtask"></a>事件循环：macrotask与microtask</h2><p>运行机制：</p>
+<ul>
+<li>执行一个宏任务（栈中没有就从事件队列中获取）</li>
+<li>执行过程中如果遇到微任务，就将它添加到微任务的任务队列中</li>
+<li>宏任务执行完毕后，立即执行当前微任务队列中的所有微任务（依次执行）</li>
+<li>当前宏任务执行完毕，开始检查渲染，然后GUI线程接管渲染</li>
+<li>渲染完毕后，JS线程继续接管，开始下一个宏任务（从事件队列中获取）</li>
+</ul>
+<p><img src="/2021/03/09/%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6/3.png" alt="3.png"></p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000012925872">从浏览器多进程到JS单线程，JS运行机制最全面的一次梳理</a></p>
 
     </div>
-  </div>
-  
-  
-  
 
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/06/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92-%E9%80%92%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97/" rel="prev" title="动态规划-递增子序列">
+      <i class="fa fa-chevron-left"></i> 动态规划-递增子序列
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
   
 
 
@@ -394,6 +312,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5%E6%A2%B3%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">概念梳理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%85%E5%AE%B9%E8%A1%A5%E5%85%85"><span class="nav-number">3.</span> <span class="nav-text">内容补充</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Browser%E8%BF%9B%E7%A8%8B%E5%92%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E5%86%85%E6%A0%B8%EF%BC%88Renderer%E8%BF%9B%E7%A8%8B%EF%BC%89%E7%9A%84%E9%80%9A%E4%BF%A1%E8%BF%87%E7%A8%8B"><span class="nav-number">3.0.1.</span> <span class="nav-text">Browser进程和浏览器内核（Renderer进程）的通信过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%B2%E6%9F%93%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">3.1.</span> <span class="nav-text">渲染流程图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%EF%BC%9Amacrotask%E4%B8%8Emicrotask"><span class="nav-number">3.2.</span> <span class="nav-text">事件循环：macrotask与microtask</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

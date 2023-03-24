@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="阶段一：创建根节点创建一个react应用从ReactDOM.createRoot(container)开始，返回一个root，这个root可以用来渲染一个react节点并挂载到DOM上。这个createRoot方法，根据调用，最终方法在react&#x2F;packages&#x2F;react-dom&#x2F;src&#x2F;client&#x2F;ReactDOMRoot.js文件里 12345678910111213141516171">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React源码阅读笔记-初次创建渲染">
+<meta property="og:url" content="http://example.com/2023/02/22/React%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-%E5%88%9D%E6%AC%A1%E5%88%9B%E5%BB%BA%E6%B8%B2%E6%9F%93/index.html">
+<meta property="og:site_name" content="阿赵的烂笔头">
+<meta property="og:description" content="阶段一：创建根节点创建一个react应用从ReactDOM.createRoot(container)开始，返回一个root，这个root可以用来渲染一个react节点并挂载到DOM上。这个createRoot方法，根据调用，最终方法在react&#x2F;packages&#x2F;react-dom&#x2F;src&#x2F;client&#x2F;ReactDOMRoot.js文件里 12345678910111213141516171">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2023/02/22/React%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-%E5%88%9D%E6%AC%A1%E5%88%9B%E5%BB%BA%E6%B8%B2%E6%9F%93/1677666639461-47dd5cd7-7710-46f2-9ae2-8d4f7dec0338.png">
+<meta property="article:published_time" content="2023-02-22T11:23:45.000Z">
+<meta property="article:modified_time" content="2023-03-24T10:36:50.190Z">
+<meta property="article:author" content="赵依婷">
+<meta property="article:tag" content="js">
+<meta property="article:tag" content="react">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2023/02/22/React%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-%E5%88%9D%E6%AC%A1%E5%88%9B%E5%BB%BA%E6%B8%B2%E6%9F%93/1677666639461-47dd5cd7-7710-46f2-9ae2-8d4f7dec0338.png">
+
+<link rel="canonical" href="http://example.com/2023/02/22/React%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-%E5%88%9D%E6%AC%A1%E5%88%9B%E5%BB%BA%E6%B8%B2%E6%9F%93/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>React源码阅读笔记-初次创建渲染 | 阿赵的烂笔头</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">阿赵的烂笔头</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/22/React%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-%E5%88%9D%E6%AC%A1%E5%88%9B%E5%BB%BA%E6%B8%B2%E6%9F%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="赵依婷">
+      <meta itemprop="description" content="打工都是人上人！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="阿赵的烂笔头">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          React源码阅读笔记-初次创建渲染
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-02-22 19:23:45" itemprop="dateCreated datePublished" datetime="2023-02-22T19:23:45+08:00">2023-02-22</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">web前端</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2023/02/22/React%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-%E5%88%9D%E6%AC%A1%E5%88%9B%E5%BB%BA%E6%B8%B2%E6%9F%93/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2023/02/22/React%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-%E5%88%9D%E6%AC%A1%E5%88%9B%E5%BB%BA%E6%B8%B2%E6%9F%93/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a name="Fo2HC"></a></p>
+<h2 id="阶段一：创建根节点"><a href="#阶段一：创建根节点" class="headerlink" title="阶段一：创建根节点"></a>阶段一：创建根节点</h2><p>创建一个react应用从<code>ReactDOM.createRoot(container)</code>开始，返回一个root，这个root可以用来渲染一个react节点并挂载到DOM上。<br>这个createRoot方法，根据调用，最终方法在<code>react/packages/react-dom/src/client/ReactDOMRoot.js</code>文件里</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">createRoot</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  container: Element | Document | DocumentFragment,</span></span></span><br><span class="line"><span class="function"><span class="params">  options?: CreateRootOptions,</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">RootType</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 首先判断container是否是合格的，根据container的nodeType进行判断</span></span><br><span class="line">  <span class="keyword">if</span> (!isValidContainer(container)) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&#x27;createRoot(...): Target container is not a DOM element.&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> isStrictMode = <span class="literal">false</span>;</span><br><span class="line">  <span class="keyword">let</span> concurrentUpdatesByDefaultOverride = <span class="literal">false</span>;</span><br><span class="line">  <span class="keyword">let</span> identifierPrefix = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">  <span class="keyword">let</span> onRecoverableError = defaultOnRecoverableError;</span><br><span class="line">  <span class="keyword">let</span> transitionCallbacks = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// options相关内容的赋值</span></span><br><span class="line">  <span class="keyword">if</span> (options !== <span class="literal">null</span> &amp;&amp; options !== <span class="literal">undefined</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (options.unstable_strictMode === <span class="literal">true</span>) &#123;</span><br><span class="line">      isStrictMode = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (</span><br><span class="line">      allowConcurrentByDefault &amp;&amp;</span><br><span class="line">      options.unstable_concurrentUpdatesByDefault === <span class="literal">true</span></span><br><span class="line">    ) &#123;</span><br><span class="line">      concurrentUpdatesByDefaultOverride = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (options.identifierPrefix !== <span class="literal">undefined</span>) &#123;</span><br><span class="line">      identifierPrefix = options.identifierPrefix;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (options.onRecoverableError !== <span class="literal">undefined</span>) &#123;</span><br><span class="line">      onRecoverableError = options.onRecoverableError;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (options.unstable_transitionCallbacks !== <span class="literal">undefined</span>) &#123;</span><br><span class="line">      transitionCallbacks = options.unstable_transitionCallbacks;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 该方法中，主要是调用createFiberRoot方法，用于new一个FiberRootNode</span></span><br><span class="line">  <span class="keyword">const</span> root = createContainer(</span><br><span class="line">    container,</span><br><span class="line">    ConcurrentRoot,</span><br><span class="line">    <span class="literal">null</span>,</span><br><span class="line">    isStrictMode,</span><br><span class="line">    concurrentUpdatesByDefaultOverride,</span><br><span class="line">    identifierPrefix,</span><br><span class="line">    onRecoverableError,</span><br><span class="line">    transitionCallbacks,</span><br><span class="line">  );</span><br><span class="line">  markContainerAsRoot(root.current, container);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> rootContainerElement: Document | Element | DocumentFragment =</span><br><span class="line">    container.nodeType === COMMENT_NODE</span><br><span class="line">      ? (container.parentNode: any)</span><br><span class="line">      : container;</span><br><span class="line">	<span class="comment">// 事件管理相关</span></span><br><span class="line">  listenToAllSupportedEvents(rootContainerElement);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// $FlowFixMe[invalid-constructor] Flow no longer supports calling new on functions</span></span><br><span class="line">  <span class="comment">// 返回一个new的ReactDOMRoot，它的属性_internalRoot指向FiberRootNode</span></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> ReactDOMRoot(root);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+
+<p>在createRoot方法中，主要执行了createContainer方法，新建了一个FiberRootNode，并返回一个ReactDOMRoot，它的唯一属性_internalRoot指向FiberRootNode</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">createFiberRoot</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  containerInfo: Container,</span></span></span><br><span class="line"><span class="function"><span class="params">  tag: RootTag,</span></span></span><br><span class="line"><span class="function"><span class="params">  hydrate: boolean,</span></span></span><br><span class="line"><span class="function"><span class="params">  initialChildren: ReactNodeList,</span></span></span><br><span class="line"><span class="function"><span class="params">  hydrationCallbacks: <span class="literal">null</span> | SuspenseHydrationCallbacks,</span></span></span><br><span class="line"><span class="function"><span class="params">  isStrictMode: boolean,</span></span></span><br><span class="line"><span class="function"><span class="params">  concurrentUpdatesByDefaultOverride: <span class="literal">null</span> | boolean,</span></span></span><br><span class="line"><span class="function"><span class="params">  identifierPrefix: string,</span></span></span><br><span class="line"><span class="function"><span class="params">  onRecoverableError: <span class="literal">null</span> | ((error: mixed) =&gt; <span class="keyword">void</span>),</span></span></span><br><span class="line"><span class="function"><span class="params">  transitionCallbacks: <span class="literal">null</span> | TransitionTracingCallbacks,</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">FiberRoot</span> </span>&#123;</span><br><span class="line">  <span class="comment">// new一个FiberRootNode对象</span></span><br><span class="line">  <span class="keyword">const</span> root: FiberRoot = (<span class="keyword">new</span> FiberRootNode(</span><br><span class="line">    containerInfo,</span><br><span class="line">    tag,</span><br><span class="line">    hydrate,</span><br><span class="line">    identifierPrefix,</span><br><span class="line">    onRecoverableError,</span><br><span class="line">  ): any);</span><br><span class="line"></span><br><span class="line"> 	<span class="comment">// 核心是返回一个 new FiberNode(tag, pendingProps, key, mode);</span></span><br><span class="line">	<span class="comment">// 参数：tag = HostRoot = 3， pendingProps = null， key = null, mode = NoMode = 0b000000;</span></span><br><span class="line">  <span class="keyword">const</span> uninitializedFiber = createHostRootFiber(</span><br><span class="line">    tag,</span><br><span class="line">    isStrictMode,</span><br><span class="line">    concurrentUpdatesByDefaultOverride,</span><br><span class="line">  );</span><br><span class="line">	<span class="comment">// 将FiberRoot的current指向初始化的FiberNode，并将FiberNode的stateNode指向FiberRoot</span></span><br><span class="line">  root.current = uninitializedFiber;</span><br><span class="line">  uninitializedFiber.stateNode = root;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 初始化RootFiber的memoizedState属性，该属性用于存放记忆State值，也就是上次更新的state值</span></span><br><span class="line">  <span class="keyword">const</span> initialState: RootState = &#123;</span><br><span class="line">    element: initialChildren,</span><br><span class="line">    isDehydrated: hydrate,</span><br><span class="line">    cache: (<span class="literal">null</span>: any), <span class="comment">// not enabled yet</span></span><br><span class="line">  &#125;;</span><br><span class="line">  uninitializedFiber.memoizedState = initialState;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 初始化fiber的updateQueue属性</span></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">   fiber.updateQueue = &#123;</span></span><br><span class="line"><span class="comment">      baseState: fiber.memoizedState,</span></span><br><span class="line"><span class="comment">      firstBaseUpdate: null,</span></span><br><span class="line"><span class="comment">      lastBaseUpdate: null,</span></span><br><span class="line"><span class="comment">      shared: &#123;</span></span><br><span class="line"><span class="comment">        pending: null,</span></span><br><span class="line"><span class="comment">        lanes: NoLanes,</span></span><br><span class="line"><span class="comment">        interleaved: null,</span></span><br><span class="line"><span class="comment">      &#125;,</span></span><br><span class="line"><span class="comment">      callbacks: null,</span></span><br><span class="line"><span class="comment">    &#125;;</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  initializeUpdateQueue(uninitializedFiber);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>在createFiberRoot方法中，主要创建了FiberRootNode对象，以及初始化了一个空的FiberNode，并设置这两个对象的连接<br><a name="wr0Bb"></a></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>所以createRoot做了如下事情</p>
+<ol>
+<li>创建了FiberRootNode以及FiberNode，将container放在FiberRootNode中</li>
+<li>返回一个ReactDOMRoot，render方法也在这个root上</li>
+</ol>
+<p>执行完createRoot方法后，基本上建立了一条如下的链条<br><img src="/2023/02/22/React%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-%E5%88%9D%E6%AC%A1%E5%88%9B%E5%BB%BA%E6%B8%B2%E6%9F%93/1677666639461-47dd5cd7-7710-46f2-9ae2-8d4f7dec0338.png" alt="1677666639461-47dd5cd7-7710-46f2-9ae2-8d4f7dec0338.png"><br><a name="j3YRm"></a></p>
+<h2 id="阶段二：ReactDOMRoot-prototype-render"><a href="#阶段二：ReactDOMRoot-prototype-render" class="headerlink" title="阶段二：ReactDOMRoot.prototype.render"></a>阶段二：ReactDOMRoot.prototype.render</h2><p>创建完ReactDOMRoot后，调用该root上的render方法<code>root.render(&lt;App/&gt;)</code><br>在ReactDOMRoot.prototype.render方法中，核心方法为updateContainer方法</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">updateContainer</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  element: ReactNodeList,</span></span></span><br><span class="line"><span class="function"><span class="params">  container: OpaqueRoot,</span></span></span><br><span class="line"><span class="function"><span class="params">  parentComponent: ?React$Component&lt;any, any&gt;,</span></span></span><br><span class="line"><span class="function"><span class="params">  callback: ?<span class="built_in">Function</span>,</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">Lane</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 初次渲染：fiberRoot指向的rootFiberNode</span></span><br><span class="line">  <span class="keyword">const</span> current = container.current;</span><br><span class="line">  <span class="keyword">const</span> eventTime = requestEventTime();</span><br><span class="line">  <span class="comment">// lane模型，用二进制表示优先级，1的bits越多，优先级越低， 目前lane为defaultLane = 32， 0b0000000000000000000000000100000;</span></span><br><span class="line">  <span class="keyword">const</span> lane = requestUpdateLane(current);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 此时parentComponent为null，所以context为&#123;&#125;</span></span><br><span class="line">  <span class="keyword">const</span> context = getContextForSubtree(parentComponent);</span><br><span class="line">  <span class="keyword">if</span> (container.context === <span class="literal">null</span>) &#123;</span><br><span class="line">    container.context = context;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    container.pendingContext = context;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 创建了一个update</span></span><br><span class="line">  <span class="keyword">const</span> update = createUpdate(eventTime, lane);</span><br><span class="line">  <span class="comment">// 将&lt;App/&gt;存放在payload中，此时&lt;App/&gt;以被babel解析为React.createElement(App)，并执行返回</span></span><br><span class="line">  update.payload = &#123;element&#125;;</span><br><span class="line"></span><br><span class="line">  callback = callback === <span class="literal">undefined</span> ? <span class="literal">null</span> : callback;</span><br><span class="line">  <span class="keyword">if</span> (callback !== <span class="literal">null</span>) &#123;</span><br><span class="line">    update.callback = callback;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// update的入列处理：配置update链表，并将queue插入进concurrentQueues队列中，返回的root是FiberNodeRoot</span></span><br><span class="line">  <span class="keyword">const</span> root = enqueueUpdate(current, update, lane);</span><br><span class="line">  <span class="keyword">if</span> (root !== <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="comment">// update调度更新</span></span><br><span class="line">    scheduleUpdateOnFiber(root, current, lane, eventTime);</span><br><span class="line">    entangleTransitions(root, current, lane);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> lane;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>updateContainer最后几个方法的调用，是该方法的核心，也就是update的入列处理以及update的调度更新<br>查看class组件的setState方法可知，在setState方法中，最后也是执行enqueueUpdate以及scheduleUpdateOnFiber函数。</p>
+<blockquote>
+<p>从React API中，可查看到React.Component的初始化方法，setState方法主要执行了this.updater.enqueueSetState(this, partialState, callback, ‘setState’);<br>而updater的赋值是在render阶段针对class组件的处理中，也就是在constructClassInstance函数中的adoptClassInstance中，对class instance进行赋值操作</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> classComponentUpdater = &#123;</span><br><span class="line">  <span class="function"><span class="title">enqueueSetState</span>(<span class="params">inst, payload, callback</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> fiber = getInstance(inst);</span><br><span class="line">    <span class="keyword">const</span> eventTime = requestEventTime();</span><br><span class="line">    <span class="keyword">const</span> lane = requestUpdateLane(fiber);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> update = createUpdate(eventTime, lane);</span><br><span class="line">    update.payload = payload;</span><br><span class="line">    <span class="keyword">if</span> (callback !== <span class="literal">undefined</span> &amp;&amp; callback !== <span class="literal">null</span>) &#123;</span><br><span class="line">      update.callback = callback;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> root = enqueueUpdate(fiber, update, lane);</span><br><span class="line">    <span class="keyword">if</span> (root !== <span class="literal">null</span>) &#123;</span><br><span class="line">      scheduleUpdateOnFiber(root, fiber, lane, eventTime);</span><br><span class="line">      entangleTransitions(root, fiber, lane);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在updateContainer方法中主要做了：</p>
+<ol>
+<li>创建了一个update</li>
+<li>在enqueueUpdate中，update入列处理<ol>
+<li>将update.next指向update自己本身，形成一个环状链表</li>
+<li>将fiber.updateQueue.shared添加concurrentQueues（并发队列）中</li>
+<li>将fiber.updateQueue.shared.interleaved指向update</li>
+<li>返回FiberNodeRoot</li>
+</ol>
+</li>
+<li>update的调度更新<br><a name="mbk62"></a></li>
+</ol>
+<h3 id="enqueueUpdate：update的入列处理"><a href="#enqueueUpdate：update的入列处理" class="headerlink" title="enqueueUpdate：update的入列处理"></a>enqueueUpdate：update的入列处理</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 参数fiber为初始化的fiberNode</span></span><br><span class="line"><span class="comment">// 参数update为新创建的update</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">enqueueUpdate</span>&lt;<span class="title">State</span>&gt;(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  fiber: Fiber,</span></span></span><br><span class="line"><span class="function"><span class="params">  update: Update&lt;State&gt;,</span></span></span><br><span class="line"><span class="function"><span class="params">  lane: Lane,</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">FiberRoot</span> | <span class="title">null</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 在createFiberRoot中，fiber.updateQueue初始化了，所以不为null</span></span><br><span class="line">  <span class="keyword">const</span> updateQueue = fiber.updateQueue;</span><br><span class="line">  <span class="keyword">if</span> (updateQueue === <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">  	updateQueue.shared = &#123;</span></span><br><span class="line"><span class="comment">      pending: null,</span></span><br><span class="line"><span class="comment">      lanes: NoLanes,</span></span><br><span class="line"><span class="comment">      interleaved: null,</span></span><br><span class="line"><span class="comment">    &#125;,</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  <span class="keyword">const</span> sharedQueue: SharedQueue&lt;State&gt; = (updateQueue: any).shared;</span><br><span class="line">	<span class="keyword">return</span> enqueueConcurrentClassUpdate(fiber, sharedQueue, update, lane);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">enqueueConcurrentClassUpdate</span>&lt;<span class="title">State</span>&gt;(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  fiber: Fiber,</span></span></span><br><span class="line"><span class="function"><span class="params">  queue: ClassQueue&lt;State&gt;,</span></span></span><br><span class="line"><span class="function"><span class="params">  update: ClassUpdate&lt;State&gt;,</span></span></span><br><span class="line"><span class="function"><span class="params">  lane: Lane,</span></span></span><br><span class="line"><span class="function"><span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> interleaved = queue.interleaved;</span><br><span class="line">  <span class="keyword">if</span> (interleaved === <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="comment">// 因为当前update是第一个，所以设置update的next为本身</span></span><br><span class="line">    update.next = update;</span><br><span class="line">    pushConcurrentUpdateQueue(queue);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    update.next = interleaved.next;</span><br><span class="line">    interleaved.next = update;</span><br><span class="line">  &#125;</span><br><span class="line">  queue.interleaved = update;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> markUpdateLaneFromFiberToRoot(fiber, lane);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a name="Z1kJW"></a></p>
+<h3 id="scheduleUpdateOnFiber：update的调度更新"><a href="#scheduleUpdateOnFiber：update的调度更新" class="headerlink" title="scheduleUpdateOnFiber：update的调度更新"></a>scheduleUpdateOnFiber：update的调度更新</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">scheduleUpdateOnFiber</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  root: FiberRoot,</span></span></span><br><span class="line"><span class="function"><span class="params">  fiber: Fiber,</span></span></span><br><span class="line"><span class="function"><span class="params">  lane: Lane,</span></span></span><br><span class="line"><span class="function"><span class="params">  eventTime: number,</span></span></span><br><span class="line"><span class="function"><span class="params"></span>) </span>&#123;</span><br><span class="line">  checkForNestedUpdates();</span><br><span class="line">  <span class="comment">// 在root上标记，有一个等待处理的update</span></span><br><span class="line">  markRootUpdated(root, lane, eventTime);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 省略...</span></span><br><span class="line">  <span class="comment">// 一些优先级的处理，lanes的赋值</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 注册调度任务</span></span><br><span class="line">	ensureRootIsScheduled(root, eventTime);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在该函数中，主要是对一些优先级的赋值，以及针对update的标记，核心函数是<code>ensureRootIsScheduled</code>，判断是否存在新的任务需要调度</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ensureRootIsScheduled</span>(<span class="params">root: FiberRoot, currentTime: number</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> existingCallbackNode = root.callbackNode;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 检查是否有即将超时的任务，如果有，则标记他们超时，优先执行</span></span><br><span class="line">  markStarvedLanesAsExpired(root, currentTime);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 安排下一个执行的任务和他们的优先级</span></span><br><span class="line">  <span class="comment">// mount阶段，nextLanes为16</span></span><br><span class="line">  <span class="comment">// 获取当前任务的优先级</span></span><br><span class="line">  <span class="keyword">const</span> nextLanes = getNextLanes(</span><br><span class="line">    root,</span><br><span class="line">    root === workInProgressRoot ? workInProgressRootRenderLanes : NoLanes,</span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 判断是否有任务，没有的话，重置callbackNode，并且退出</span></span><br><span class="line">  <span class="keyword">if</span> (nextLanes === NoLanes) &#123;</span><br><span class="line">    <span class="keyword">if</span> (existingCallbackNode !== <span class="literal">null</span>) &#123;</span><br><span class="line">      cancelCallback(existingCallbackNode);</span><br><span class="line">    &#125;</span><br><span class="line">    root.callbackNode = <span class="literal">null</span>;</span><br><span class="line">    root.callbackPriority = NoLane;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 使用最高优先级lane去代表callback的优先级</span></span><br><span class="line">  <span class="keyword">const</span> newCallbackPriority = getHighestPriorityLane(nextLanes);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 检查是否有正在执行的任务</span></span><br><span class="line">  <span class="keyword">const</span> existingCallbackPriority = root.callbackPriority;</span><br><span class="line">  <span class="comment">// 比对一下两者的优先级，如果优先级一样，则正在执行的任务优先级也很高，直接返回null，让当前正在执行的任务继续执行</span></span><br><span class="line">  <span class="keyword">if</span> (existingCallbackPriority === newCallbackPriority) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 否则，当前的任务优先级更高，暂停正在执行的任务，优先调度当前任务</span></span><br><span class="line">  <span class="keyword">if</span> (existingCallbackNode != <span class="literal">null</span>) &#123;</span><br><span class="line">    cancelCallback(existingCallbackNode);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 在scheduleCallback中创建一个新任务，然后加入到任务队列中</span></span><br><span class="line">  <span class="keyword">let</span> newCallbackNode;</span><br><span class="line">  <span class="comment">// 根据当前的优先级，判断是同步执行，还是异步执行</span></span><br><span class="line">  <span class="keyword">if</span> (newCallbackPriority === SyncLane) &#123;</span><br><span class="line">    <span class="comment">// 同步执行performSyncWorkOnRoot方法，同步执行performSyncWorkOnRoot方法</span></span><br><span class="line">    <span class="keyword">if</span> (root.tag === LegacyRoot) &#123;</span><br><span class="line">      scheduleLegacySyncCallback(performSyncWorkOnRoot.bind(<span class="literal">null</span>, root));</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      scheduleSyncCallback(performSyncWorkOnRoot.bind(<span class="literal">null</span>, root));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (supportsMicrotasks) &#123;</span><br><span class="line">      scheduleMicrotask(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (</span><br><span class="line">          (executionContext &amp; (RenderContext | CommitContext)) ===</span><br><span class="line">          NoContext</span><br><span class="line">        ) &#123;</span><br><span class="line">          flushSyncCallbacks();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      scheduleCallback(ImmediateSchedulerPriority, flushSyncCallbacks);</span><br><span class="line">    &#125;</span><br><span class="line">    newCallbackNode = <span class="literal">null</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 如果是异步执行，则将performConcurrentWorkOnRoot注册进调度任务中</span></span><br><span class="line">    <span class="keyword">let</span> schedulerPriorityLevel;</span><br><span class="line">    <span class="keyword">switch</span> (lanesToEventPriority(nextLanes)) &#123;</span><br><span class="line">      <span class="keyword">case</span> DiscreteEventPriority:</span><br><span class="line">        schedulerPriorityLevel = ImmediateSchedulerPriority;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> ContinuousEventPriority:</span><br><span class="line">        schedulerPriorityLevel = UserBlockingSchedulerPriority;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> DefaultEventPriority:</span><br><span class="line">        schedulerPriorityLevel = NormalSchedulerPriority;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> IdleEventPriority:</span><br><span class="line">        schedulerPriorityLevel = IdleSchedulerPriority;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">default</span>:</span><br><span class="line">        schedulerPriorityLevel = NormalSchedulerPriority;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 异步执行performConcurrentWorkOnRoot方法</span></span><br><span class="line">    <span class="comment">// 在concurrent模式下，注册任务，并加入到任务队列中</span></span><br><span class="line">    newCallbackNode = scheduleCallback(</span><br><span class="line">      schedulerPriorityLevel,</span><br><span class="line">      performConcurrentWorkOnRoot.bind(<span class="literal">null</span>, root),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 更高优先级的任务，会被赋值到root.callbackNode上</span></span><br><span class="line">  root.callbackPriority = newCallbackPriority;</span><br><span class="line">  root.callbackNode = newCallbackNode;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>ensureRootIsScheduled中，主要做的事情：</p>
+<ol>
+<li>检查是否有超时任务，获取当前任务的优先级，判断是否有任务需要执行，没有任务的话，重置callback并返回</li>
+<li>检查是否有正在执行的任务，并比较一下两个任务的优先级，如果相等的话，则标识正在执行的任务优先级比较高，直接返回，否则，暂停正在执行的任务，优先执行当前任务</li>
+<li>根据当前任务的优先级，判断是同步执行还是异步执行</li>
+<li>如果是异步执行，则异步执行<code>performConcurrentWorkOnRoot</code>方法，在concurrent模式下，注册任务，并加入到任务队列中</li>
+<li>最后，将更高优先级的任务，赋值到root.callbackNode上<blockquote>
+<p>scheduleCallback函数主要是注册调度任务，相关代码在schedule包中</p>
+</blockquote>
+</li>
+</ol>
+<p><a name="dd4bP"></a></p>
+<h3 id="render和commit阶段的入口"><a href="#render和commit阶段的入口" class="headerlink" title="render和commit阶段的入口"></a>render和commit阶段的入口</h3><p>performConcurrentWorkOnRoot和performSyncWorkOnRoot是render和commit阶段的入口函数。</p>
+<ol>
+<li>如果存在阻塞任务或该任务已超时，则调用renderRootSync进行同步渲染，否则调用renderRootConcurrent进行异步渲染，这两个方法是render阶段的入口函数，主要用于构造fiber树</li>
+<li>render阶段执行完毕后会返回退出状态值，根据不同状态值做不同处理，如果状态值为正常完成结束，则调用finishConcurrentRender方法（commit阶段的入口函数）进入commit阶段，该阶段主要是挂载DOM节点</li>
+<li>最后会重新调用ensureRootIsScheduled方法，判断是否有新任务需要重新发起调度</li>
+<li>如果root.callbackNode没有置空（在commit阶段，会将callbackNode置空），则表示由于当前帧时间不够，渲染被阻断，需要返回当然函数，重新渲染<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">performConcurrentWorkOnRoot</span>(<span class="params">root, didTimeout</span>) </span>&#123;</span><br><span class="line">  currentEventTime = NoTimestamp;</span><br><span class="line">  currentEventTransitionLane = NoLanes;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 现在调度的任务</span></span><br><span class="line">  <span class="keyword">const</span> originalCallbackNode = root.callbackNode;</span><br><span class="line">  <span class="comment">// </span></span><br><span class="line">  <span class="keyword">const</span> didFlushPassiveEffects = flushPassiveEffects();</span><br><span class="line">  <span class="keyword">if</span> (didFlushPassiveEffects) &#123;</span><br><span class="line">    <span class="keyword">if</span> (root.callbackNode !== originalCallbackNode) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取本次渲染的优先级</span></span><br><span class="line">  <span class="keyword">let</span> lanes = getNextLanes(</span><br><span class="line">    root,</span><br><span class="line">    root === workInProgressRoot ? workInProgressRootRenderLanes : NoLanes,</span><br><span class="line">  );</span><br><span class="line">  <span class="keyword">if</span> (lanes === NoLanes) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 判断是否使用时间切片</span></span><br><span class="line">  <span class="keyword">const</span> shouldTimeSlice =</span><br><span class="line">    !includesBlockingLane(root, lanes) &amp;&amp;</span><br><span class="line">    !includesExpiredLane(root, lanes) &amp;&amp;</span><br><span class="line">    (disableSchedulerTimeoutInWorkLoop || !didTimeout);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 构造fiber树</span></span><br><span class="line">  <span class="comment">// 根据是否使用时间切片来选择是用同步渲染还是异步渲染</span></span><br><span class="line">  <span class="keyword">let</span> exitStatus = shouldTimeSlice</span><br><span class="line">    ? renderRootConcurrent(root, lanes)</span><br><span class="line">    : renderRootSync(root, lanes);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (exitStatus !== RootInProgress) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...省略exitStatus等于其他状态</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 如果fiber创建完成，render阶段完成结束</span></span><br><span class="line">      <span class="keyword">const</span> renderWasConcurrent = !includesBlockingLane(root, lanes);</span><br><span class="line">      <span class="keyword">const</span> finishedWork: Fiber = (root.current.alternate: any);</span><br><span class="line"></span><br><span class="line">      root.finishedWork = finishedWork;</span><br><span class="line">      root.finishedLanes = lanes;</span><br><span class="line">      <span class="comment">// 渲染fiber树，也就是commit阶段的起始，对应commitRoot</span></span><br><span class="line">      finishConcurrentRender(root, exitStatus, lanes);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 退出前，检查是否还有其他更新，是否需要发起新调度</span></span><br><span class="line">  ensureRootIsScheduled(root, now());</span><br><span class="line">  <span class="keyword">if</span> (root.callbackNode === originalCallbackNode) &#123;</span><br><span class="line">    <span class="comment">// 渲染被阻断，返回一个新的performConcurrentWorkOnRoot等待下一次被调用</span></span><br><span class="line">    <span class="keyword">return</span> performConcurrentWorkOnRoot.bind(<span class="literal">null</span>, root);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/js/" rel="tag"># js</a>
+              <a href="/tags/react/" rel="tag"># react</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/02/10/React%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-React-API/" rel="prev" title="React源码阅读笔记-React API">
+      <i class="fa fa-chevron-left"></i> React源码阅读笔记-React API
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/03/05/React%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-render%E9%98%B6%E6%AE%B5/" rel="next" title="React源码阅读笔记-render阶段">
+      React源码阅读笔记-render阶段 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E4%B8%80%EF%BC%9A%E5%88%9B%E5%BB%BA%E6%A0%B9%E8%8A%82%E7%82%B9"><span class="nav-number">1.</span> <span class="nav-text">阶段一：创建根节点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.1.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E4%BA%8C%EF%BC%9AReactDOMRoot-prototype-render"><span class="nav-number">2.</span> <span class="nav-text">阶段二：ReactDOMRoot.prototype.render</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#enqueueUpdate%EF%BC%9Aupdate%E7%9A%84%E5%85%A5%E5%88%97%E5%A4%84%E7%90%86"><span class="nav-number">2.1.</span> <span class="nav-text">enqueueUpdate：update的入列处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#scheduleUpdateOnFiber%EF%BC%9Aupdate%E7%9A%84%E8%B0%83%E5%BA%A6%E6%9B%B4%E6%96%B0"><span class="nav-number">2.2.</span> <span class="nav-text">scheduleUpdateOnFiber：update的调度更新</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#render%E5%92%8Ccommit%E9%98%B6%E6%AE%B5%E7%9A%84%E5%85%A5%E5%8F%A3"><span class="nav-number">2.3.</span> <span class="nav-text">render和commit阶段的入口</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="赵依婷"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">赵依婷</p>
+  <div class="site-description" itemprop="description">打工都是人上人！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xzhao95" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xzhao95" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zhaoyiting26@163.com" title="E-Mail → mailto:zhaoyiting26@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/u/3295465524" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;u&#x2F;3295465524" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">赵依婷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'GbmucVnm0BdUOjFle71Gu7sb-gzGzoHsz',
+      appKey     : 'XShaIHR81BPhKR7DtM27n5Qh',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+  
+
+  <script src="/js/wobblewindow.js"></script>
+  <script>
+    //只在桌面版网页启用特效
+    if( window.innerWidth > 768  ){
+      $(document).ready(function () {
+        
+          $('.header').wobbleWindow({
+            radius: 50,
+            movementTop: false,
+            movementLeft: false,
+            movementRight: false,
+            debug: false,
+          });
+        
+
+        
+
+        
+      });
+    }
+  </script>
+
+</body>
+</html>

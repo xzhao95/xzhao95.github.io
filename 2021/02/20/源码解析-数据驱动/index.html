@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Vue.js的核心思想：数据驱动是指视图是由数据驱动生成的，通过修改数据对视图进行修改，而不是直接操作DOM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="源码解析--数据驱动">
+<meta property="og:url" content="http://example.com/2021/02/20/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8/index.html">
+<meta property="og:site_name" content="阿赵的烂笔头">
+<meta property="og:description" content="Vue.js的核心思想：数据驱动是指视图是由数据驱动生成的，通过修改数据对视图进行修改，而不是直接操作DOM">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/02/20/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8/13524162-5fb811b66355bbd8.png">
+<meta property="article:published_time" content="2021-02-20T10:06:59.000Z">
+<meta property="article:modified_time" content="2021-03-06T08:08:59.139Z">
+<meta property="article:author" content="赵依婷">
+<meta property="article:tag" content="js">
+<meta property="article:tag" content="vue">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/02/20/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8/13524162-5fb811b66355bbd8.png">
+
+<link rel="canonical" href="http://example.com/2021/02/20/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>源码解析--数据驱动 | 阿赵的烂笔头</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">阿赵的烂笔头</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/20/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="赵依婷">
+      <meta itemprop="description" content="打工都是人上人！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="阿赵的烂笔头">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          源码解析--数据驱动
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-02-20 18:06:59" itemprop="dateCreated datePublished" datetime="2021-02-20T18:06:59+08:00">2021-02-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">web前端</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/02/20/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/02/20/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>Vue.js的核心思想：数据驱动<br>是指视图是由数据驱动生成的，通过修改数据对视图进行修改，而不是直接操作DOM</p>
+</blockquote>
+<p><img src="/2021/02/20/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8/13524162-5fb811b66355bbd8.png" alt="13524162-5fb811b66355bbd8.png"></p>
+<a id="more"></a>
+
+<h1 id="一、-new-Vue"><a href="#一、-new-Vue" class="headerlink" title="一、 new Vue"></a>一、 new Vue</h1><p>初始化，首先在内部初始化一个function，_init方法会在initMixin中定义，做一些基础功能的初始化，例如生命周期的初始化、props、data的初始化等，之后就是调用$mount执行挂载函数</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//core/instance/index.js</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Vue</span> (<span class="params">options</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">&#x27;production&#x27;</span> &amp;&amp;</span><br><span class="line">    !(<span class="built_in">this</span> <span class="keyword">instanceof</span> Vue)</span><br><span class="line">  ) &#123;</span><br><span class="line">    warn(<span class="string">&#x27;Vue is a constructor and should be called with the `new` keyword&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">this</span>._init(options)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//core/instance/init.js</span></span><br><span class="line">Vue.prototype._init = <span class="function"><span class="keyword">function</span> (<span class="params">options?: <span class="built_in">Object</span></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> vm: Component = <span class="built_in">this</span></span><br><span class="line">  </span><br><span class="line">  ...</span><br><span class="line">  </span><br><span class="line">  <span class="comment">/* istanbul ignore else */</span></span><br><span class="line">  <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">&#x27;production&#x27;</span>) &#123;</span><br><span class="line">    initProxy(vm)</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    vm._renderProxy = vm</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// expose real self</span></span><br><span class="line">  vm._self = vm</span><br><span class="line">  initLifecycle(vm)</span><br><span class="line">  initEvents(vm)</span><br><span class="line">  initRender(vm)</span><br><span class="line">  callHook(vm, <span class="string">&#x27;beforeCreate&#x27;</span>)</span><br><span class="line">  initInjections(vm) <span class="comment">// resolve injections before data/props</span></span><br><span class="line">  initState(vm)</span><br><span class="line">  initProvide(vm) <span class="comment">// resolve provide after data/props</span></span><br><span class="line">  callHook(vm, <span class="string">&#x27;created&#x27;</span>)</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (vm.$options.el) &#123;</span><br><span class="line">    vm.$mount(vm.$options.el)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="二、-mount"><a href="#二、-mount" class="headerlink" title="二、$mount"></a>二、$mount</h1><p>在compiler版本中，缓存了原有的$mount，再进行了重新定义，在新定义的$mount方法里，将el和template使用编译器转化为render方法。所有组件都使用render方法进行渲染。<br>编译结束后执行原有的$mount方法，执行mountComponent方法。在mountComponent方法中核心内容是定义了一个渲染watcher，在watcher的回调函数里执行updateComponent方法。在此方法里，执行vm._update生成虚拟Node，最终调用vm._render更新DOM</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// platforms/web/entry-runtime-with-compiler.js</span></span><br><span class="line"><span class="keyword">const</span> mount = Vue.prototype.$mount</span><br><span class="line">Vue.prototype.$mount = <span class="function"><span class="keyword">function</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  el?: string | Element,</span></span></span><br><span class="line"><span class="function"><span class="params">  hydrating?: boolean</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">Component</span> </span>&#123;</span><br><span class="line">  el = el &amp;&amp; query(el)</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* istanbul ignore if */</span></span><br><span class="line">  <span class="keyword">if</span> (el === <span class="built_in">document</span>.body || el === <span class="built_in">document</span>.documentElement) &#123;</span><br><span class="line">    process.env.NODE_ENV !== <span class="string">&#x27;production&#x27;</span> &amp;&amp; warn(</span><br><span class="line">      <span class="string">`Do not mount Vue to &lt;html&gt; or &lt;body&gt; - mount to normal elements instead.`</span></span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> options = <span class="built_in">this</span>.$options</span><br><span class="line">  <span class="comment">// resolve template/el and convert to render function</span></span><br><span class="line">  <span class="keyword">if</span> (!options.render) &#123;</span><br><span class="line">    <span class="keyword">let</span> template = options.template</span><br><span class="line">    <span class="keyword">if</span> (template) &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">typeof</span> template === <span class="string">&#x27;string&#x27;</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (template.charAt(<span class="number">0</span>) === <span class="string">&#x27;#&#x27;</span>) &#123;</span><br><span class="line">          template = idToTemplate(template)</span><br><span class="line">          <span class="comment">/* istanbul ignore if */</span></span><br><span class="line">          <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">&#x27;production&#x27;</span> &amp;&amp; !template) &#123;</span><br><span class="line">            warn(</span><br><span class="line">              <span class="string">`Template element not found or is empty: <span class="subst">$&#123;options.template&#125;</span>`</span>,</span><br><span class="line">              <span class="built_in">this</span></span><br><span class="line">            )</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (template.nodeType) &#123;</span><br><span class="line">        template = template.innerHTML</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">&#x27;production&#x27;</span>) &#123;</span><br><span class="line">          warn(<span class="string">&#x27;invalid template option:&#x27;</span> + template, <span class="built_in">this</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (el) &#123;</span><br><span class="line">      template = getOuterHTML(el)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (template) &#123;</span><br><span class="line">      <span class="comment">/* istanbul ignore if */</span></span><br><span class="line">      <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">&#x27;production&#x27;</span> &amp;&amp; config.performance &amp;&amp; mark) &#123;</span><br><span class="line">        mark(<span class="string">&#x27;compile&#x27;</span>)</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">const</span> &#123; render, staticRenderFns &#125; = compileToFunctions(template, &#123;</span><br><span class="line">        outputSourceRange: process.env.NODE_ENV !== <span class="string">&#x27;production&#x27;</span>,</span><br><span class="line">        shouldDecodeNewlines,</span><br><span class="line">        shouldDecodeNewlinesForHref,</span><br><span class="line">        delimiters: options.delimiters,</span><br><span class="line">        comments: options.comments</span><br><span class="line">      &#125;, <span class="built_in">this</span>)</span><br><span class="line">      options.render = render</span><br><span class="line">      options.staticRenderFns = staticRenderFns</span><br><span class="line"></span><br><span class="line">      <span class="comment">/* istanbul ignore if */</span></span><br><span class="line">      <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">&#x27;production&#x27;</span> &amp;&amp; config.performance &amp;&amp; mark) &#123;</span><br><span class="line">        mark(<span class="string">&#x27;compile end&#x27;</span>)</span><br><span class="line">        measure(<span class="string">`vue <span class="subst">$&#123;<span class="built_in">this</span>._name&#125;</span> compile`</span>, <span class="string">&#x27;compile&#x27;</span>, <span class="string">&#x27;compile end&#x27;</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> mount.call(<span class="built_in">this</span>, el, hydrating)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// platforms/web/runtime/index.js</span></span><br><span class="line"><span class="comment">// public mount method</span></span><br><span class="line">Vue.prototype.$mount = <span class="function"><span class="keyword">function</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  el?: string | Element,</span></span></span><br><span class="line"><span class="function"><span class="params">  hydrating?: boolean</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="comment">// query方法：将el转化为dom节点</span></span><br><span class="line">  el = el &amp;&amp; inBrowser ? query(el) : <span class="literal">undefined</span></span><br><span class="line">  <span class="keyword">return</span> mountComponent(<span class="built_in">this</span>, el, hydrating)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// core/instance/lifecycle.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">mountComponent</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  vm: Component,</span></span></span><br><span class="line"><span class="function"><span class="params">  el: ?Element,</span></span></span><br><span class="line"><span class="function"><span class="params">  hydrating?: boolean</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">Component</span> </span>&#123;</span><br><span class="line">  vm.$el = el</span><br><span class="line">  </span><br><span class="line">  ...</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">let</span> updateComponent</span><br><span class="line">  <span class="comment">/* istanbul ignore if */</span></span><br><span class="line">  <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">&#x27;production&#x27;</span> &amp;&amp; config.performance &amp;&amp; mark) &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    updateComponent = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">      vm._update(vm._render(), hydrating)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// we set this to vm._watcher inside the watcher&#x27;s constructor</span></span><br><span class="line">  <span class="comment">// since the watcher&#x27;s initial patch may call $forceUpdate (e.g. inside child</span></span><br><span class="line">  <span class="comment">// component&#x27;s mounted hook), which relies on vm._watcher being already defined</span></span><br><span class="line">  <span class="keyword">new</span> Watcher(vm, updateComponent, noop, &#123;</span><br><span class="line">    before () &#123;</span><br><span class="line">      <span class="keyword">if</span> (vm._isMounted &amp;&amp; !vm._isDestroyed) &#123;</span><br><span class="line">        callHook(vm, <span class="string">&#x27;beforeUpdate&#x27;</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, <span class="literal">true</span> <span class="comment">/* isRenderWatcher */</span>)</span><br><span class="line">  hydrating = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// manually mounted instance, call mounted on self</span></span><br><span class="line">  <span class="comment">// mounted is called for render-created child components in its inserted hook</span></span><br><span class="line">  <span class="keyword">if</span> (vm.$vnode == <span class="literal">null</span>) &#123;</span><br><span class="line">    vm._isMounted = <span class="literal">true</span></span><br><span class="line">    callHook(vm, <span class="string">&#x27;mounted&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> vm</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="三、render"><a href="#三、render" class="headerlink" title="三、render"></a>三、render</h1><p>在vm._render方法中主要语句是</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; render, _parentVnode &#125; = vm.$options</span><br><span class="line">vnode = render.call(vm._renderProxy, vm.$createElement)</span><br></pre></td></tr></table></figure>
+<p>调用了之前编译生成的render function或是用户手写的render function，用于生成虚拟节点树<br>在vue的官方文档里，render方法的编写，需要使用createElement方法。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  render: <span class="function"><span class="keyword">function</span>(<span class="params">createElement</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> createElement(<span class="string">&#x27;div&#x27;</span>, &#123;</span><br><span class="line">      id: <span class="string">&#x27;app&#x27;</span></span><br><span class="line">    &#125;, <span class="string">&#x27;Hello World&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>而createElement在initRender中有定义：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">initRender</span> (<span class="params">vm: Component</span>) </span>&#123;</span><br><span class="line">  vm._c = <span class="function">(<span class="params">a, b, c, d</span>) =&gt;</span> createElement(vm, a, b, c, d, <span class="literal">false</span>)</span><br><span class="line">  vm.$createElement = <span class="function">(<span class="params">a, b, c, d</span>) =&gt;</span> createElement(vm, a, b, c, d, <span class="literal">true</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>vm._c与vm.$createElement方法都调用createElement方法，区别只在于一个是用于编译，一个是用户手写render方法时使用</p>
+<h1 id="四、VNode"><a href="#四、VNode" class="headerlink" title="四、VNode"></a>四、VNode</h1><p><br>vnode也就是vitual node（虚拟节点），由于浏览器中的DOM，十分昂贵（可通过打印一个DOM节点，发现内容十分多），含有许多属性与方法，直接进行DOM操作，耗费资源较大，性能低。vue就使用了虚拟节点的概念，用来映射到真实DOM的渲染。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">VNode</span> </span>&#123;</span><br><span class="line">  tag: string | <span class="keyword">void</span>;</span><br><span class="line">  data: VNodeData | <span class="keyword">void</span>;</span><br><span class="line">  children: ?<span class="built_in">Array</span>&lt;VNode&gt;;</span><br><span class="line">  text: string | <span class="keyword">void</span>;</span><br><span class="line">  elm: Node | <span class="keyword">void</span>;</span><br><span class="line">  ns: string | <span class="keyword">void</span>;</span><br><span class="line">  context: Component | <span class="keyword">void</span>; <span class="comment">// rendered in this component&#x27;s scope</span></span><br><span class="line">  key: string | number | <span class="keyword">void</span>;</span><br><span class="line">  componentOptions: VNodeComponentOptions | <span class="keyword">void</span>;</span><br><span class="line">  componentInstance: Component | <span class="keyword">void</span>; <span class="comment">// component instance</span></span><br><span class="line">  parent: VNode | <span class="keyword">void</span>; <span class="comment">// component placeholder node</span></span><br><span class="line"> 	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>只是一些vnode参数的定义，相对于真实的DOM，简单了很多。Vue的vnode概念借鉴于<a target="_blank" rel="noopener" href="https://github.com/snabbdom/snabbdom">snabbdom</a>，有时间再去研究。</p>
+<h1 id="五、createElement"><a href="#五、createElement" class="headerlink" title="五、createElement"></a>五、createElement</h1><p>createElement方法是_creatElement方法的封装。在_createElement方法里主要有2步：</p>
+<ol>
+<li><p>对render function方法返回的vnode进行规范化</p>
+</li>
+<li><p>根据各参数，new vnode，创建虚拟节点树</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">_createElement</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  context: Component,</span></span></span><br><span class="line"><span class="function"><span class="params">  tag?: string | Class&lt;Component&gt; | <span class="built_in">Function</span> | <span class="built_in">Object</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">  data?: VNodeData,</span></span></span><br><span class="line"><span class="function"><span class="params">  children?: any,</span></span></span><br><span class="line"><span class="function"><span class="params">  normalizationType?: number</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">VNode</span> | <span class="title">Array</span>&lt;<span class="title">VNode</span>&gt; </span>&#123;</span><br><span class="line">  </span><br><span class="line">  ...</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> (normalizationType === ALWAYS_NORMALIZE) &#123;</span><br><span class="line">    children = normalizeChildren(children)</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (normalizationType === SIMPLE_NORMALIZE) &#123;</span><br><span class="line">    children = simpleNormalizeChildren(children)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> vnode, ns</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> tag === <span class="string">&#x27;string&#x27;</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> Ctor</span><br><span class="line">    ns = (context.$vnode &amp;&amp; context.$vnode.ns) || config.getTagNamespace(tag)</span><br><span class="line">    <span class="keyword">if</span> (config.isReservedTag(tag)) &#123;</span><br><span class="line">      <span class="comment">// platform built-in elements</span></span><br><span class="line">      vnode = <span class="keyword">new</span> VNode(</span><br><span class="line">        config.parsePlatformTagName(tag), data, children,</span><br><span class="line">        <span class="literal">undefined</span>, <span class="literal">undefined</span>, context</span><br><span class="line">      )</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> ((!data || !data.pre) &amp;&amp; isDef(Ctor = resolveAsset(context.$options, <span class="string">&#x27;components&#x27;</span>, tag))) &#123;</span><br><span class="line">      <span class="comment">// component</span></span><br><span class="line">      vnode = createComponent(Ctor, data, context, children, tag)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// unknown or unlisted namespaced elements</span></span><br><span class="line">      <span class="comment">// check at runtime because it may get assigned a namespace when its</span></span><br><span class="line">      <span class="comment">// parent normalizes children</span></span><br><span class="line">      vnode = <span class="keyword">new</span> VNode(</span><br><span class="line">        tag, data, children,</span><br><span class="line">        <span class="literal">undefined</span>, <span class="literal">undefined</span>, context</span><br><span class="line">      )</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// direct component options / constructor</span></span><br><span class="line">    vnode = createComponent(tag, data, context, children)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">Array</span>.isArray(vnode)) &#123;</span><br><span class="line">    <span class="keyword">return</span> vnode</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isDef(vnode)) &#123;</span><br><span class="line">    <span class="keyword">if</span> (isDef(ns)) applyNS(vnode, ns)</span><br><span class="line">    <span class="keyword">if</span> (isDef(data)) registerDeepBindings(data)</span><br><span class="line">    <span class="keyword">return</span> vnode</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> createEmptyVNode()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>子节点的规范化一共有2种情形：</p>
+</li>
+<li><p>normalizeChildren方法主要处理用户编写的render方法。一、如果是子节点是文本节点，编写时，children参数可为字符串，针对该情形，normalizeChildren方法需要将该参数创建为一个文本Vnode返回。二、当遇到slot、for时，会产生嵌套数组，这时调用normalizeArrayChildren方法进行处理。在normalizeArrayChildren方法里，针对文本，数组、vnode类型分别做处理。其中如果是数组时，则递归调用normalizeArrayChildren，对规范后的返回节点数组，使用res.push.apply(res, c)的方法合并数组。</p>
+</li>
+<li><p>simpleNormalizeArrayChildren方法主要是处理编译生成的render方法。主要是针对function component函数组件返回的数组做深度降级处理。使用Array.prototype.concat.apply([], children)方法。</p>
+<h1 id="六、update"><a href="#六、update" class="headerlink" title="六、update"></a>六、update</h1><p>_update方法在2种时机会被调用：首次渲染，数据更新后引发的视图更新渲染。<br>在_update方法中，根据vm._vnode方法判断是否是首次渲染。两种时机都是调用的__patch__方法，区别在于参数不同。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">Vue.prototype._update = <span class="function"><span class="keyword">function</span> (<span class="params">vnode: VNode, hydrating?: boolean</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> vm: Component = <span class="built_in">this</span></span><br><span class="line">  <span class="keyword">const</span> prevEl = vm.$el</span><br><span class="line">  <span class="keyword">const</span> prevVnode = vm._vnode</span><br><span class="line">  <span class="keyword">const</span> restoreActiveInstance = setActiveInstance(vm)</span><br><span class="line">  vm._vnode = vnode</span><br><span class="line">  <span class="comment">// Vue.prototype.__patch__ is injected in entry points</span></span><br><span class="line">  <span class="comment">// based on the rendering backend used.</span></span><br><span class="line">  <span class="keyword">if</span> (!prevVnode) &#123;</span><br><span class="line">    <span class="comment">// initial render</span></span><br><span class="line">    vm.$el = vm.__patch__(vm.$el, vnode, hydrating, <span class="literal">false</span> <span class="comment">/* removeOnly */</span>)</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// updates</span></span><br><span class="line">    vm.$el = vm.__patch__(prevVnode, vnode)</span><br><span class="line">  &#125;</span><br><span class="line">  restoreActiveInstance()</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// if parent is an HOC, update its $el as well</span></span><br><span class="line">    <span class="keyword">if</span> (vm.$vnode &amp;&amp; vm.$parent &amp;&amp; vm.$vnode === vm.$parent._vnode) &#123;</span><br><span class="line">      vm.$parent.$el = vm.$el</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于__patch__方法的定义使用了函数柯里化技巧</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// vue/src/platforms/web/runtime/patch.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> patch: <span class="built_in">Function</span> = createPatchFunction(&#123; nodeOps, modules &#125;)</span><br></pre></td></tr></table></figure>
+<p>在createPatchFunction里定义了多个内部通用方法，如createElem（创建节点）、createChildren（创建子节点）、insert（节点插入）等，最后返回patch方法。<br>在patch方法中，核心内容是将vnode虚拟节点树递归调用createElem方法转化为真实的DOM节点树，然后销毁原有的节点，挂载到原节点的父节点上。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">createPatchFunction</span> (<span class="params">backend</span>) </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">createElm</span> (<span class="params">vnode, insertedVnodeQueue, parentElm, refElm, nested, ownerArray, index</span>) </span>&#123; ... &#125;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">createChildren</span> (<span class="params">vnode, children, insertedVnodeQueue</span>) </span>&#123;...&#125;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">insert</span> (<span class="params">parent, elm, ref</span>) </span>&#123;...&#125;</span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">patch</span> (<span class="params">oldVnode, vnode, hydrating, removeOnly</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> isInitialPatch = <span class="literal">false</span></span><br><span class="line">    <span class="keyword">const</span> insertedVnodeQueue = []</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (isUndef(oldVnode)) &#123;</span><br><span class="line">      <span class="comment">// empty mount (likely as component), create new root element</span></span><br><span class="line">      ...</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> isRealElement = isDef(oldVnode.nodeType)</span><br><span class="line">      <span class="keyword">if</span> (!isRealElement &amp;&amp; sameVnode(oldVnode, vnode)) &#123;</span><br><span class="line">        <span class="comment">// patch existing root node</span></span><br><span class="line">        patchVnode(oldVnode, vnode, insertedVnodeQueue, <span class="literal">null</span>, <span class="literal">null</span>, removeOnly)</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (isRealElement) &#123;</span><br><span class="line">          <span class="comment">// mounting to a real element</span></span><br><span class="line">         ...</span><br><span class="line">          <span class="comment">// either not server-rendered, or hydration failed.</span></span><br><span class="line">          <span class="comment">// create an empty node and replace it</span></span><br><span class="line">          oldVnode = emptyNodeAt(oldVnode)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// replacing existing element</span></span><br><span class="line">        <span class="keyword">const</span> oldElm = oldVnode.elm</span><br><span class="line">        <span class="keyword">const</span> parentElm = nodeOps.parentNode(oldElm)</span><br><span class="line"></span><br><span class="line">        <span class="comment">// create new node</span></span><br><span class="line">        createElm(</span><br><span class="line">          vnode,</span><br><span class="line">          insertedVnodeQueue,</span><br><span class="line">          <span class="comment">// extremely rare edge case: do not insert if old element is in a</span></span><br><span class="line">          <span class="comment">// leaving transition. Only happens when combining transition +</span></span><br><span class="line">          <span class="comment">// keep-alive + HOCs. (#4590)</span></span><br><span class="line">          oldElm._leaveCb ? <span class="literal">null</span> : parentElm,</span><br><span class="line">          nodeOps.nextSibling(oldElm)</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">        <span class="comment">// update parent placeholder node element, recursively</span></span><br><span class="line">        ...</span><br><span class="line">          </span><br><span class="line">        <span class="comment">// destroy old node</span></span><br><span class="line">        <span class="keyword">if</span> (isDef(parentElm)) &#123;</span><br><span class="line">          removeVnodes([oldVnode], <span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isDef(oldVnode.tag)) &#123;</span><br><span class="line">          invokeDestroyHook(oldVnode)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    invokeInsertHook(vnode, insertedVnodeQueue, isInitialPatch)</span><br><span class="line">    <span class="keyword">return</span> vnode.elm</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>至此，可观察到浏览器上编写的节点已成功显示。<br></p>
+</li>
+</ol>
+<blockquote>
+<p>该笔记为Vue.js技术揭秘课程的学习笔记，源码复盘记录。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/js/" rel="tag"># js</a>
+              <a href="/tags/vue/" rel="tag"># vue</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/01/22/html2canvas%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" rel="prev" title="html2canvas踩坑记录">
+      <i class="fa fa-chevron-left"></i> html2canvas踩坑记录
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/02/20/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90--%E7%9F%A5%E8%AF%86%E8%A1%A5%E5%85%85/" rel="next" title="vue2.0源码解析--知识补充">
+      vue2.0源码解析--知识补充 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81-new-Vue"><span class="nav-number">1.</span> <span class="nav-text">一、 new Vue</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81-mount"><span class="nav-number">2.</span> <span class="nav-text">二、$mount</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81render"><span class="nav-number">3.</span> <span class="nav-text">三、render</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E3%80%81VNode"><span class="nav-number">4.</span> <span class="nav-text">四、VNode</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%94%E3%80%81createElement"><span class="nav-number">5.</span> <span class="nav-text">五、createElement</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%AD%E3%80%81update"><span class="nav-number">6.</span> <span class="nav-text">六、update</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="赵依婷"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">赵依婷</p>
+  <div class="site-description" itemprop="description">打工都是人上人！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xzhao95" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xzhao95" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zhaoyiting26@163.com" title="E-Mail → mailto:zhaoyiting26@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/u/3295465524" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;u&#x2F;3295465524" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">赵依婷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'GbmucVnm0BdUOjFle71Gu7sb-gzGzoHsz',
+      appKey     : 'XShaIHR81BPhKR7DtM27n5Qh',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+  
+
+  <script src="/js/wobblewindow.js"></script>
+  <script>
+    //只在桌面版网页启用特效
+    if( window.innerWidth > 768  ){
+      $(document).ready(function () {
+        
+          $('.header').wobbleWindow({
+            radius: 50,
+            movementTop: false,
+            movementLeft: false,
+            movementRight: false,
+            debug: false,
+          });
+        
+
+        
+
+        
+      });
+    }
+  </script>
+
+</body>
+</html>

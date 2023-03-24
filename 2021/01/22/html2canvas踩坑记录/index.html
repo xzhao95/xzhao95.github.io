@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="1. ios系统不支持，转化的canvas为空问题描述：最新版的html2canvas在ios系统微信内置浏览器上，调用失败，转化的canvas为空。解决方法：将html2canvas版本降低为【1.0.0-rc.4】">
+<meta property="og:type" content="article">
+<meta property="og:title" content="html2canvas踩坑记录">
+<meta property="og:url" content="http://example.com/2021/01/22/html2canvas%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="阿赵的烂笔头">
+<meta property="og:description" content="1. ios系统不支持，转化的canvas为空问题描述：最新版的html2canvas在ios系统微信内置浏览器上，调用失败，转化的canvas为空。解决方法：将html2canvas版本降低为【1.0.0-rc.4】">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-01-22T09:50:55.000Z">
+<meta property="article:modified_time" content="2021-03-06T07:57:50.425Z">
+<meta property="article:author" content="赵依婷">
+<meta property="article:tag" content="js">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2021/01/22/html2canvas%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>html2canvas踩坑记录 | 阿赵的烂笔头</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">阿赵的烂笔头</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/22/html2canvas%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="赵依婷">
+      <meta itemprop="description" content="打工都是人上人！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="阿赵的烂笔头">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          html2canvas踩坑记录
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-01-22 17:50:55" itemprop="dateCreated datePublished" datetime="2021-01-22T17:50:55+08:00">2021-01-22</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA/" itemprop="url" rel="index"><span itemprop="name">查漏补缺</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/01/22/html2canvas%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/01/22/html2canvas%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="1-ios系统不支持，转化的canvas为空"><a href="#1-ios系统不支持，转化的canvas为空" class="headerlink" title="1. ios系统不支持，转化的canvas为空"></a>1. ios系统不支持，转化的canvas为空</h3><p><strong>问题描述：</strong><br>最新版的html2canvas在ios系统微信内置浏览器上，调用失败，转化的canvas为空。<br><strong>解决方法：</strong><br>将html2canvas版本降低为<strong>【1.0.0-rc.4】</strong></p>
+<a id="more"></a>
+
+<h3 id="2-图片只截取了一半，最终成图不完整"><a href="#2-图片只截取了一半，最终成图不完整" class="headerlink" title="2. 图片只截取了一半，最终成图不完整"></a>2. 图片只截取了一半，最终成图不完整</h3><p><strong>问题描述：</strong><br>在页面有滚动的情况下，截取到图片只截取了一部分，节点没有从顶部截取<br><strong>解决办法：</strong></p>
+<ol>
+<li>截取前可以先滚动到顶部<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">&#x27;#poster&#x27;</span>).scrollTop(<span class="number">0</span>);</span><br></pre></td></tr></table></figure></li>
+<li>当遇到需要截取的图片过长时，即使滚动到顶部，因为html2canvas只截取可视部分，所以截取的图片也是不完整，只有一部分。查了网上资料参考了<a target="_blank" rel="noopener" href="https://www.cnblogs.com/yanweidie/p/5203943.html">焰尾迭</a>的方法，修改源码，主要使用户调用时能自定义需要截取dom的宽高.</li>
+</ol>
+<p>源码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> renderDocument(node.ownerDocument, options, node.ownerDocument.defaultView.innerWidth, node.ownerDocument.defaultView.innerHeight, index).then(<span class="function"><span class="keyword">function</span>(<span class="params">canvas</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span>(options.onrendered) === <span class="string">&quot;function&quot;</span>) &#123;</span><br><span class="line">    log(<span class="string">&quot;options.onrendered is deprecated, html2canvas returns a Promise containing the canvas&quot;</span>);</span><br><span class="line">    options.onrendered(canvas);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> canvas;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>修改为：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//2016-02-18修改源码,解决BUG 对于部分不能截屏不能全屏添加自定义宽高的参数以支持</span></span><br><span class="line"><span class="keyword">var</span> width = options.width != <span class="literal">null</span> ? options.width : node.ownerDocument.defaultView.innerWidth;</span><br><span class="line"><span class="keyword">var</span> height = options.height != <span class="literal">null</span> ? options.height : node.ownerDocument.defaultView.innerHeight;</span><br><span class="line"><span class="keyword">return</span> renderDocument(node.ownerDocument, options, width, height, index).then(<span class="function"><span class="keyword">function</span> (<span class="params">canvas</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span>(options.onrendered) === <span class="string">&quot;function&quot;</span>) &#123;</span><br><span class="line">    log(<span class="string">&quot;options.onrendered is deprecated, html2canvas returns a Promise containing the canvas&quot;</span>);</span><br><span class="line">    options.onrendered(canvas);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> canvas;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>调用方法：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">html2canvas(<span class="built_in">document</span>.querySelector(<span class="string">&#x27;#poster&#x27;</span>),&#123;</span><br><span class="line">  backgroundColor: <span class="string">&quot;transparent&quot;</span>,</span><br><span class="line">  height: $(<span class="string">&#x27;#poster&#x27;</span>).outerHeight(),</span><br><span class="line">  width: w,</span><br><span class="line">&#125;).then(<span class="function"><span class="params">canvas</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">var</span> dataURL = canvas.toDataURL()</span><br><span class="line">  <span class="keyword">var</span> str = dataURL.split(<span class="string">&#x27;base64,&#x27;</span>)[<span class="number">1</span>]</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="3-转化的图片模糊，原有的二维码都无法扫描读取"><a href="#3-转化的图片模糊，原有的二维码都无法扫描读取" class="headerlink" title="3. 转化的图片模糊，原有的二维码都无法扫描读取"></a>3. 转化的图片模糊，原有的二维码都无法扫描读取</h3><p><strong>问题描述：</strong><br>html2canvas直接转化的图片模糊，模糊到啥程度呢，就是图片上带有的高清二维码都模糊到无法扫取信息了。<br><strong>解决办法：</strong><br>可以选择放大dom，将他放置到放大的canvas画布上<br>看代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建一个新的canvas</span></span><br><span class="line"><span class="keyword">var</span> canvas2 = <span class="built_in">document</span>.createElement(<span class="string">&quot;canvas&quot;</span>);</span><br><span class="line"><span class="comment">//获取宽高</span></span><br><span class="line"><span class="keyword">var</span> w = $(<span class="string">&#x27;#record-page&#x27;</span>)[<span class="number">0</span>].offsetWidth;</span><br><span class="line"><span class="keyword">var</span> h = $(<span class="string">&#x27;#record-page&#x27;</span>)[<span class="number">0</span>].offsetHeight;</span><br><span class="line"><span class="comment">// // 将canvas画布放大若干倍，然后盛放在较小的容器内，就显得不模糊了</span></span><br><span class="line">canvas2.width = w * <span class="number">2</span>;</span><br><span class="line">canvas2.height = h * <span class="number">2</span>;</span><br><span class="line">canvas2.style.width = w + <span class="string">&quot;px&quot;</span>;</span><br><span class="line">canvas2.style.height = h + <span class="string">&quot;px&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// //可以按照自己的需求，对context的参数修改,translate指的是偏移量</span></span><br><span class="line"><span class="keyword">var</span> context = canvas2.getContext(<span class="string">&quot;2d&quot;</span>);</span><br><span class="line"><span class="comment">// context.scale(1.85, 1.78);</span></span><br><span class="line">context.scale(<span class="number">2</span>, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">html2canvas(<span class="built_in">document</span>.querySelector(<span class="string">&#x27;#record-page&#x27;</span>),&#123;</span><br><span class="line">  scale: <span class="number">2</span>,</span><br><span class="line">  backgroundColor: <span class="string">&quot;transparent&quot;</span>,</span><br><span class="line">  height: h,</span><br><span class="line">  width: w,</span><br><span class="line">  canvas: canvas2,</span><br><span class="line">  dpi: <span class="built_in">window</span>.devicePixelRatio * <span class="number">2</span>, <span class="comment">// window.devicePixelRatio是设备像素比</span></span><br><span class="line">&#125;).then(<span class="function"><span class="params">canvas</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">var</span> dataURL = canvas.toDataURL()</span><br><span class="line">  <span class="keyword">var</span> str = dataURL.split(<span class="string">&#x27;base64,&#x27;</span>)[<span class="number">1</span>]</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>新问题：会发现图片出现偏移<br>解决：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取元素相对于视窗的偏移量</span></span><br><span class="line"><span class="keyword">var</span> rect = $(<span class="string">&#x27;#record-page&#x27;</span>).get(<span class="number">0</span>).getBoundingClientRect();</span><br><span class="line">context.translate(<span class="string">&#x27;-&#x27;</span> + rect.left, <span class="string">&#x27;-&#x27;</span> + rect.top);</span><br></pre></td></tr></table></figure>
+<h3 id="4-图片跨域问题"><a href="#4-图片跨域问题" class="headerlink" title="4. 图片跨域问题"></a>4. 图片跨域问题</h3><p><strong>问题描述：</strong><br>当dom中使用外部图片时，转化时会出现图片跨域问题，画布污染，截图无法生成<br><strong>解决办法：</strong></p>
+<ol>
+<li>html2canvas有参数可以定义，用户解决图片跨域问题<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">html2canvas(<span class="built_in">document</span>.querySelector(<span class="string">&#x27;#record-page&#x27;</span>),&#123;</span><br><span class="line">  allowTaint: <span class="literal">false</span>,</span><br><span class="line">  useCORS:  <span class="literal">true</span>,   <span class="comment">//解决图片跨域问题</span></span><br><span class="line">  backgroundColor: <span class="string">&quot;transparent&quot;</span>,</span><br><span class="line">  height: h,</span><br><span class="line">  width: w,</span><br><span class="line">&#125;).then(<span class="function"><span class="params">canvas</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">var</span> dataURL = canvas.toDataURL()</span><br><span class="line">  <span class="keyword">var</span> str = dataURL.split(<span class="string">&#x27;base64,&#x27;</span>)[<span class="number">1</span>]</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+<li>如果方法1没有解决问题，可以将使用外部链接的图片先转化为base64格式，再进行dom的转换。<h3 id="5-dom节点的二次编辑"><a href="#5-dom节点的二次编辑" class="headerlink" title="5.  dom节点的二次编辑"></a>5.  dom节点的二次编辑</h3></li>
+</ol>
+<p><strong>问题描述：</strong><br>生成海报前需对dom节点进行二次编辑，即在原先的页面上需增加新样式，如二维码等，再生成一个新的海报，新的改动在原先的节点上不能展示出来。<br><strong>解决办法：</strong></p>
+<ol>
+<li>复制一个新的节点出来，在新节点上进行改动</li>
+<li>新节点加入到body的最底层上，html2canvas需要从页面上寻找节点，所以这一步不能少<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> el = $(<span class="string">&#x27;#record-page&#x27;</span>).clone(<span class="literal">true</span>);</span><br><span class="line">el.find(<span class="string">&#x27;.no-work-tip&#x27;</span>).remove();   <span class="comment">// 海报上不能显示提示语句</span></span><br><span class="line">el.css(&#123;<span class="string">&quot;position&quot;</span>: <span class="string">&#x27;absolute&#x27;</span>, <span class="string">&quot;top&quot;</span>: <span class="string">&#x27;0px&#x27;</span>, <span class="string">&quot;z-index&quot;</span>: <span class="string">&quot;-1&quot;</span>&#125;);  <span class="comment">//设置为底层</span></span><br><span class="line">$(<span class="string">&quot;body&quot;</span>).append(el);</span><br><span class="line">html2canvas(el[<span class="number">0</span>]).then(<span class="function"><span class="params">canvas</span> =&gt;</span> &#123;</span><br><span class="line">  el.remove();    <span class="comment">// canvas生成后需要移除新节点</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/js/" rel="tag"># js</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/12/30/iview-%E7%A9%BF%E6%A2%AD%E6%A1%86%E6%90%9C%E7%B4%A2%E6%A1%86%E5%86%85%E5%AE%B9%E6%B8%85%E9%99%A4/" rel="prev" title="iview 穿梭框搜索框内容清除">
+      <i class="fa fa-chevron-left"></i> iview 穿梭框搜索框内容清除
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/02/20/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8/" rel="next" title="源码解析--数据驱动">
+      源码解析--数据驱动 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-ios%E7%B3%BB%E7%BB%9F%E4%B8%8D%E6%94%AF%E6%8C%81%EF%BC%8C%E8%BD%AC%E5%8C%96%E7%9A%84canvas%E4%B8%BA%E7%A9%BA"><span class="nav-number">1.</span> <span class="nav-text">1. ios系统不支持，转化的canvas为空</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%9B%BE%E7%89%87%E5%8F%AA%E6%88%AA%E5%8F%96%E4%BA%86%E4%B8%80%E5%8D%8A%EF%BC%8C%E6%9C%80%E7%BB%88%E6%88%90%E5%9B%BE%E4%B8%8D%E5%AE%8C%E6%95%B4"><span class="nav-number">2.</span> <span class="nav-text">2. 图片只截取了一半，最终成图不完整</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E8%BD%AC%E5%8C%96%E7%9A%84%E5%9B%BE%E7%89%87%E6%A8%A1%E7%B3%8A%EF%BC%8C%E5%8E%9F%E6%9C%89%E7%9A%84%E4%BA%8C%E7%BB%B4%E7%A0%81%E9%83%BD%E6%97%A0%E6%B3%95%E6%89%AB%E6%8F%8F%E8%AF%BB%E5%8F%96"><span class="nav-number">3.</span> <span class="nav-text">3. 转化的图片模糊，原有的二维码都无法扫描读取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%9B%BE%E7%89%87%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98"><span class="nav-number">4.</span> <span class="nav-text">4. 图片跨域问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-dom%E8%8A%82%E7%82%B9%E7%9A%84%E4%BA%8C%E6%AC%A1%E7%BC%96%E8%BE%91"><span class="nav-number">5.</span> <span class="nav-text">5.  dom节点的二次编辑</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="赵依婷"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">赵依婷</p>
+  <div class="site-description" itemprop="description">打工都是人上人！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xzhao95" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xzhao95" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zhaoyiting26@163.com" title="E-Mail → mailto:zhaoyiting26@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/u/3295465524" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;u&#x2F;3295465524" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">赵依婷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'GbmucVnm0BdUOjFle71Gu7sb-gzGzoHsz',
+      appKey     : 'XShaIHR81BPhKR7DtM27n5Qh',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+  
+
+  <script src="/js/wobblewindow.js"></script>
+  <script>
+    //只在桌面版网页启用特效
+    if( window.innerWidth > 768  ){
+      $(document).ready(function () {
+        
+          $('.header').wobbleWindow({
+            radius: 50,
+            movementTop: false,
+            movementLeft: false,
+            movementRight: false,
+            debug: false,
+          });
+        
+
+        
+
+        
+      });
+    }
+  </script>
+
+</body>
+</html>

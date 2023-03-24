@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一、组件挂载1. createComponent在mountComponet中执行render方法，进入到createElement方法里，之前逻辑跟普通节点挂载都是一样的。在createElement中当判断tag是个对象或tag不是普通的html标签，则直接调用createComponent方法 1234567891011121314151617181920212223242526272829">
+<meta property="og:type" content="article">
+<meta property="og:title" content="源码解析--组件化">
+<meta property="og:url" content="http://example.com/2021/02/28/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E7%BB%84%E4%BB%B6%E5%8C%96/index.html">
+<meta property="og:site_name" content="阿赵的烂笔头">
+<meta property="og:description" content="一、组件挂载1. createComponent在mountComponet中执行render方法，进入到createElement方法里，之前逻辑跟普通节点挂载都是一样的。在createElement中当判断tag是个对象或tag不是普通的html标签，则直接调用createComponent方法 1234567891011121314151617181920212223242526272829">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-02-28T04:51:04.000Z">
+<meta property="article:modified_time" content="2021-03-06T08:08:39.894Z">
+<meta property="article:author" content="赵依婷">
+<meta property="article:tag" content="js">
+<meta property="article:tag" content="vue">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2021/02/28/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E7%BB%84%E4%BB%B6%E5%8C%96/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>源码解析--组件化 | 阿赵的烂笔头</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">阿赵的烂笔头</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/28/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E7%BB%84%E4%BB%B6%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="赵依婷">
+      <meta itemprop="description" content="打工都是人上人！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="阿赵的烂笔头">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          源码解析--组件化
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-02-28 12:51:04" itemprop="dateCreated datePublished" datetime="2021-02-28T12:51:04+08:00">2021-02-28</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">web前端</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/02/28/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E7%BB%84%E4%BB%B6%E5%8C%96/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/02/28/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E7%BB%84%E4%BB%B6%E5%8C%96/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="一、组件挂载"><a href="#一、组件挂载" class="headerlink" title="一、组件挂载"></a>一、组件挂载</h1><h2 id="1-createComponent"><a href="#1-createComponent" class="headerlink" title="1. createComponent"></a>1. createComponent</h2><p>在mountComponet中执行render方法，进入到createElement方法里，之前逻辑跟普通节点挂载都是一样的。<br>在createElement中当判断tag是个对象或tag不是普通的html标签，则直接调用createComponent方法</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">_createElement</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  context: Component,</span></span></span><br><span class="line"><span class="function"><span class="params">  tag?: string | Class&lt;Component&gt; | <span class="built_in">Function</span> | <span class="built_in">Object</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">  data?: VNodeData,</span></span></span><br><span class="line"><span class="function"><span class="params">  children?: any,</span></span></span><br><span class="line"><span class="function"><span class="params">  normalizationType?: number</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">VNode</span> | <span class="title">Array</span>&lt;<span class="title">VNode</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">let</span> vnode, ns</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> tag === <span class="string">&#x27;string&#x27;</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> Ctor</span><br><span class="line">    ns = (context.$vnode &amp;&amp; context.$vnode.ns) || config.getTagNamespace(tag)</span><br><span class="line">    <span class="keyword">if</span> (config.isReservedTag(tag)) &#123;</span><br><span class="line">      <span class="comment">// platform built-in elements</span></span><br><span class="line">      ...</span><br><span class="line">      vnode = <span class="keyword">new</span> VNode(</span><br><span class="line">        config.parsePlatformTagName(tag), data, children,</span><br><span class="line">        <span class="literal">undefined</span>, <span class="literal">undefined</span>, context</span><br><span class="line">      )</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> ((!data || !data.pre) &amp;&amp; isDef(Ctor = resolveAsset(context.$options, <span class="string">&#x27;components&#x27;</span>, tag))) &#123;</span><br><span class="line">      <span class="comment">// component</span></span><br><span class="line">      vnode = createComponent(Ctor, data, context, children, tag)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// unknown or unlisted namespaced elements</span></span><br><span class="line">      <span class="comment">// check at runtime because it may get assigned a namespace when its</span></span><br><span class="line">      <span class="comment">// parent normalizes children</span></span><br><span class="line">      vnode = <span class="keyword">new</span> VNode(</span><br><span class="line">        tag, data, children,</span><br><span class="line">        <span class="literal">undefined</span>, <span class="literal">undefined</span>, context</span><br><span class="line">      )</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// direct component options / constructor</span></span><br><span class="line">    vnode = createComponent(tag, data, context, children)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">Array</span>.isArray(vnode)) &#123;</span><br><span class="line">    <span class="keyword">return</span> vnode</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isDef(vnode)) &#123;</span><br><span class="line">    <span class="keyword">if</span> (isDef(ns)) applyNS(vnode, ns)</span><br><span class="line">    <span class="keyword">if</span> (isDef(data)) registerDeepBindings(data)</span><br><span class="line">    <span class="keyword">return</span> vnode</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> createEmptyVNode()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="2-构造子类的构造函数"><a href="#2-构造子类的构造函数" class="headerlink" title="2. 构造子类的构造函数"></a>2. 构造子类的构造函数</h2><p>在createComponent方法里，context.$options._base是Vue，在初始化initGlobalApi中对Vue.options._base有进行赋值操作。之后执行Vue.extend方法进行构造子类的构造函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">createComponent</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  Ctor: Class&lt;Component&gt; | <span class="built_in">Function</span> | <span class="built_in">Object</span> | <span class="keyword">void</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">  data: ?VNodeData,</span></span></span><br><span class="line"><span class="function"><span class="params">  context: Component,</span></span></span><br><span class="line"><span class="function"><span class="params">  children: ?<span class="built_in">Array</span>&lt;VNode&gt;,</span></span></span><br><span class="line"><span class="function"><span class="params">  tag?: string</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">VNode</span> | <span class="title">Array</span>&lt;<span class="title">VNode</span>&gt; | <span class="title">void</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (isUndef(Ctor)) &#123;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> baseCtor = context.$options._base</span><br><span class="line"></span><br><span class="line">  <span class="comment">// plain options object: turn it into a constructor</span></span><br><span class="line">  <span class="keyword">if</span> (isObject(Ctor)) &#123;</span><br><span class="line">    Ctor = baseCtor.extend(Ctor)</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在Vue.extend方法里，核心内容就是使用原型链的方法，继承Vue，构造一个Vue的子类Sub。然后再该子类Sub添加扩展属性，以及一些全局api等。最后缓存该子类，防止重复创建。在之后new一个Sub实例时，就会执行this._init方法，再次走Vue实例初始化的逻辑</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">Vue.extend = <span class="function"><span class="keyword">function</span> (<span class="params">extendOptions: <span class="built_in">Object</span></span>): <span class="title">Function</span> </span>&#123;</span><br><span class="line">    extendOptions = extendOptions || &#123;&#125;</span><br><span class="line">    <span class="keyword">const</span> Super = <span class="built_in">this</span></span><br><span class="line">    <span class="keyword">const</span> SuperId = Super.cid</span><br><span class="line">    <span class="keyword">const</span> cachedCtors = extendOptions._Ctor || (extendOptions._Ctor = &#123;&#125;)</span><br><span class="line">    <span class="keyword">if</span> (cachedCtors[SuperId]) &#123;</span><br><span class="line">      <span class="keyword">return</span> cachedCtors[SuperId]</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> name = extendOptions.name || Super.options.name</span><br><span class="line">    <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">&#x27;production&#x27;</span> &amp;&amp; name) &#123;</span><br><span class="line">      validateComponentName(name)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> Sub = <span class="function"><span class="keyword">function</span> <span class="title">VueComponent</span> (<span class="params">options</span>) </span>&#123;</span><br><span class="line">      <span class="built_in">this</span>._init(options)</span><br><span class="line">    &#125;</span><br><span class="line">    Sub.prototype = <span class="built_in">Object</span>.create(Super.prototype)</span><br><span class="line">    Sub.prototype.constructor = Sub</span><br><span class="line">    Sub.cid = cid++</span><br><span class="line">    Sub.options = mergeOptions(</span><br><span class="line">      Super.options,</span><br><span class="line">      extendOptions</span><br><span class="line">    )</span><br><span class="line">    Sub[<span class="string">&#x27;super&#x27;</span>] = Super</span><br><span class="line"></span><br><span class="line">    <span class="comment">// For props and computed properties, we define the proxy getters on</span></span><br><span class="line">    <span class="comment">// the Vue instances at extension time, on the extended prototype. This</span></span><br><span class="line">    <span class="comment">// avoids Object.defineProperty calls for each instance created.</span></span><br><span class="line">    <span class="keyword">if</span> (Sub.options.props) &#123;</span><br><span class="line">      initProps(Sub)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (Sub.options.computed) &#123;</span><br><span class="line">      initComputed(Sub)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// allow further extension/mixin/plugin usage</span></span><br><span class="line">    Sub.extend = Super.extend</span><br><span class="line">    Sub.mixin = Super.mixin</span><br><span class="line">    Sub.use = Super.use</span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// cache constructor</span></span><br><span class="line">    cachedCtors[SuperId] = Sub</span><br><span class="line">    <span class="keyword">return</span> Sub</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-安装组件钩子函数"><a href="#3-安装组件钩子函数" class="headerlink" title="3. 安装组件钩子函数"></a>3. 安装组件钩子函数</h2><p>installComponentHooks方法主要将componentVNodeHooks里的钩子函数合并到data.hooks里。方便在组件patch过程中做一些额外的操作。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// install component management hooks onto the placeholder node</span></span><br><span class="line">installComponentHooks(data)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">installComponentHooks</span> (<span class="params">data: VNodeData</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> hooks = data.hook || (data.hook = &#123;&#125;)</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; hooksToMerge.length; i++) &#123;</span><br><span class="line">    <span class="keyword">const</span> key = hooksToMerge[i]</span><br><span class="line">    <span class="keyword">const</span> existing = hooks[key]</span><br><span class="line">    <span class="keyword">const</span> toMerge = componentVNodeHooks[key]</span><br><span class="line">    <span class="keyword">if</span> (existing !== toMerge &amp;&amp; !(existing &amp;&amp; existing._merged)) &#123;</span><br><span class="line">      hooks[key] = existing ? mergeHook(toMerge, existing) : toMerge</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-实例化VNode"><a href="#4-实例化VNode" class="headerlink" title="4. 实例化VNode"></a>4. 实例化VNode</h2><p>根据各类参数实例化一个VNode。该VNode没有children。createComponent最后返回该VNode。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> vnode = <span class="keyword">new</span> VNode(</span><br><span class="line">  <span class="string">`vue-component-<span class="subst">$&#123;Ctor.cid&#125;</span><span class="subst">$&#123;name ? <span class="string">`-<span class="subst">$&#123;name&#125;</span>`</span> : <span class="string">&#x27;&#x27;</span>&#125;</span>`</span>,</span><br><span class="line">  data, <span class="literal">undefined</span>, <span class="literal">undefined</span>, <span class="literal">undefined</span>, context,</span><br><span class="line">  &#123; Ctor, propsData, listeners, tag, children &#125;,</span><br><span class="line">  asyncFactory</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h2 id="5-patch"><a href="#5-patch" class="headerlink" title="5. patch"></a>5. patch</h2><p>render生成虚拟节点树后，执行update方法进行patch。<br>在patch方法里执行createElm方法，在该方法里执行createComponent，如果不是个组件，则返回false</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (createComponent(vnode, insertedVnodeQueue, parentElm, refElm)) &#123;</span><br><span class="line">  <span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在createComponent方法里，判断是否存在之前安装的钩子函数，钩子函数里是否有init方法。如果存在，则执行init钩子函数。在init方法里会对vnode.componentInstance进行赋值，否则为空。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createComponent</span> (<span class="params">vnode, insertedVnodeQueue, parentElm, refElm</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> i = vnode.data</span><br><span class="line">  <span class="keyword">if</span> (isDef(i)) &#123;</span><br><span class="line">    <span class="keyword">const</span> isReactivated = isDef(vnode.componentInstance) &amp;&amp; i.keepAlive</span><br><span class="line">    <span class="keyword">if</span> (isDef(i = i.hook) &amp;&amp; isDef(i = i.init)) &#123;</span><br><span class="line">      i(vnode, <span class="literal">false</span> <span class="comment">/* hydrating */</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// after calling the init hook, if the vnode is a child component</span></span><br><span class="line">    <span class="comment">// it should&#x27;ve created a child instance and mounted it. the child</span></span><br><span class="line">    <span class="comment">// component also has set the placeholder vnode&#x27;s elm.</span></span><br><span class="line">    <span class="comment">// in that case we can just return the element and be done.</span></span><br><span class="line">    <span class="keyword">if</span> (isDef(vnode.componentInstance)) &#123;</span><br><span class="line">      initComponent(vnode, insertedVnodeQueue)</span><br><span class="line">      insert(parentElm, vnode.elm, refElm)</span><br><span class="line">      <span class="keyword">if</span> (isTrue(isReactivated)) &#123;</span><br><span class="line">        reactivateComponent(vnode, insertedVnodeQueue, parentElm, refElm)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在init方法里，如果不是已缓存组件，则在走else部分。执行createComponentInstanceForVnode方法，创建一个Vue实例</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> componentVNodeHooks = &#123;</span><br><span class="line">  init (vnode: VNodeWithData, <span class="attr">hydrating</span>: boolean): ?boolean &#123;</span><br><span class="line">    <span class="keyword">if</span> (</span><br><span class="line">      vnode.componentInstance &amp;&amp;</span><br><span class="line">      !vnode.componentInstance._isDestroyed &amp;&amp;</span><br><span class="line">      vnode.data.keepAlive</span><br><span class="line">    ) &#123;</span><br><span class="line">      <span class="comment">// kept-alive components, treat as a patch</span></span><br><span class="line">      <span class="keyword">const</span> mountedNode: any = vnode <span class="comment">// work around flow</span></span><br><span class="line">      componentVNodeHooks.prepatch(mountedNode, mountedNode)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> child = vnode.componentInstance = createComponentInstanceForVnode(</span><br><span class="line">        vnode,</span><br><span class="line">        activeInstance</span><br><span class="line">      )</span><br><span class="line">      child.$mount(hydrating ? vnode.elm : <span class="literal">undefined</span>, hydrating)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在createComponentInstanceForVnode函数里构造一个内部组件的参数，定义_isComponent为true，_parentVnode为组件的虚拟节点，parent为当前组件实例。最后vnode.componentOptions.Ctro就是之前的构造器Sub。在实例化的过程中，执行了this._init方法。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">createComponentInstanceForVnode</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="comment">// we know it&#x27;s MountedComponentVNode but flow doesn&#x27;t</span></span></span></span><br><span class="line"><span class="function"><span class="params">  vnode: any,</span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="comment">// activeInstance in lifecycle state</span></span></span></span><br><span class="line"><span class="function"><span class="params">  parent: any</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> options: InternalComponentOptions = &#123;</span><br><span class="line">    _isComponent: <span class="literal">true</span>,</span><br><span class="line">    _parentVnode: vnode,</span><br><span class="line">    parent</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// check inline-template render functions</span></span><br><span class="line">  <span class="keyword">const</span> inlineTemplate = vnode.data.inlineTemplate</span><br><span class="line">  <span class="keyword">if</span> (isDef(inlineTemplate)) &#123;</span><br><span class="line">    options.render = inlineTemplate.render</span><br><span class="line">    options.staticRenderFns = inlineTemplate.staticRenderFns</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> vnode.componentOptions.Ctor(options)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在_init方法里根据之前赋值的_isComponent判断组件，执行initInternalComponent函数。在该函数里，主要进行的操作在于把之前createComponentInstanceForVnode中设置的几个参数合并到内部$options上。因为不存在el，所以不走this.$mount方法</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">// merge options</span></span><br><span class="line"><span class="keyword">if</span> (options &amp;&amp; options._isComponent) &#123;</span><br><span class="line">  <span class="comment">// optimize internal component instantiation</span></span><br><span class="line">  <span class="comment">// since dynamic options merging is pretty slow, and none of the</span></span><br><span class="line">  <span class="comment">// internal component options needs special treatment.</span></span><br><span class="line">  initInternalComponent(vm, options)</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  vm.$options = mergeOptions(</span><br><span class="line">    resolveConstructorOptions(vm.constructor),</span><br><span class="line">    options || &#123;&#125;,</span><br><span class="line">    vm</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>回到init钩子函数中，完成子组件实例化后，调用组件的$mount方法，创建子组件的渲染wacher后，调用子组件的render方法，创建子组件的虚拟节点树。在_render方法里，_parentVnode为父虚拟节点，vnode是组件的渲染虚拟节点，将vnode.parent指向_parentVnode，建立该组件vnode的父子关系。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">Vue.prototype._render = <span class="function"><span class="keyword">function</span> (<span class="params"></span>): <span class="title">VNode</span> </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> vm: Component = <span class="built_in">this</span></span><br><span class="line">    <span class="keyword">const</span> &#123; render, _parentVnode &#125; = vm.$options</span><br><span class="line"></span><br><span class="line">    <span class="comment">// set parent vnode. this allows render functions to have access</span></span><br><span class="line">    <span class="comment">// to the data on the placeholder node.</span></span><br><span class="line">    vm.$vnode = _parentVnode</span><br><span class="line">    <span class="comment">// render self</span></span><br><span class="line">    <span class="keyword">let</span> vnode</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      currentRenderingInstance = vm</span><br><span class="line">      vnode = render.call(vm._renderProxy, vm.$createElement)</span><br><span class="line">    &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">      ...</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      currentRenderingInstance = <span class="literal">null</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// set parent</span></span><br><span class="line">    vnode.parent = _parentVnode</span><br><span class="line">    <span class="keyword">return</span> vnode</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>之后调用子组件的_update方法，也就是patch方法，进行vnode渲染。vm._vnode指向的是render返回的渲染vnode，而在_render方法里，vm.$vnode指向的父vnode。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">Vue.prototype._update = <span class="function"><span class="keyword">function</span> (<span class="params">vnode: VNode, hydrating?: boolean</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> vm: Component = <span class="built_in">this</span></span><br><span class="line">    <span class="keyword">const</span> prevEl = vm.$el</span><br><span class="line">    <span class="keyword">const</span> prevVnode = vm._vnode</span><br><span class="line">    <span class="keyword">const</span> restoreActiveInstance = setActiveInstance(vm)</span><br><span class="line">    vm._vnode = vnode</span><br><span class="line">    <span class="comment">// Vue.prototype.__patch__ is injected in entry points</span></span><br><span class="line">    <span class="comment">// based on the rendering backend used.</span></span><br><span class="line">    <span class="keyword">if</span> (!prevVnode) &#123;</span><br><span class="line">      <span class="comment">// initial render</span></span><br><span class="line">      vm.$el = vm.__patch__(vm.$el, vnode, hydrating, <span class="literal">false</span> <span class="comment">/* removeOnly */</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// updates</span></span><br><span class="line">      vm.$el = vm.__patch__(prevVnode, vnode)</span><br><span class="line">    &#125;</span><br><span class="line">    restoreActiveInstance()</span><br><span class="line">    <span class="comment">// update __vue__ reference</span></span><br><span class="line">    <span class="keyword">if</span> (prevEl) &#123;</span><br><span class="line">      prevEl.__vue__ = <span class="literal">null</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (vm.$el) &#123;</span><br><span class="line">      vm.$el.__vue__ = vm</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// if parent is an HOC, update its $el as well</span></span><br><span class="line">    <span class="keyword">if</span> (vm.$vnode &amp;&amp; vm.$parent &amp;&amp; vm.$vnode === vm.$parent._vnode) &#123;</span><br><span class="line">      vm.$parent.$el = vm.$el</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// updated hook is called by the scheduler to ensure that children are</span></span><br><span class="line">    <span class="comment">// updated in a parent&#x27;s updated hook.</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>其中使用setActiveInstance方法，用来控制当前上下文Vue实例。setActiveInstance使用了闭包的方法，缓存了上一次的activeInstance实例，待该组件实例完成_patch和_update方法后，activeInstance又会重新指向它的父实例。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">setActiveInstance</span>(<span class="params">vm: Component</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> prevActiveInstance = activeInstance</span><br><span class="line">  activeInstance = vm</span><br><span class="line">  <span class="keyword">return</span> <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    activeInstance = prevActiveInstance</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在patch里，oldVnode为空，直接走createElm方法。如果组件中都是普通标签，则走之前普通标签的逻辑，先创建一个父节点占位符，然后递归调用createElm创建子节点。构建完整的组件节点树。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">patch</span> (<span class="params">oldVnode, vnode, hydrating, removeOnly</span>) </span>&#123;</span><br><span class="line">   <span class="keyword">let</span> isInitialPatch = <span class="literal">false</span></span><br><span class="line">    <span class="keyword">const</span> insertedVnodeQueue = []</span><br><span class="line">    <span class="keyword">if</span> (isUndef(oldVnode)) &#123;</span><br><span class="line">      <span class="comment">// empty mount (likely as component), create new root element</span></span><br><span class="line">      isInitialPatch = <span class="literal">true</span></span><br><span class="line">      createElm(vnode, insertedVnodeQueue)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      ...</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> vnode.elm</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>在组件执行createElm时没有传入parentElm，所以在createComponent方法里，在组件树创建完成递归返回后执行insert方法进行DOM节点插入。所以是DOM节点的插入是先子后父。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createComponent</span> (<span class="params">vnode, insertedVnodeQueue, parentElm, refElm</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> i = vnode.data</span><br><span class="line">    <span class="keyword">if</span> (isDef(i)) &#123;</span><br><span class="line">      <span class="keyword">const</span> isReactivated = isDef(vnode.componentInstance) &amp;&amp; i.keepAlive</span><br><span class="line">      <span class="keyword">if</span> (isDef(i = i.hook) &amp;&amp; isDef(i = i.init)) &#123;</span><br><span class="line">        i(vnode, <span class="literal">false</span> <span class="comment">/* hydrating */</span>)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// after calling the init hook, if the vnode is a child component</span></span><br><span class="line">      <span class="comment">// it should&#x27;ve created a child instance and mounted it. the child</span></span><br><span class="line">      <span class="comment">// component also has set the placeholder vnode&#x27;s elm.</span></span><br><span class="line">      <span class="comment">// in that case we can just return the element and be done.</span></span><br><span class="line">      <span class="keyword">if</span> (isDef(vnode.componentInstance)) &#123;</span><br><span class="line">        initComponent(vnode, insertedVnodeQueue)</span><br><span class="line">        insert(parentElm, vnode.elm, refElm)</span><br><span class="line">        <span class="keyword">if</span> (isTrue(isReactivated)) &#123;</span><br><span class="line">          reactivateComponent(vnode, insertedVnodeQueue, parentElm, refElm)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>该笔记为Vue.js技术揭秘课程的学习笔记，源码复盘记录。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/js/" rel="tag"># js</a>
+              <a href="/tags/vue/" rel="tag"># vue</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/02/24/es6-proxy/" rel="prev" title="es6 proxy">
+      <i class="fa fa-chevron-left"></i> es6 proxy
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/03/01/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%B8%80/" rel="next" title="源码解析--响应式（一）">
+      源码解析--响应式（一） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E7%BB%84%E4%BB%B6%E6%8C%82%E8%BD%BD"><span class="nav-number">1.</span> <span class="nav-text">一、组件挂载</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-createComponent"><span class="nav-number">1.1.</span> <span class="nav-text">1. createComponent</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%9E%84%E9%80%A0%E5%AD%90%E7%B1%BB%E7%9A%84%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">2. 构造子类的构造函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%AE%89%E8%A3%85%E7%BB%84%E4%BB%B6%E9%92%A9%E5%AD%90%E5%87%BD%E6%95%B0"><span class="nav-number">1.3.</span> <span class="nav-text">3. 安装组件钩子函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E5%AE%9E%E4%BE%8B%E5%8C%96VNode"><span class="nav-number">1.4.</span> <span class="nav-text">4. 实例化VNode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-patch"><span class="nav-number">1.5.</span> <span class="nav-text">5. patch</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="赵依婷"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">赵依婷</p>
+  <div class="site-description" itemprop="description">打工都是人上人！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xzhao95" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xzhao95" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zhaoyiting26@163.com" title="E-Mail → mailto:zhaoyiting26@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/u/3295465524" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;u&#x2F;3295465524" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">赵依婷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'GbmucVnm0BdUOjFle71Gu7sb-gzGzoHsz',
+      appKey     : 'XShaIHR81BPhKR7DtM27n5Qh',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+  
+
+  <script src="/js/wobblewindow.js"></script>
+  <script>
+    //只在桌面版网页启用特效
+    if( window.innerWidth > 768  ){
+      $(document).ready(function () {
+        
+          $('.header').wobbleWindow({
+            radius: 50,
+            movementTop: false,
+            movementLeft: false,
+            movementRight: false,
+            debug: false,
+          });
+        
+
+        
+
+        
+      });
+    }
+  </script>
+
+</body>
+</html>

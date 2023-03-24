@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一、计算属性和侦听属性1. computedcomputed的初始化也是在initState中，在initComputed方法中，主要内容是遍历computed的每一个属性，给每一个属性实例化一个computed watcher，存入到_computedWatchers[key]中，然后给该属性添加getter方法和setter方法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="源码解析--响应式(二)">
+<meta property="og:url" content="http://example.com/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/index.html">
+<meta property="og:site_name" content="阿赵的烂笔头">
+<meta property="og:description" content="一、计算属性和侦听属性1. computedcomputed的初始化也是在initState中，在initComputed方法中，主要内容是遍历computed的每一个属性，给每一个属性实例化一个computed watcher，存入到_computedWatchers[key]中，然后给该属性添加getter方法和setter方法">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/4.png">
+<meta property="og:image" content="http://example.com/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/5.png">
+<meta property="og:image" content="http://example.com/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/6.png">
+<meta property="og:image" content="http://example.com/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/7.png">
+<meta property="og:image" content="http://example.com/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/8.png">
+<meta property="og:image" content="http://example.com/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/9.png">
+<meta property="og:image" content="http://example.com/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/update-children-1.png">
+<meta property="og:image" content="http://example.com/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/update-children-2.png">
+<meta property="og:image" content="http://example.com/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/update-children-3.png">
+<meta property="og:image" content="http://example.com/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/update-children-4.png">
+<meta property="og:image" content="http://example.com/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/update-children-5.png">
+<meta property="og:image" content="http://example.com/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/update-children-6.png">
+<meta property="article:published_time" content="2021-03-06T08:00:20.000Z">
+<meta property="article:modified_time" content="2021-03-06T08:08:55.277Z">
+<meta property="article:author" content="赵依婷">
+<meta property="article:tag" content="js">
+<meta property="article:tag" content="vue">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/4.png">
+
+<link rel="canonical" href="http://example.com/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>源码解析--响应式(二) | 阿赵的烂笔头</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">阿赵的烂笔头</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="赵依婷">
+      <meta itemprop="description" content="打工都是人上人！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="阿赵的烂笔头">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          源码解析--响应式(二)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-06 16:00:20" itemprop="dateCreated datePublished" datetime="2021-03-06T16:00:20+08:00">2021-03-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">web前端</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="一、计算属性和侦听属性"><a href="#一、计算属性和侦听属性" class="headerlink" title="一、计算属性和侦听属性"></a>一、计算属性和侦听属性</h1><h2 id="1-computed"><a href="#1-computed" class="headerlink" title="1. computed"></a>1. computed</h2><p>computed的初始化也是在initState中，在initComputed方法中，主要内容是遍历computed的每一个属性，给每一个属性实例化一个computed watcher，存入到_computedWatchers[key]中，然后给该属性添加getter方法和setter方法</p>
+<a id="more"></a>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">initComputed</span> (<span class="params">vm: Component, computed: <span class="built_in">Object</span></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// $flow-disable-line</span></span><br><span class="line">  <span class="keyword">const</span> watchers = vm._computedWatchers = <span class="built_in">Object</span>.create(<span class="literal">null</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> key <span class="keyword">in</span> computed) &#123;</span><br><span class="line">    <span class="keyword">const</span> userDef = computed[key]</span><br><span class="line">    <span class="keyword">const</span> getter = <span class="keyword">typeof</span> userDef === <span class="string">&#x27;function&#x27;</span> ? userDef : userDef.get</span><br><span class="line">      <span class="comment">// 创建一个computed watcher实例</span></span><br><span class="line">    watchers[key] = <span class="keyword">new</span> Watcher(</span><br><span class="line">      vm,</span><br><span class="line">      getter || noop,</span><br><span class="line">      noop,</span><br><span class="line">      computedWatcherOptions</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!(key <span class="keyword">in</span> vm)) &#123;</span><br><span class="line">      defineComputed(vm, key, userDef)</span><br><span class="line">    &#125; </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>computed watcher创建过程中传入的option，只有一个参数lazy为true，传入的getter也就是属性的计算方法。在watcher的构造函数里，如果lazy是true，则不会立即执行watcher的get方法，只进行一些参数的赋值。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="keyword">typeof</span> expOrFn === <span class="string">&#x27;function&#x27;</span>) &#123;</span><br><span class="line">  <span class="built_in">this</span>.getter = expOrFn</span><br><span class="line">&#125; </span><br><span class="line"><span class="built_in">this</span>.value = <span class="built_in">this</span>.lazy? <span class="literal">undefined</span>: <span class="built_in">this</span>.get()</span><br></pre></td></tr></table></figure>
+<p>重点在defineComputed中，利用Object.defineProperty给计算属性对应的key添加getter和setter。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">defineComputed</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  target: any,</span></span></span><br><span class="line"><span class="function"><span class="params">  key: string,</span></span></span><br><span class="line"><span class="function"><span class="params">  userDef: <span class="built_in">Object</span> | <span class="built_in">Function</span></span></span></span><br><span class="line"><span class="function"><span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> shouldCache = !isServerRendering()</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> userDef === <span class="string">&#x27;function&#x27;</span>) &#123;</span><br><span class="line">    sharedPropertyDefinition.get = shouldCache</span><br><span class="line">      ? createComputedGetter(key)</span><br><span class="line">      : createGetterInvoker(userDef)</span><br><span class="line">    sharedPropertyDefinition.set = noop</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    sharedPropertyDefinition.get = userDef.get</span><br><span class="line">      ? shouldCache &amp;&amp; userDef.cache !== <span class="literal">false</span></span><br><span class="line">        ? createComputedGetter(key)</span><br><span class="line">        : createGetterInvoker(userDef.get)</span><br><span class="line">      : noop</span><br><span class="line">    sharedPropertyDefinition.set = userDef.set || noop</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">Object</span>.defineProperty(target, key, sharedPropertyDefinition)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当获取这计算属性的key时就会触发该key的getter方法，对应的也就是createComputedGetter方法。先获取当前的computed watcher，然后如果watcher.dirty属性为true时，则调用watcher.evaluate方法。dirty值在watcher构造函数时赋值为true，所以会执行evaluate方法。之后调用watcher.depend进行依赖收集。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createComputedGetter</span> (<span class="params">key</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">computedGetter</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> watcher = <span class="built_in">this</span>._computedWatchers &amp;&amp; <span class="built_in">this</span>._computedWatchers[key]</span><br><span class="line">    <span class="keyword">if</span> (watcher) &#123;</span><br><span class="line">      <span class="keyword">if</span> (watcher.dirty) &#123;</span><br><span class="line">        watcher.evaluate()</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (Dep.target) &#123;</span><br><span class="line">        watcher.depend()</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> watcher.value</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>watcher.evalute方法中，执行getter方法，也就是执行该计算属性的计算方法。执行计算方法前会将Dep.target执行当前的computed watcher。在计算方法中如果使用到了响应式对象，就会触发响应式对象的getter方法，将当前的computed watcher收集进响应式对象的dep中。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">get () &#123;</span><br><span class="line">  pushTarget(<span class="built_in">this</span>)</span><br><span class="line">  <span class="keyword">let</span> value</span><br><span class="line">  <span class="keyword">const</span> vm = <span class="built_in">this</span>.vm</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    value = <span class="built_in">this</span>.getter.call(vm, vm)</span><br><span class="line">  &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    <span class="comment">// &quot;touch&quot; every property so they are all tracked as</span></span><br><span class="line">    <span class="comment">// dependencies for deep watching</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">this</span>.deep) &#123;</span><br><span class="line">      traverse(value)</span><br><span class="line">    &#125;</span><br><span class="line">    popTarget()</span><br><span class="line">    <span class="built_in">this</span>.cleanupDeps()</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> value</span><br><span class="line">&#125;</span><br><span class="line">evaluate () &#123;</span><br><span class="line">  <span class="built_in">this</span>.value = <span class="built_in">this</span>.get()</span><br><span class="line">  <span class="built_in">this</span>.dirty = <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>完成使用到的响应式对象a和b收集computed watcher后，如果是在渲染页面时使用到了当前计算属性all，则当前的Dep.target是渲染watcher，调用computed watcher的depend方法，收集渲染watcher。</p>
+</li>
+<li><p>遍历watcher的deps进行依赖收集。compued watcher中deps是使用过的响应式对象a和b的dep。将当前的渲染watcher收集进响应式对象a和b的dep中。所以当前响应式对象a和b的dep中包含2个watcher分别是all的computed watcher和当前app组件的渲染watcher</p>
+</li>
+<li><p>当调用change方法，改变了a的值，则会触发a的setter方法，执行notify方法，进行更新任务的派发，遍历收集到的watcher执行update方法。因为computed watcher先于渲染wacher创建，computed watcher的id小于渲染watcher的id，所以会先执行computed watcher的update方法。</p>
+</li>
+<li><p>在computed watcher的update方法中，将dirty设为true，表示计算值已改变，需要进行重新计算</p>
+</li>
+<li><p>然后执行渲染watcher的update方法，将当前watcher压入queue中，在下一个tick中执行渲染</p>
+</li>
+<li><p>而在页面重新渲染时又会或许all计算属性，触发all的getter方法，此时computed watcher的dirty已为true，则会执行evaluate方法，执行计算方法重新计算all值。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  name: <span class="string">&#x27;App&#x27;</span>,</span><br><span class="line">  <span class="function"><span class="title">data</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      a: <span class="string">&#x27;1&#x27;</span>,</span><br><span class="line">      b: <span class="string">&#x27;2&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  computed: &#123;</span><br><span class="line">    <span class="function"><span class="title">all</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">this</span>.a + <span class="string">&#x27; &#x27;</span> + <span class="built_in">this</span>.b;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    <span class="function"><span class="title">change</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      <span class="built_in">this</span>.a = <span class="string">&#x27;change&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>computed本质上是一个computed watcher。<br>设计目的：因为 Vue 想确保不仅仅是计算属性依赖的值发生变化，而是当计算属性最终计算的值发生变化才会触发渲染 watcher 重新渲染</p>
+<h2 id="2-watch"><a href="#2-watch" class="headerlink" title="2. watch"></a>2. watch</h2><p>watch也是在initState进行初始化。<br>在initWatch函数中，遍历watch的每一个属性获取handler，handler也有可能是个数组，是因为Vue允许一个属性对应多个数组，这是就会遍历handler数组，对每一个handler执行createWatcher，进行user Watcher的创建</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">initWatch</span> (<span class="params">vm: Component, watch: <span class="built_in">Object</span></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> key <span class="keyword">in</span> watch) &#123;</span><br><span class="line">    <span class="keyword">const</span> handler = watch[key]</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">Array</span>.isArray(handler)) &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; handler.length; i++) &#123;</span><br><span class="line">        createWatcher(vm, key, handler[i])</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      createWatcher(vm, key, handler)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方法里主要获取handler方法，并执行$watch</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createWatcher</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  vm: Component,</span></span></span><br><span class="line"><span class="function"><span class="params">  expOrFn: string | <span class="built_in">Function</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">  handler: any,</span></span></span><br><span class="line"><span class="function"><span class="params">  options?: <span class="built_in">Object</span></span></span></span><br><span class="line"><span class="function"><span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (isPlainObject(handler)) &#123;</span><br><span class="line">    options = handler</span><br><span class="line">    handler = handler.handler</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> handler === <span class="string">&#x27;string&#x27;</span>) &#123;</span><br><span class="line">    handler = vm[handler]</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> vm.$watch(expOrFn, handler, options)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="watch的依赖收集"><a href="#watch的依赖收集" class="headerlink" title="watch的依赖收集"></a>watch的依赖收集</h3><p>$watch方法在stateMixin中进行了初始化。在Vue的原型上添加了$watch方法。</p>
+</li>
+<li><p>判断cb是否是对象，是在直接使用Vue.$watch方法进行watch的添加情形下，传入的cd是个对象，这时需要重新执行createWatcher进行参数的解析。</p>
+</li>
+<li><p>通过设置options.user为true，创建一个user watcher的实例</p>
+</li>
+<li><p>如果用户设置了immediate，则立即执行watch函数</p>
+</li>
+<li><p>返回一函数，函数内执行了watcher.teardown方法，进行当前watcher的移除</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">Vue.prototype.$watch = <span class="function"><span class="keyword">function</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">    expOrFn: string | <span class="built_in">Function</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    cb: any,</span></span></span><br><span class="line"><span class="function"><span class="params">    options?: <span class="built_in">Object</span></span></span></span><br><span class="line"><span class="function"><span class="params">  </span>): <span class="title">Function</span> </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> vm: Component = <span class="built_in">this</span></span><br><span class="line">    <span class="keyword">if</span> (isPlainObject(cb)) &#123;</span><br><span class="line">      <span class="keyword">return</span> createWatcher(vm, expOrFn, cb, options)</span><br><span class="line">    &#125;</span><br><span class="line">    options = options || &#123;&#125;</span><br><span class="line">    options.user = <span class="literal">true</span></span><br><span class="line">    <span class="keyword">const</span> watcher = <span class="keyword">new</span> Watcher(vm, expOrFn, cb, options)</span><br><span class="line">    <span class="keyword">if</span> (options.immediate) &#123;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        cb.call(vm, watcher.value)</span><br><span class="line">      &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">        handleError(error, vm, <span class="string">`callback for immediate watcher &quot;<span class="subst">$&#123;watcher.expression&#125;</span>&quot;`</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">unwatchFn</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      watcher.teardown()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>在user watcher构造函数里，先进行一系列参数的赋值，因为传入的expOrFn是key值，不是个方法，则会执行else逻辑部分，执行parsePath方法解析key值赋给getter。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// parse expression for getter</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">typeof</span> expOrFn === <span class="string">&#x27;function&#x27;</span>) &#123;</span><br><span class="line">  <span class="built_in">this</span>.getter = expOrFn</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="built_in">this</span>.getter = parsePath(expOrFn)</span><br><span class="line">  <span class="keyword">if</span> (!<span class="built_in">this</span>.getter) &#123;</span><br><span class="line">    <span class="built_in">this</span>.getter = noop</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在parsePath方法中，首先会以 <code>.</code> 分割key值，为针对监听的是某对象的某属性的值，如key=’a.b.c’。然后返回一方法</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">parsePath</span> (<span class="params">path: string</span>): <span class="title">any</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (bailRE.test(path)) &#123;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">const</span> segments = path.split(<span class="string">&#x27;.&#x27;</span>)</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">obj</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; segments.length; i++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!obj) <span class="keyword">return</span></span><br><span class="line">      obj = obj[segments[i]]</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> obj</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>回到user watcher的构造函数，getter赋值结束后，因为不是computed watcher，所以会执行get方法。</p>
+</li>
+<li><p>将Dep.target指向当前user watcher</p>
+</li>
+<li><p>执行之前定义的getter方法，在该方法中会深度遍历最终需要监听的key值，在上个例子（a.b.c），则通过深度遍历，最终访问c的值，这时候会多次需要获取key值，则会调用该key的getter方法。顺序为a的getter、b的getter、c的getter。</p>
+</li>
+<li><p>在key值的getter方法中会执行dep.depend方法，将当前的user watcher收集进该响应式对象key的dep中。</p>
+</li>
+<li><p>至此，依赖收集完成，进行popTarget，将Dep.target执行上一个存入的watcher。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">get () &#123;</span><br><span class="line">  pushTarget(<span class="built_in">this</span>)</span><br><span class="line">  <span class="keyword">let</span> value</span><br><span class="line">  <span class="keyword">const</span> vm = <span class="built_in">this</span>.vm</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    value = <span class="built_in">this</span>.getter.call(vm, vm)</span><br><span class="line">  &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">this</span>.deep) &#123;</span><br><span class="line">      traverse(value)</span><br><span class="line">    &#125;</span><br><span class="line">    popTarget()</span><br><span class="line">    <span class="built_in">this</span>.cleanupDeps()</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> value</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="watch的派发更新"><a href="#watch的派发更新" class="headerlink" title="watch的派发更新"></a>watch的派发更新</h3><p>当key值发生改变时，会触发key值的setter方法，在setter方法里，通过dep.notify进行派发更新，在dep中遍历每一个收集到的watcher，执行update，将当前watcher压入队列里，在下一个Tick中执行run方法。<br>在watcher的run方法里，除了通过get获得key值外，还会执行回调函数，也就是监听值发生改变时，需要处理的逻辑。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">run () &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">this</span>.active) &#123;</span><br><span class="line">    <span class="keyword">const</span> value = <span class="built_in">this</span>.get()</span><br><span class="line">    <span class="keyword">if</span> (</span><br><span class="line">      value !== <span class="built_in">this</span>.value ||</span><br><span class="line">      <span class="comment">// Deep watchers and watchers on Object/Arrays should fire even</span></span><br><span class="line">      <span class="comment">// when the value is the same, because the value may</span></span><br><span class="line">      <span class="comment">// have mutated.</span></span><br><span class="line">      isObject(value) ||</span><br><span class="line">      <span class="built_in">this</span>.deep</span><br><span class="line">    ) &#123;</span><br><span class="line">      <span class="comment">// set new value</span></span><br><span class="line">      <span class="keyword">const</span> oldValue = <span class="built_in">this</span>.value</span><br><span class="line">      <span class="built_in">this</span>.value = value</span><br><span class="line">      <span class="keyword">if</span> (<span class="built_in">this</span>.user) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          <span class="built_in">this</span>.cb.call(<span class="built_in">this</span>.vm, value, oldValue)</span><br><span class="line">        &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">          handleError(e, <span class="built_in">this</span>.vm, <span class="string">`callback for watcher &quot;<span class="subst">$&#123;<span class="built_in">this</span>.expression&#125;</span>&quot;`</span>)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.cb.call(<span class="built_in">this</span>.vm, value, oldValue)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-computed与watch的区别"><a href="#3-computed与watch的区别" class="headerlink" title="3. computed与watch的区别"></a>3. computed与watch的区别</h2><p>就应用场景而言，<br>计算属性适合用在模板渲染中，某个值是依赖了其它的响应式对象甚至是计算属性计算而来；<br>而侦听属性适用于观测某个值的变化去完成一段复杂的业务逻辑。</p>
+</li>
+</ul>
+<h1 id="二、组件更新"><a href="#二、组件更新" class="headerlink" title="二、组件更新"></a>二、组件更新</h1><p>当数据改变通知render watcher更新时，会执行getter方法也就是updateComponent方法执行render生成新的vnode，然后执行_update方法。<br>在_update方法中由于vm._vnode已存在，即为原有vnode（老vnode）。新进行_vnode更新，后执行patch方法，传入老vnode和新vnode</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> prevVnode = vm._vnode</span><br><span class="line"><span class="keyword">const</span> restoreActiveInstance = setActiveInstance(vm)</span><br><span class="line">vm._vnode = vnode</span><br><span class="line"><span class="keyword">if</span> (!prevVnode) &#123;</span><br><span class="line">  <span class="comment">// initial render</span></span><br><span class="line">  vm.$el = vm.__patch__(vm.$el, vnode, hydrating, <span class="literal">false</span> <span class="comment">/* removeOnly */</span>)</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="comment">// updates</span></span><br><span class="line">  vm.$el = vm.__patch__(prevVnode, vnode)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在patch中，因为存在老vnode则执行以下逻辑。<br>此时分2种情形：</p>
+<ul>
+<li><p>当老vnode与新node不相同 或 老vnode是否是真的节点时</p>
+</li>
+<li><p>当老vnode与新node相同时</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> isRealElement = isDef(oldVnode.nodeType)</span><br><span class="line"><span class="keyword">if</span> (!isRealElement &amp;&amp; sameVnode(oldVnode, vnode)) &#123;</span><br><span class="line">  <span class="comment">// 执行相同逻辑</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="comment">// 执行不同逻辑</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而判断两个vnode是否相同则通过sameVnode进行判断<br>两个vnode判断相同的条件是key、tag、data、type等都相同时，则表示这两个vnode相同</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sameVnode</span> (<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    a.key === b.key &amp;&amp; (</span><br><span class="line">      (</span><br><span class="line">        a.tag === b.tag &amp;&amp;</span><br><span class="line">        a.isComment === b.isComment &amp;&amp;</span><br><span class="line">        isDef(a.data) === isDef(b.data) &amp;&amp;</span><br><span class="line">        sameInputType(a, b)</span><br><span class="line">      ) || (</span><br><span class="line">        isTrue(a.isAsyncPlaceholder) &amp;&amp;</span><br><span class="line">        a.asyncFactory === b.asyncFactory &amp;&amp;</span><br><span class="line">        isUndef(b.asyncFactory.error)</span><br><span class="line">      )</span><br><span class="line">    )</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="1-新vnode和老vnode不同时"><a href="#1-新vnode和老vnode不同时" class="headerlink" title="1. 新vnode和老vnode不同时"></a>1. 新vnode和老vnode不同时</h2><p>重点在于以下逻辑：</p>
+</li>
+<li><p>获取老vnode的节点的父节点</p>
+</li>
+<li><p>根据新vnode创建dom节点树</p>
+</li>
+<li><p>遍历vnode的父找到可挂载的占位符vnode，并进行挂载，建立新的vnode树</p>
+</li>
+<li><p>移除老vnode的dom节点</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// replacing existing element</span></span><br><span class="line"><span class="keyword">const</span> oldElm = oldVnode.elm</span><br><span class="line"><span class="keyword">const</span> parentElm = nodeOps.parentNode(oldElm)</span><br><span class="line"></span><br><span class="line"><span class="comment">// create new node</span></span><br><span class="line">createElm(</span><br><span class="line">  vnode,</span><br><span class="line">  insertedVnodeQueue,</span><br><span class="line">  <span class="comment">// extremely rare edge case: do not insert if old element is in a</span></span><br><span class="line">  <span class="comment">// leaving transition. Only happens when combining transition +</span></span><br><span class="line">  <span class="comment">// keep-alive + HOCs. (#4590)</span></span><br><span class="line">  oldElm._leaveCb ? <span class="literal">null</span> : parentElm,</span><br><span class="line">  nodeOps.nextSibling(oldElm)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// update parent placeholder node element, recursively</span></span><br><span class="line"><span class="keyword">if</span> (isDef(vnode.parent)) &#123;</span><br><span class="line">  <span class="keyword">let</span> ancestor = vnode.parent</span><br><span class="line">  <span class="keyword">const</span> patchable = isPatchable(vnode)</span><br><span class="line">  <span class="keyword">while</span> (ancestor) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; cbs.destroy.length; ++i) &#123;</span><br><span class="line">      cbs.destroy[i](ancestor)</span><br><span class="line">    &#125;</span><br><span class="line">    ancestor.elm = vnode.elm</span><br><span class="line">    <span class="keyword">if</span> (patchable) &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; cbs.create.length; ++i) &#123;</span><br><span class="line">        cbs.create[i](emptyNode, ancestor)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// #6513</span></span><br><span class="line">      <span class="comment">// invoke insert hooks that may have been merged by create hooks.</span></span><br><span class="line">      <span class="comment">// e.g. for directives that uses the &quot;inserted&quot; hook.</span></span><br><span class="line">      <span class="keyword">const</span> insert = ancestor.data.hook.insert</span><br><span class="line">      <span class="keyword">if</span> (insert.merged) &#123;</span><br><span class="line">        <span class="comment">// start at index 1 to avoid re-invoking component mounted hook</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt; insert.fns.length; i++) &#123;</span><br><span class="line">          insert.fns[i]()</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      registerRef(ancestor)</span><br><span class="line">    &#125;</span><br><span class="line">    ancestor = ancestor.parent</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// destroy old node</span></span><br><span class="line"><span class="keyword">if</span> (isDef(parentElm)) &#123;</span><br><span class="line">  removeVnodes([oldVnode], <span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (isDef(oldVnode.tag)) &#123;</span><br><span class="line">  invokeDestroyHook(oldVnode)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-新vnode和老vnode相同时"><a href="#2-新vnode和老vnode相同时" class="headerlink" title="2. 新vnode和老vnode相同时"></a>2. 新vnode和老vnode相同时</h2><p>新老vnode相同时，则会执行patchVnode方法</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">patchVnode(oldVnode, vnode, insertedVnodeQueue, <span class="literal">null</span>, <span class="literal">null</span>, removeOnly)</span><br></pre></td></tr></table></figure>
+<p>patchVnode的作用就是把新vnode patch到老vnode上</p>
+</li>
+<li><p>如果vnode是个组件，则会执行prepatch方法，进行updateChildComponent子组件属性的更新，比如子vnode树的更新，把老vnode的子vnode实例的父指向新vnode，以及props、listeners等的更新</p>
+</li>
+<li><p>接着执行各modules的update钩子函数，以及自定义的update钩子函数</p>
+</li>
+<li><p>执行patch过程</p>
+</li>
+<li><p>最后执行postpatch钩子函数，他是组件自定义的钩子函数</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">patchVnode</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">    oldVnode,</span></span></span><br><span class="line"><span class="function"><span class="params">    vnode,</span></span></span><br><span class="line"><span class="function"><span class="params">    insertedVnodeQueue,</span></span></span><br><span class="line"><span class="function"><span class="params">    ownerArray,</span></span></span><br><span class="line"><span class="function"><span class="params">    index,</span></span></span><br><span class="line"><span class="function"><span class="params">    removeOnly</span></span></span><br><span class="line"><span class="function"><span class="params">  </span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> elm = vnode.elm = oldVnode.elm</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> i</span><br><span class="line">    <span class="keyword">const</span> data = vnode.data</span><br><span class="line">    <span class="comment">// 如果新vnode是个组件，则会执行prepatch方法，进行updateChildComponent更新子组件。</span></span><br><span class="line">    <span class="keyword">if</span> (isDef(data) &amp;&amp; isDef(i = data.hook) &amp;&amp; isDef(i = i.prepatch)) &#123;</span><br><span class="line">      i(oldVnode, vnode)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> oldCh = oldVnode.children</span><br><span class="line">    <span class="keyword">const</span> ch = vnode.children</span><br><span class="line">    <span class="comment">// 执行update钩子函数</span></span><br><span class="line">    <span class="keyword">if</span> (isDef(data) &amp;&amp; isPatchable(vnode)) &#123;</span><br><span class="line">      <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; cbs.update.length; ++i) cbs.update[i](oldVnode, vnode)</span><br><span class="line">      <span class="keyword">if</span> (isDef(i = data.hook) &amp;&amp; isDef(i = i.update)) i(oldVnode, vnode)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 完成patch过程</span></span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 执行vnode组件的postpatch钩子</span></span><br><span class="line">    <span class="keyword">if</span> (isDef(data)) &#123;</span><br><span class="line">      <span class="keyword">if</span> (isDef(i = data.hook) &amp;&amp; isDef(i = i.postpatch)) i(oldVnode, vnode)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>patch过程主要是以下逻辑</p>
+</li>
+<li><p>如果新vnode不是个文本节点，则会进行以下判断</p>
+<ul>
+<li>如果老vnode的子与新vnode的子都存在，则会执行updateChildren方法进行dom diff</li>
+<li>如果只有新vnode的子存在，则说明旧节点不需要了，如果老vnode是个文本节点，则需要清空节点内容，然后将新vnode的子dom插入到节点elm下</li>
+<li>如果只有老vnode的子存在，则需要移除老vnode所有的子dom节点</li>
+<li>如果新老vnode的子都不存在且老vnode是个文本节点，则只需清空elm节点的内容</li>
+</ul>
+</li>
+<li><p>如果新vnode和老vnode的文本不相同，则设置dom节点的文本内容为新vnode的文本内容</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (isUndef(vnode.text)) &#123;</span><br><span class="line">  <span class="keyword">if</span> (isDef(oldCh) &amp;&amp; isDef(ch)) &#123;</span><br><span class="line">    <span class="keyword">if</span> (oldCh !== ch) updateChildren(elm, oldCh, ch, insertedVnodeQueue, removeOnly)</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isDef(ch)) &#123;</span><br><span class="line">    <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">&#x27;production&#x27;</span>) &#123;</span><br><span class="line">      checkDuplicateKeys(ch)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (isDef(oldVnode.text)) nodeOps.setTextContent(elm, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">    addVnodes(elm, <span class="literal">null</span>, ch, <span class="number">0</span>, ch.length - <span class="number">1</span>, insertedVnodeQueue)</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isDef(oldCh)) &#123;</span><br><span class="line">    removeVnodes(oldCh, <span class="number">0</span>, oldCh.length - <span class="number">1</span>)</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isDef(oldVnode.text)) &#123;</span><br><span class="line">    nodeOps.setTextContent(elm, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (oldVnode.text !== vnode.text) &#123;</span><br><span class="line">  nodeOps.setTextContent(elm, vnode.text)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来分析updateChildren的逻辑部分，也是相对复杂的dom diff算法部分。<br>会遍历新老vnode，查找是否存在相同的子节点，进行交换，新增或删除操作</p>
+</li>
+<li><p>如果oldStartVnode不存在，则oldStartIdx指向下一个oldChild</p>
+</li>
+<li><p>如果oldEndVnode不存在，则oldEndIdex指向上一个oldChild</p>
+</li>
+<li><p>如果oldStartVnode与newStartVnode相同，则执行patchVnode，进行子组件的dom diff判断，然后将oldStartIdx指向下一个oldChild，将newStartIdx指向下一个newChild</p>
+</li>
+</ul>
+<p>d<img src="/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/4.png" alt="4.png"></p>
+<ul>
+<li>如果oldEndVnode与newEndVnode相同，则执行patchVnode，进行子组件的dom diff判断，然后将oldEndIdx指向上一个oldChild，将newEndIdx指向上一个newChild</li>
+</ul>
+<p><img src="/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/5.png" alt="5.png"></p>
+<ul>
+<li>如果oldEndVnode和newStartVnode相同，则先进行子节点的patch，然后将oldEndVnode的dom节点插入到父elm下，oldStartVnode的前面</li>
+</ul>
+<p><img src="/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/6.png" alt="6.png"><br><img src="/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/7.png" alt="7.png"></p>
+<ul>
+<li>如果oldStartVnode和newEndVnode相同，则先进行子节点的patch，然后将oldStartVnode的dom节点插入到父elm下，oldEndVnode的前面</li>
+</ul>
+<p><img src="/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/8.png" alt="8.png"><br><img src="/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/9.png" alt="9.png"></p>
+<ul>
+<li>如果指向的vnode都不相同，则在old子节点的startIdx与endIdx之间查找是否存在node与newStartNode相同，然后使newStartIdx指向下一个newVnode<ul>
+<li>如果不存在，则新建一个dom节点插入到父节点下</li>
+<li>如果存在相同老node的dom节点，插入到父节点下，oldStartVnode的dom节点前</li>
+</ul>
+</li>
+<li>直到oldStartIdx &lt;= oldEndIdx 且 newStartIdx &lt;= newEndIdx后跳出循环</li>
+<li>如果oldStartIdx大于oldEndIdx，则将剩余的newChildVnode加入到父dom节点下</li>
+<li>否则移除oldChildVnode剩余节点的dom<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">updateChildren</span> (<span class="params">parentElm, oldCh, newCh, insertedVnodeQueue, removeOnly</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> oldStartIdx = <span class="number">0</span></span><br><span class="line">    <span class="keyword">let</span> newStartIdx = <span class="number">0</span></span><br><span class="line">    <span class="keyword">let</span> oldEndIdx = oldCh.length - <span class="number">1</span></span><br><span class="line">    <span class="keyword">let</span> oldStartVnode = oldCh[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">let</span> oldEndVnode = oldCh[oldEndIdx]</span><br><span class="line">    <span class="keyword">let</span> newEndIdx = newCh.length - <span class="number">1</span></span><br><span class="line">    <span class="keyword">let</span> newStartVnode = newCh[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">let</span> newEndVnode = newCh[newEndIdx]</span><br><span class="line">    <span class="keyword">let</span> oldKeyToIdx, idxInOld, vnodeToMove, refElm</span><br><span class="line"></span><br><span class="line">    <span class="comment">// removeOnly is a special flag used only by &lt;transition-group&gt;</span></span><br><span class="line">    <span class="comment">// to ensure removed elements stay in correct relative positions</span></span><br><span class="line">    <span class="comment">// during leaving transitions</span></span><br><span class="line">    <span class="keyword">const</span> canMove = !removeOnly</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">&#x27;production&#x27;</span>) &#123;</span><br><span class="line">      checkDuplicateKeys(newCh)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (oldStartIdx &lt;= oldEndIdx &amp;&amp; newStartIdx &lt;= newEndIdx) &#123;</span><br><span class="line">      <span class="keyword">if</span> (isUndef(oldStartVnode)) &#123;</span><br><span class="line">        oldStartVnode = oldCh[++oldStartIdx] <span class="comment">// Vnode has been moved left</span></span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isUndef(oldEndVnode)) &#123;</span><br><span class="line">        oldEndVnode = oldCh[--oldEndIdx]</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sameVnode(oldStartVnode, newStartVnode)) &#123;</span><br><span class="line">        patchVnode(oldStartVnode, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)</span><br><span class="line">        oldStartVnode = oldCh[++oldStartIdx]</span><br><span class="line">        newStartVnode = newCh[++newStartIdx]</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sameVnode(oldEndVnode, newEndVnode)) &#123;</span><br><span class="line">        patchVnode(oldEndVnode, newEndVnode, insertedVnodeQueue, newCh, newEndIdx)</span><br><span class="line">        oldEndVnode = oldCh[--oldEndIdx]</span><br><span class="line">        newEndVnode = newCh[--newEndIdx]</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sameVnode(oldStartVnode, newEndVnode)) &#123; <span class="comment">// Vnode moved right</span></span><br><span class="line">        patchVnode(oldStartVnode, newEndVnode, insertedVnodeQueue, newCh, newEndIdx)</span><br><span class="line">        canMove &amp;&amp; nodeOps.insertBefore(parentElm, oldStartVnode.elm, nodeOps.nextSibling(oldEndVnode.elm))</span><br><span class="line">        oldStartVnode = oldCh[++oldStartIdx]</span><br><span class="line">        newEndVnode = newCh[--newEndIdx]</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sameVnode(oldEndVnode, newStartVnode)) &#123; <span class="comment">// Vnode moved left</span></span><br><span class="line">        patchVnode(oldEndVnode, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)</span><br><span class="line">        canMove &amp;&amp; nodeOps.insertBefore(parentElm, oldEndVnode.elm, oldStartVnode.elm)</span><br><span class="line">        oldEndVnode = oldCh[--oldEndIdx]</span><br><span class="line">        newStartVnode = newCh[++newStartIdx]</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (isUndef(oldKeyToIdx)) oldKeyToIdx = createKeyToOldIdx(oldCh, oldStartIdx, oldEndIdx)</span><br><span class="line">        idxInOld = isDef(newStartVnode.key)</span><br><span class="line">          ? oldKeyToIdx[newStartVnode.key]</span><br><span class="line">          : findIdxInOld(newStartVnode, oldCh, oldStartIdx, oldEndIdx)</span><br><span class="line">        <span class="keyword">if</span> (isUndef(idxInOld)) &#123; <span class="comment">// New element</span></span><br><span class="line">          createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm, <span class="literal">false</span>, newCh, newStartIdx)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          vnodeToMove = oldCh[idxInOld]</span><br><span class="line">          <span class="keyword">if</span> (sameVnode(vnodeToMove, newStartVnode)) &#123;</span><br><span class="line">            patchVnode(vnodeToMove, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)</span><br><span class="line">            oldCh[idxInOld] = <span class="literal">undefined</span></span><br><span class="line">            canMove &amp;&amp; nodeOps.insertBefore(parentElm, vnodeToMove.elm, oldStartVnode.elm)</span><br><span class="line">          &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// same key but different element. treat as new element</span></span><br><span class="line">            createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm, <span class="literal">false</span>, newCh, newStartIdx)</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        newStartVnode = newCh[++newStartIdx]</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (oldStartIdx &gt; oldEndIdx) &#123;</span><br><span class="line">      refElm = isUndef(newCh[newEndIdx + <span class="number">1</span>]) ? <span class="literal">null</span> : newCh[newEndIdx + <span class="number">1</span>].elm</span><br><span class="line">      addVnodes(parentElm, refElm, newCh, newStartIdx, newEndIdx, insertedVnodeQueue)</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (newStartIdx &gt; newEndIdx) &#123;</span><br><span class="line">      removeVnodes(oldCh, oldStartIdx, oldEndIdx)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+举个🌰：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div id&#x3D;&quot;app&quot;&gt;</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;ul&gt;</span><br><span class="line">        &lt;li v-for&#x3D;&quot;item in items&quot; :key&#x3D;&quot;item.id&quot;&gt;&#123;&#123; item.val &#125;&#125;&lt;&#x2F;li&gt;</span><br><span class="line">      &lt;&#x2F;ul&gt;</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">    &lt;button @click&#x3D;&quot;change&quot;&gt;change&lt;&#x2F;button&gt;</span><br><span class="line">  &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">  export default &#123;</span><br><span class="line">    name: &#39;App&#39;,</span><br><span class="line">    data() &#123;</span><br><span class="line">      return &#123;</span><br><span class="line">        items: [</span><br><span class="line">          &#123;id: 0, val: &#39;A&#39;&#125;,</span><br><span class="line">          &#123;id: 1, val: &#39;B&#39;&#125;,</span><br><span class="line">          &#123;id: 2, val: &#39;C&#39;&#125;,</span><br><span class="line">          &#123;id: 3, val: &#39;D&#39;&#125;</span><br><span class="line">        ]</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    methods: &#123;</span><br><span class="line">      change() &#123;</span><br><span class="line">        this.items.reverse().push(&#123;id: 4, val: &#39;E&#39;&#125;)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
+第一步： <img src="/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/update-children-1.png"><br>第二步： <img src="/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/update-children-2.png"><br>第三步： <img src="/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/update-children-3.png"><br>第四步： <img src="/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/update-children-4.png"><br>第五步： <img src="/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/update-children-5.png"><br>第六步： <img src="/2021/03/06/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%BA%8C/update-children-6.png"></li>
+</ul>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a target="_blank" rel="noopener" href="https://ustbhuangyi.github.io/vue-analysis/v2/reactive/">深入响应式原理</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/js/" rel="tag"># js</a>
+              <a href="/tags/vue/" rel="tag"># vue</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/01/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%93%8D%E5%BA%94%E5%BC%8F-%E4%B8%80/" rel="prev" title="源码解析--响应式（一）">
+      <i class="fa fa-chevron-left"></i> 源码解析--响应式（一）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/03/06/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92-%E9%80%92%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97/" rel="next" title="动态规划-递增子序列">
+      动态规划-递增子序列 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E8%AE%A1%E7%AE%97%E5%B1%9E%E6%80%A7%E5%92%8C%E4%BE%A6%E5%90%AC%E5%B1%9E%E6%80%A7"><span class="nav-number">1.</span> <span class="nav-text">一、计算属性和侦听属性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-computed"><span class="nav-number">1.1.</span> <span class="nav-text">1. computed</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-watch"><span class="nav-number">1.2.</span> <span class="nav-text">2. watch</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#watch%E7%9A%84%E4%BE%9D%E8%B5%96%E6%94%B6%E9%9B%86"><span class="nav-number">1.2.1.</span> <span class="nav-text">watch的依赖收集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#watch%E7%9A%84%E6%B4%BE%E5%8F%91%E6%9B%B4%E6%96%B0"><span class="nav-number">1.2.2.</span> <span class="nav-text">watch的派发更新</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-computed%E4%B8%8Ewatch%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.3.</span> <span class="nav-text">3. computed与watch的区别</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E7%BB%84%E4%BB%B6%E6%9B%B4%E6%96%B0"><span class="nav-number">2.</span> <span class="nav-text">二、组件更新</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%96%B0vnode%E5%92%8C%E8%80%81vnode%E4%B8%8D%E5%90%8C%E6%97%B6"><span class="nav-number">2.1.</span> <span class="nav-text">1. 新vnode和老vnode不同时</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%96%B0vnode%E5%92%8C%E8%80%81vnode%E7%9B%B8%E5%90%8C%E6%97%B6"><span class="nav-number">2.2.</span> <span class="nav-text">2. 新vnode和老vnode相同时</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">3.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="赵依婷"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">赵依婷</p>
+  <div class="site-description" itemprop="description">打工都是人上人！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xzhao95" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xzhao95" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zhaoyiting26@163.com" title="E-Mail → mailto:zhaoyiting26@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/u/3295465524" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;u&#x2F;3295465524" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">赵依婷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'GbmucVnm0BdUOjFle71Gu7sb-gzGzoHsz',
+      appKey     : 'XShaIHR81BPhKR7DtM27n5Qh',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+  
+
+  <script src="/js/wobblewindow.js"></script>
+  <script>
+    //只在桌面版网页启用特效
+    if( window.innerWidth > 768  ){
+      $(document).ready(function () {
+        
+          $('.header').wobbleWindow({
+            radius: 50,
+            movementTop: false,
+            movementLeft: false,
+            movementRight: false,
+            debug: false,
+          });
+        
+
+        
+
+        
+      });
+    }
+  </script>
+
+</body>
+</html>

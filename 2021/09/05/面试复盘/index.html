@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前言今年年初萌生了换个工作的想法后，开始断断续续的投了几个大厂的面试，但都以失败告终。每面一家都能发现自己哪方面还不足，然后停下来学习一波。记录一下面试到过的问题。 酷家乐电话面试第一轮面试就遇到挺多不会了，很多知识点都只知道一些表层知识点，耐不住深问，记录一下问到过的问题，加深一下知识层面。 js数据类型基础类型：number, string, boolean，undefine, null引用类">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面试复盘">
+<meta property="og:url" content="http://example.com/2021/09/05/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/index.html">
+<meta property="og:site_name" content="阿赵的烂笔头">
+<meta property="og:description" content="前言今年年初萌生了换个工作的想法后，开始断断续续的投了几个大厂的面试，但都以失败告终。每面一家都能发现自己哪方面还不足，然后停下来学习一波。记录一下面试到过的问题。 酷家乐电话面试第一轮面试就遇到挺多不会了，很多知识点都只知道一些表层知识点，耐不住深问，记录一下问到过的问题，加深一下知识层面。 js数据类型基础类型：number, string, boolean，undefine, null引用类">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/09/05/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/1.jpg">
+<meta property="og:image" content="http://example.com/2021/09/05/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/2.png">
+<meta property="og:image" content="http://example.com/2021/09/05/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/3.png">
+<meta property="og:image" content="http://example.com/2021/09/05/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/4.png">
+<meta property="og:image" content="http://example.com/2021/09/05/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/5.png">
+<meta property="og:image" content="http://example.com/2021/09/05/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/6.png">
+<meta property="article:published_time" content="2021-09-05T04:17:38.000Z">
+<meta property="article:modified_time" content="2021-10-14T11:06:34.067Z">
+<meta property="article:author" content="赵依婷">
+<meta property="article:tag" content="less">
+<meta property="article:tag" content="js">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="node">
+<meta property="article:tag" content="web前端">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/09/05/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/1.jpg">
+
+<link rel="canonical" href="http://example.com/2021/09/05/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>面试复盘 | 阿赵的烂笔头</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">阿赵的烂笔头</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/05/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="赵依婷">
+      <meta itemprop="description" content="打工都是人上人！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="阿赵的烂笔头">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          面试复盘
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-09-05 12:17:38" itemprop="dateCreated datePublished" datetime="2021-09-05T12:17:38+08:00">2021-09-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/" itemprop="url" rel="index"><span itemprop="name">面试准备</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/09/05/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/09/05/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>今年年初萌生了换个工作的想法后，开始断断续续的投了几个大厂的面试，但都以失败告终。每面一家都能发现自己哪方面还不足，然后停下来学习一波。记录一下面试到过的问题。</p>
+<h1 id="酷家乐"><a href="#酷家乐" class="headerlink" title="酷家乐"></a>酷家乐</h1><h2 id="电话面试"><a href="#电话面试" class="headerlink" title="电话面试"></a>电话面试</h2><p>第一轮面试就遇到挺多不会了，很多知识点都只知道一些表层知识点，耐不住深问，记录一下问到过的问题，加深一下知识层面。</p>
+<h3 id="js数据类型"><a href="#js数据类型" class="headerlink" title="js数据类型"></a>js数据类型</h3><p>基础类型：number, string, boolean，undefine, null<br>引用类型：object, array, function</p>
+<h3 id="基础类型与引用类型的区别"><a href="#基础类型与引用类型的区别" class="headerlink" title="基础类型与引用类型的区别"></a>基础类型与引用类型的区别</h3><table>
+<thead>
+<tr>
+<th></th>
+<th>基本类型</th>
+<th>引用类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td>按值访问</td>
+<td>按引用地址访问</td>
+</tr>
+<tr>
+<td></td>
+<td>值是不可变得</td>
+<td>值是可变的，</td>
+</tr>
+<tr>
+<td>比较</td>
+<td>值的比较</td>
+<td>引用地址的比较</td>
+</tr>
+<tr>
+<td>存放地址</td>
+<td>存放在栈区</td>
+<td>同时保存在栈内存和堆内存中的对象，栈区内存保存变量标识符和指向堆内存中该对象的指针</td>
+</tr>
+<tr>
+<td><br></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<a id="more"></a>
+<h3 id="字符串长度超出栈存储长度，怎么办"><a href="#字符串长度超出栈存储长度，怎么办" class="headerlink" title="字符串长度超出栈存储长度，怎么办"></a>字符串长度超出栈存储长度，怎么办</h3><h3 id="map和set以及weakmap和weakset的区别"><a href="#map和set以及weakmap和weakset的区别" class="headerlink" title="map和set以及weakmap和weakset的区别"></a>map和set以及weakmap和weakset的区别</h3><p>map是键值对的集合<br>set是不重复的有序列表<br>weakset：只存储对象的弱引用，并且不可以存储原始值<br>weakmap：弱引用map集合，也用于存储对象的弱引用，键名必须是一个对象</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> map = <span class="keyword">new</span> <span class="built_in">WeakMap</span>();</span><br><span class="line"><span class="keyword">let</span> element = <span class="built_in">document</span>.querySelector(<span class="string">&quot;.element&quot;</span>);</span><br><span class="line"></span><br><span class="line">map.set(element, <span class="string">&quot;original&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> value = map.get(element); <span class="comment">// original</span></span><br><span class="line"><span class="built_in">console</span>.log(value);</span><br><span class="line"></span><br><span class="line"><span class="comment">//移除element元素</span></span><br><span class="line">element.parentNode.removeChild(element);</span><br><span class="line">element = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//此时map集合为空</span></span><br></pre></td></tr></table></figure>
+<h3 id="浏览器运行机制（evnet-loop）"><a href="#浏览器运行机制（evnet-loop）" class="headerlink" title="浏览器运行机制（evnet loop）"></a>浏览器运行机制（evnet loop）</h3><p><img src="/2021/09/05/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/1.jpg" alt="1.jpg"><br><br>事件循环的过程如下：</p>
+<ol>
+<li><strong>JS引擎</strong>（唯一主线程）按顺序解析代码，遇到函数声明，直接跳过，遇到函数调用，入栈；</li>
+<li>如果是同步函数调用，直接执行得到结果，同步函数弹出栈，继续下一个函数调用；</li>
+<li>如果是异步函数调用，分发给Web API（多个辅助线程），异步函数弹出栈，继续下一个函数调用；</li>
+<li>Web API中，异步函数在相应辅助线程中处理完成后，即异步函数达到触发条件了（比如setTimeout设置的10s后），如果异步函数是宏任务，则入宏任务消息队列，如果是微任务，则入微任务消息队列；</li>
+<li><strong>Event Loop</strong>不停地检查主线程的调用栈与回调队列，当调用栈空时，就把微任务消息队列中的第一个任务推入栈中执行，执行完成后，再取第二个微任务，直到微任务消息队列为空；然后去宏任务消息队列中取第一个宏任务推入栈中执行，当该宏任务执行完成后，在下一个宏任务执行前，再依次取出微任务消息队列中的所有微任务入栈执行。</li>
+<li>上述过程不断循环，每当微任务队列清空，可作为本轮事件循环的结束。<h3 id="宏任务和微任务各有哪些"><a href="#宏任务和微任务各有哪些" class="headerlink" title="宏任务和微任务各有哪些"></a>宏任务和微任务各有哪些</h3>宏任务：包括整段代码的script，setTimeout，setInterval，setImmediate、I/O、<br>微任务：Promise，process.nextTick、mutationObersver<br>requestAnimationFrame属于渲染阶段，不属于任一任务<h3 id="nodejs的运行机制跟浏览器运行机制有什么区别"><a href="#nodejs的运行机制跟浏览器运行机制有什么区别" class="headerlink" title="nodejs的运行机制跟浏览器运行机制有什么区别"></a>nodejs的运行机制跟浏览器运行机制有什么区别</h3>因为nodejs服务目的和环境不同，导致API与原生js有区别，event loop还要处理一些I/O，所以与浏览器的event loop是不同的，nodejs的event loop是分阶段的<br><br><img src="/2021/09/05/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/2.png" alt="2.png"></li>
+</ol>
+<ul>
+<li>timer：执行 <code>setTimeout</code> 和 <code>setInterval</code> 回调</li>
+<li>pending callbacks：执行延迟到下一个循环迭代的I/O回调</li>
+<li>idle、prepare：仅系统内部使用</li>
+<li>poll：检索新的I/O事件；执行与I/O相关的回调</li>
+<li>check： 执行<code>setImmediate</code> 回调</li>
+<li>close callbacks：一些关闭的回调</li>
+</ul>
+<p><strong>注意点：</strong></p>
+<ol>
+<li>poll队列执行完，如果没有 <code>setImmediate</code> ，但是定时器到期，则会绕回去执行定时器阶段</li>
+<li><code>setTimeout(fn, 0)</code> 在node.js中会被强制改为 <code>setTimeout(fn, 1)</code> </li>
+<li>遇到微任务会先立即执行， <code>process.nextTick</code> 会立即执行，他的优先级会高于 <code>promise.then</code> <h3 id="setimmediate和setTImeout的执行先后"><a href="#setimmediate和setTImeout的执行先后" class="headerlink" title="setimmediate和setTImeout的执行先后"></a>setimmediate和setTImeout的执行先后</h3>分为两种情况：<br><strong>如果在异步流程里</strong><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;outer&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;setTimeout&#x27;</span>);</span><br><span class="line">  &#125;, <span class="number">0</span>);</span><br><span class="line">  setImmediate(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;setImmediate&#x27;</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;, <span class="number">0</span>);</span><br><span class="line"><span class="comment">// outer</span></span><br><span class="line"><span class="comment">// setImmediate</span></span><br><span class="line"><span class="comment">// setTimeout</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li>因为外层是一个 <code>setTimeout</code> ，所以执行到内部时，处在timer阶段</li>
+<li>所以在内部遇到 <code>setTimeout</code> ，会把他的回到放到下一个timer阶段</li>
+<li>遇到 <code>setImmediate</code> ，则会将其加入到check阶段队列里</li>
+<li>外层timer执行完毕后，依次执行pending callback、idle、poll阶段，都为空</li>
+<li>到了check阶段，发现又 <code>setImmediate</code> 回调，则取出执行</li>
+<li>然后是close callbacks，为空，则执行下一个循环</li>
+<li>在新循环里，执行timer阶段，发现有 <code>setTimeout</code> 回调，则执行</li>
+</ul>
+<p><strong>如果在同步流程里</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;outer&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;setTimeout&#x27;</span>);</span><br><span class="line">&#125;, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">setImmediate(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;setImmediate&#x27;</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>结果有时候是 <code>setTimeout</code> 先执行，有时候 <code>setImmediate</code> 先执行<br>原因：在node.js中<code>setTimeout(fn, 0)</code> 在node.js中会被强制改为 <code>setTimeout(fn, 1)</code> ，两者执行先后取决于外层同步代码执行时长是否超过1毫秒</p>
+<h3 id="页面滚动图片懒加载实现"><a href="#页面滚动图片懒加载实现" class="headerlink" title="页面滚动图片懒加载实现"></a>页面滚动图片懒加载实现</h3><p>方法一：通过监听页面滚动，判断图片位置<br>方法二：</p>
+<h3 id="浏览器缓存有哪些，http-header分别对应哪些属性"><a href="#浏览器缓存有哪些，http-header分别对应哪些属性" class="headerlink" title="浏览器缓存有哪些，http header分别对应哪些属性"></a>浏览器缓存有哪些，http header分别对应哪些属性</h3><p>强缓存：expire / cache-control<br>协商缓存：last-modify / if-modify-since 和 etag / if-none-match</p>
+<h3 id="浏览器缓存还有哪些策略"><a href="#浏览器缓存还有哪些策略" class="headerlink" title="浏览器缓存还有哪些策略"></a>浏览器缓存还有哪些策略</h3><p>按缓存位置分四种，并有优先级：</p>
+<ul>
+<li>service worker：可以自由控制缓存哪些文件、如何匹配缓存、如何读取缓存、并且缓存是持续性的</li>
+<li>memory cache：内存中的缓存，主要包含的是当前页面中已经抓取到的资源,例如页面上已经下载的样式、脚本、图片等。读取速度高效，但缓存持续性短，会随着进程的释放而释放</li>
+<li>disk cache：存储在硬盘里的缓存，胜在存储容量和实效性</li>
+<li>push cache：推送缓存，以上三个缓存都没有命中，才会被使用，是http2中的内容。只在会话中存在，一旦会话结束就会被释放、缓存时间短暂<br>
+
+</li>
+</ul>
+<h3 id="ionic多平台通信"><a href="#ionic多平台通信" class="headerlink" title="ionic多平台通信"></a>ionic多平台通信</h3><h3 id="实现多页面滑动，循环轮播"><a href="#实现多页面滑动，循环轮播" class="headerlink" title="实现多页面滑动，循环轮播"></a>实现多页面滑动，循环轮播</h3><h3 id="TCP三次握手"><a href="#TCP三次握手" class="headerlink" title="TCP三次握手"></a>TCP三次握手</h3><p>三次握手<br><br><br>1、在创建连接时，客户端首先要SYN=1，表示要创建连接<br>2、服务端收到后，要告诉客户端，表示接受到了，所以要加一个ACK=1，就变成ACK=1,SYN=1<br>3、为防止意外，客户端要再发一个消息给服务端确认一下，这时只需返回ACK=1。<br><br><br>四次分手<br><br><br>1.首先客户端请求关闭客户端到服务端方向的连接，这时客户端就要发送一个FIN=1，表示要关闭一个方向的连接（见上面四次分手的图）<br>2.服务端接收到后是需要确认一下的，所以返回了一个ACK=1<br>3.这时只关闭了一个方向，另一个方向也需要关闭，所以服务端也向客户端发了一个FIN=1 ACK=1<br>4.客户端接收到后发送ACK=1，表示接受成功<br></p>
+<h3 id="为什么需要三次握手"><a href="#为什么需要三次握手" class="headerlink" title="为什么需要三次握手"></a>为什么需要三次握手</h3><p>三次握手的核心思想：既要保证数据可靠传输，又要提高传输的效率<br>为了保证服务端能收接受到客户端的信息并能做出正确的应答而进行前两次(第一次和第二次)握手，<br>为了保证客户端能够接收到服务端的信息并能做出正确的应答而进行后两次(第二次和第三次)握手。<br></p>
+<h3 id="HTTPS与http的区别"><a href="#HTTPS与http的区别" class="headerlink" title="HTTPS与http的区别"></a>HTTPS与http的区别</h3><p>1、Https协议需要ca证书，费用较高。<br>2、http是超文本传输协议，信息是明文传输，https则是具有安全性的ssl加密传输协议。<br>3、使用不同的链接方式，端口也不同，一般而言，http协议的端口为80，https的端口为443。<br>4、http的连接很简单，是无状态的。<br>5、HTTPS协议是由SSL+HTTP协议构建的可进行加密传输、身份认证的网络协议，比http协议安全。</p>
+<h3 id="SSL做了什么"><a href="#SSL做了什么" class="headerlink" title="SSL做了什么"></a>SSL做了什么</h3><p>SSL用来保证Web浏览器与Web服务器交换信息的安全性，保证传输过程中消息的加密性。<br>SSL分为两个阶段：<br>握手阶段：<br>（1） 客户端将自己所支持的加密算法写入一个列表，并着手生成一个密钥，在该密钥产生过程中会有一个随机生成的并用作输入的随机数（请联系RSA密钥生成时所使用随机数）。客户端将该算法列表和该输入数发送给服务器端<br>实际<br>（2） 服务器在收到客户端发送的数据之后根据列表的内容选择一个自己也支持的加密算法，然后服务器会将自己用于认证服务器的标识以及一个同作为密钥产生部分输入的随机数制作成证书并将其连同自己选中的加密算法发回客户端。<br>（3） 客户端在收到服务器返回的数据之后先对服务器的证书进行验证并获取服务器的公钥（非对称加密中的公钥）。然后再生成一个名为pre_master_secret的随机密码串并使用服务器的公钥进行加密，之后将其发送给服务端。<br>（4） 服务器在收到master_secert之后用自己的私钥进行解密，在获得了双方的随机数之后服务端和客户端都会计算出加密和MAC密钥。<br>（5） 客户端将本次所有握手消息的MAC值发送给服务端<br>（6） 服务器同将本次所有握手消息的MAC值发送给客户端<br>数据传输阶段：<br>建立了连接之后SSl的数据传输是通过SSL记录协议进行数据传输的</p>
+<h3 id="HTTP2-0有哪些新特性"><a href="#HTTP2-0有哪些新特性" class="headerlink" title="HTTP2.0有哪些新特性"></a>HTTP2.0有哪些新特性</h3><ul>
+<li>二进制帧层：http/1使用了换行符分割文本，而http/2则改用二进制来进行传输</li>
+<li>消息传递方式：最小的消息单元为帧，是消息的切片，传输时可以乱序，可以组装。frame组成逻辑上的消息，即request和response。同一个TCP连接上有很多双向流供frame流通。注意，所有的通信都在同一个TCP连接上进行。</li>
+<li>多路复用解决头阻塞问题</li>
+<li>可以设定流的优先级和依赖</li>
+<li>服务推送</li>
+<li>头部压缩<br>
+
+</li>
+</ul>
+<h3 id="单链表逆序"><a href="#单链表逆序" class="headerlink" title="单链表逆序"></a>单链表逆序</h3><p>方法一：通过新建一个新链表，遍历单链表，将当前的节点指向新链表的头部<br>方法二：<br></p>
+<h3 id="乱序集合中找到最大的100个值"><a href="#乱序集合中找到最大的100个值" class="headerlink" title="乱序集合中找到最大的100个值"></a>乱序集合中找到最大的100个值</h3><p>方法一：先取100个值进行排序，遍历剩下的值，判断是否大于最小值，是的话，插入到正确的位置，取代最小值。（时间复杂度较高）<br>方法二：<br></p>
+<h2 id="二面"><a href="#二面" class="headerlink" title="二面"></a>二面</h2><p>这次面试可真打击到了我的信心，菜是原罪！</p>
+<h3 id="promise原理"><a href="#promise原理" class="headerlink" title="promise原理"></a>promise原理</h3><h3 id="promise链原理"><a href="#promise链原理" class="headerlink" title="promise链原理"></a>promise链原理</h3><h3 id="promise链返回false，下一个then是否会进入reject"><a href="#promise链返回false，下一个then是否会进入reject" class="headerlink" title="promise链返回false，下一个then是否会进入reject"></a>promise链返回false，下一个then是否会进入reject</h3><h3 id="require原理"><a href="#require原理" class="headerlink" title="require原理"></a>require原理</h3><p>require是commonjs规范中模块的导入<br>流程：</p>
+<ol>
+<li>路径分析<ol>
+<li>路径：将路径转换为真实的路径，并以真实的路径作为索引</li>
+<li>模块：<ul>
+<li>核心模块：没有文件定位和编译执行</li>
+<li>自定义模块：会生成一个模块路径数组，从当前的node_modules开始直到根目录的node_modules</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>文件定位<ol>
+<li>扩展名分析</li>
+<li>查找目录和包：遍历模块路径数组，查找package.json和index文件</li>
+</ol>
+</li>
+<li>编译执行<ol>
+<li>对获取到的文件进行头尾包装<br>
+
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="面向对象"><a href="#面向对象" class="headerlink" title="面向对象"></a>面向对象</h3><p>当解决一个问题的时候，面向对象会把事物抽象成对象的概念，就是说这个问题里面有哪些对象，然后给对象赋一些属性和方法，然后让每个对象去执行自己的方法，问题得到解决。<br>面向对象有三大特性：继承、封装、多态<br>1、封装<br>隐藏对象的属性和实现细节，仅对外提供公共访问方式，将变化隔离，便于使用，提高复用性和安全性。<br>2、继承<br>提高代码复用性；继承是多态的前提。<br>3、多态<br>父类或接口定义的引用变量可以指向子类或具体实现类的实例对象。提高了程序的拓展性。</p>
+<h3 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h3><p>相同行为，不同实现</p>
+<h3 id="typescript转化为js"><a href="#typescript转化为js" class="headerlink" title="typescript转化为js"></a>typescript转化为js</h3><h3 id="装饰器"><a href="#装饰器" class="headerlink" title="装饰器"></a>装饰器</h3><p>装饰器只能用于类与类的方法，不能用于函数，是因为存在函数提升</p>
+<ol>
+<li>类的装饰</li>
+</ol>
+<p>装饰器函数testable的参数target也就是MyTestableClass类本身</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">@testable</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyTestableClass</span> </span>&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">testable</span>(<span class="params">target</span>) </span>&#123;</span><br><span class="line">  target.isTestable = <span class="literal">true</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">MyTestableClass.isTestable  <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 装饰器的行为 等同于</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyTestableClass</span> </span>&#123;&#125;</span><br><span class="line">MyTestableClass = testable(MyTestableClass) || MyTestableClass</span><br></pre></td></tr></table></figure>
+<p>如果需要携带其他参数，则需要对装饰器函数再封装一层函数</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@testable(<span class="literal">true</span>)</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyTestableClass</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">testable</span>(<span class="params">isTestable</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">target</span>) </span>&#123;</span><br><span class="line">    target.isTestable = isTestable;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">MyTestableClass.isTestable <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>方法的装饰</li>
+</ol>
+<p>方法的装饰器接受三个参数，分别是类的原型对象、属性名和该属性的描述对象</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">  @readonly</span><br><span class="line">  <span class="function"><span class="title">realname</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.firstName + <span class="built_in">this</span>.lastname;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">readonly</span>(<span class="params">target, name, descriptor</span>) </span>&#123;</span><br><span class="line">  descriptor.writable = <span class="literal">false</span>;</span><br><span class="line">  <span class="keyword">return</span> descriptor;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 等同于</span></span><br><span class="line">readonly(Person.prototype, <span class="string">&#x27;realname&#x27;</span>, descriptor);</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(Person.prototype, <span class="string">&#x27;realname&#x27;</span>, descriptor);</span><br></pre></td></tr></table></figure>
+
+<h3 id="问原理时，应该怎么回答"><a href="#问原理时，应该怎么回答" class="headerlink" title="问原理时，应该怎么回答"></a>问原理时，应该怎么回答</h3><ol>
+<li>如果是英文词汇就先翻译成中文</li>
+<li>一句话描述该技术的用途</li>
+<li>描述该技术的核心概念或运作流程</li>
+<li>口述该技术的代码书写思路</li>
+<li>该技术的优点</li>
+<li>该技术的缺点</li>
+<li>如何弥补缺点</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>面试完酷家乐，感觉基础知识点还是很薄弱，很多技能点经不起深挖。</p>
+<h1 id="涂鸦智能"><a href="#涂鸦智能" class="headerlink" title="涂鸦智能"></a>涂鸦智能</h1><h2 id="电面"><a href="#电面" class="headerlink" title="电面"></a>电面</h2><h3 id="html里dom节点的路径查询"><a href="#html里dom节点的路径查询" class="headerlink" title="html里dom节点的路径查询"></a>html里dom节点的路径查询</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.querySelect(<span class="string">&#x27;ul li&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="浏览器里从输入URL到渲染的过程"><a href="#浏览器里从输入URL到渲染的过程" class="headerlink" title="浏览器里从输入URL到渲染的过程"></a>浏览器里从输入URL到渲染的过程</h3><ul>
+<li>在浏览器地址栏输入URL；</li>
+<li>如果浏览器判断本地有强缓存且未过期，直接从浏览器缓存中获取HTML文档开始解析渲染，无需发起http请求，否则进行下一步。</li>
+<li>浏览器解析URL获取协议、主机、端口号、路径，并组装一个HTTP（GET）请求报文;</li>
+<li>通过DNS解析获取网址的IP地址，依次从浏览器缓存、本机缓存、host中查找，如果本地没有，就向dns域名服务器查询对应的IP。</li>
+<li>打开一个socket，与目标IP地址端口建立TCP链接，进行三次握手，TCP链接建立后发送HTTP请求;</li>
+<li>服务器接受请求并解析，将请求转发到服务程序;</li>
+<li>服务器检查HTTP请求头是否包含缓存验证信息如果验证缓存新鲜，返回304等对应状态码;</li>
+<li>处理程序读取完整请求并准备HTTP响应，响应报文通过TCP连接发送回浏览器;</li>
+<li>浏览器接收HTTP响应，然后根据情况选择关闭TCP连接或者保留重用，关闭TCP连接的四次挥手;</li>
+<li>浏览器检查响应状态码：是否为1XX，3XX， 4XX， 5XX，这些情况处理与2XX不同;</li>
+<li>如果资源可缓存，进行缓存;</li>
+<li>对响应进行解码（例如gzip压缩）;</li>
+<li>根据资源类型决定如何处理（假设资源为HTML文档）;</li>
+<li>解析HTML文档，下载图片、样式表、js文件，构建DOM树，构建CSSOM树，根据DOM树和CSSOM树构建渲染树，执行js脚本。这些操作没有严格的先后顺序，HTML解析过程中会逐步显示页面；</li>
+<li>显示页面（HTML解析过程中会逐步显示页面）；<br>
+
+</li>
+</ul>
+<h3 id="DNS是怎么解析的"><a href="#DNS是怎么解析的" class="headerlink" title="DNS是怎么解析的"></a>DNS是怎么解析的</h3><p>会先从本地缓存、本机缓存、host中查找，如果没有，则会向DNS域名服务器上查询IP</p>
+<h3 id="渲染是用什么渲染"><a href="#渲染是用什么渲染" class="headerlink" title="渲染是用什么渲染"></a>渲染是用什么渲染</h3><p>GUI渲染线程</p>
+<ul>
+<li>负责渲染浏览器界面，解析HTML，CSS，构建DOM树和渲染树，布局和绘制等</li>
+<li>当界面需要重绘或回流时，该线程就会执行</li>
+<li>GUI渲染线程和JS引擎线程是互斥的，当JS引擎执行时，GUI线程会被挂起，GUI更新会被保存在一个队列中等到JS引擎空闲时立即执行<br>
+
+</li>
+</ul>
+<h3 id="垃圾回收方法和策略，老生代垃圾回收做了哪些优化"><a href="#垃圾回收方法和策略，老生代垃圾回收做了哪些优化" class="headerlink" title="垃圾回收方法和策略，老生代垃圾回收做了哪些优化"></a>垃圾回收方法和策略，老生代垃圾回收做了哪些优化</h3><p>javascript垃圾回收方法：标记清除，引用计数<br>v8垃圾回收机制 <br>策略：采用了内存分代，分为新生代和老生代</p>
+<ul>
+<li>新生代：采用了scavenger算法，其中重点使用了Cheney算法，利用复制的方式实现，将存活对象在两个semispace空间之间进行赋值</li>
+<li>老生代：新生代中经过多次复制，仍然存活的对象，则会移动到老生代中<ul>
+<li>标记清除：遍历堆中的所有对象，并标记存活的对象，清除没有被标记的对象</li>
+<li>标记整理：对象标记死亡后，在整理过程成，将存活对象往前一段移动，清除掉边界外的内存</li>
+<li>增量标记：将回收拆分为多个“步进”，每做完一步进，就让JavaScript应用逻辑执行一小会儿。让垃圾回收与应用逻辑交替执行<br>
+
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="promise、generator和async的区分"><a href="#promise、generator和async的区分" class="headerlink" title="promise、generator和async的区分"></a>promise、generator和async的区分</h3><h3 id="promise的实现"><a href="#promise的实现" class="headerlink" title="promise的实现"></a>promise的实现</h3><h3 id="promise-then是什么任务"><a href="#promise-then是什么任务" class="headerlink" title="promise.then是什么任务"></a>promise.then是什么任务</h3><h3 id="event-loop描述一下"><a href="#event-loop描述一下" class="headerlink" title="event loop描述一下"></a>event loop描述一下</h3><h3 id="数组有哪些改变自身数组的方法"><a href="#数组有哪些改变自身数组的方法" class="headerlink" title="数组有哪些改变自身数组的方法"></a>数组有哪些改变自身数组的方法</h3><p>push<br>pop<br>shift<br>unshift<br>splice<br>sort</p>
+<h3 id="es5实现sort方法"><a href="#es5实现sort方法" class="headerlink" title="es5实现sort方法"></a>es5实现sort方法</h3><p>冒泡<br>快排<br></p>
+<h3 id="V8有哪些特征"><a href="#V8有哪些特征" class="headerlink" title="V8有哪些特征"></a>V8有哪些特征</h3><p>V8是一个由Google开源采用C++编写的高性能JavaScript引擎，应用在Chrome和Node.js中。通过V8，将JavaScript高级语言，经过一系列处理，转换成机器可以识别的指令，也就是二进制码，交给机器执行<br>V8组成部分：<br>Parser：解析器，负责将源代码解析成AST<br>Ignition：解释器，负责将AST转换成字节码并执行，同时会标记热点代码<br>TurboFan：编译器，负责将热点代码编译成机器码并执行<br>Orinoco：垃圾回收器，负责进行内存空间回收</p>
+<h3 id="节点的宽度100-和auto之间有什么不同"><a href="#节点的宽度100-和auto之间有什么不同" class="headerlink" title="节点的宽度100%和auto之间有什么不同"></a>节点的宽度100%和auto之间有什么不同</h3><p><img src="/2021/09/05/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/3.png" alt="3.png"></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.parent</span>&#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">200px</span>;</span><br><span class="line">  <span class="attribute">padding</span>: <span class="number">10px</span>;</span><br><span class="line">  <span class="attribute">background</span>: red;</span><br><span class="line">  <span class="attribute">margin</span>: <span class="number">10px</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.child1</span>&#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">margin</span>: <span class="number">0</span> <span class="number">20px</span>;</span><br><span class="line">  <span class="attribute">background</span>: yellow;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.child2</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: auto;</span><br><span class="line">  <span class="attribute">margin</span>: <span class="number">0</span> <span class="number">20px</span>;</span><br><span class="line">  <span class="attribute">background</span>: green;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>width:100%的情况下<br>child1整条的宽度 = width(parent的content width：180px) + child1的margin left + child1的margin right<br>width:100%：设定对象的宽度占父元素的100%(不论设定元素的margin值为多少)<br><br><br>width:auto的情况下<br>child2整条的宽度 = parent的content width = child的content width + child2的margin left + child2的margin right<br>width:auto：是根据设定对象的实际大小而自适应宽度（考虑设定元素的margin值得大小）</p>
+<h3 id="flex是什么，如果改变主轴方向"><a href="#flex是什么，如果改变主轴方向" class="headerlink" title="flex是什么，如果改变主轴方向"></a>flex是什么，如果改变主轴方向</h3><h3 id="vue的虚拟节点的数据结构"><a href="#vue的虚拟节点的数据结构" class="headerlink" title="vue的虚拟节点的数据结构"></a>vue的虚拟节点的数据结构</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">VNode</span> </span>&#123;</span><br><span class="line">  tag: string | <span class="keyword">void</span>;</span><br><span class="line">  data: VNodeData | <span class="keyword">void</span>;</span><br><span class="line">  children: ?<span class="built_in">Array</span>&lt;VNode&gt;;</span><br><span class="line">  text: string | <span class="keyword">void</span>;</span><br><span class="line">  elm: Node | <span class="keyword">void</span>;</span><br><span class="line">  ns: string | <span class="keyword">void</span>;</span><br><span class="line">  context: Component | <span class="keyword">void</span>; <span class="comment">// rendered in this component&#x27;s scope</span></span><br><span class="line">  key: string | number | <span class="keyword">void</span>;</span><br><span class="line">  componentOptions: VNodeComponentOptions | <span class="keyword">void</span>;</span><br><span class="line">  componentInstance: Component | <span class="keyword">void</span>; <span class="comment">// component instance</span></span><br><span class="line">  parent: VNode | <span class="keyword">void</span>; <span class="comment">// component placeholder node</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// strictly internal</span></span><br><span class="line">  raw: boolean; <span class="comment">// contains raw HTML? (server only)</span></span><br><span class="line">  isStatic: boolean; <span class="comment">// hoisted static node</span></span><br><span class="line">  isRootInsert: boolean; <span class="comment">// necessary for enter transition check</span></span><br><span class="line">  isComment: boolean; <span class="comment">// empty comment placeholder?</span></span><br><span class="line">  isCloned: boolean; <span class="comment">// is a cloned node?</span></span><br><span class="line">  isOnce: boolean; <span class="comment">// is a v-once node?</span></span><br><span class="line">  asyncFactory: <span class="built_in">Function</span> | <span class="keyword">void</span>; <span class="comment">// async component factory function</span></span><br><span class="line">  asyncMeta: <span class="built_in">Object</span> | <span class="keyword">void</span>;</span><br><span class="line">  isAsyncPlaceholder: boolean;</span><br><span class="line">  ssrContext: <span class="built_in">Object</span> | <span class="keyword">void</span>;</span><br><span class="line">  fnContext: Component | <span class="keyword">void</span>; <span class="comment">// real context vm for functional nodes</span></span><br><span class="line">  fnOptions: ?ComponentOptions; <span class="comment">// for SSR caching</span></span><br><span class="line">  devtoolsMeta: ?<span class="built_in">Object</span>; <span class="comment">// used to store functional render context for devtools</span></span><br><span class="line">  fnScopeId: ?string; <span class="comment">// functional scope id support</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// DEPRECATED: alias for componentInstance for backwards compat.</span></span><br><span class="line">  <span class="comment">/* istanbul ignore next */</span></span><br><span class="line">  get child (): Component | <span class="keyword">void</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.componentInstance</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="vue的patch过程描述一下"><a href="#vue的patch过程描述一下" class="headerlink" title="vue的patch过程描述一下"></a>vue的patch过程描述一下</h3><p>触发patch方法有2中情况：</p>
+<ol>
+<li>首次渲染：核心内容主要是将vnode虚拟节点树递归调用createElem方法转化为真实的DOM节点树，然后销毁原有的节点，挂载到原节点的父节点上。</li>
+<li>数据更新引发的视图更新渲染<h2 id="一面"><a href="#一面" class="headerlink" title="一面"></a>一面</h2><h3 id="介绍一下自己，以及重点介绍一下2个项目"><a href="#介绍一下自己，以及重点介绍一下2个项目" class="headerlink" title="介绍一下自己，以及重点介绍一下2个项目"></a>介绍一下自己，以及重点介绍一下2个项目</h3><h3 id="vue项目的优化"><a href="#vue项目的优化" class="headerlink" title="vue项目的优化"></a>vue项目的优化</h3><h3 id="图片懒加载的实现"><a href="#图片懒加载的实现" class="headerlink" title="图片懒加载的实现"></a>图片懒加载的实现</h3>将图片真正的地址放到另一个属性data-src中，在图片即将进入可视范围区域之前，将url取出放置在src中<br>判断图片是否处于浏览器可视范围内的方法：<br><strong>方法一</strong><br>通过对比屏幕可视窗口高度和浏览器滚动距离与元素相对文档顶部的距离之前的关系，判断元素是否可见<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isInSight</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> clientHeight = <span class="built_in">window</span>.innerHeight; <span class="comment">//屏幕可视高度</span></span><br><span class="line">  <span class="keyword">const</span> scrollTop = <span class="built_in">document</span>.body.scrollTop; <span class="comment">//浏览器窗口顶部与文档顶部之间的距离</span></span><br><span class="line">  <span class="comment">// el.offsetTop 元素相对于文档顶部的距离</span></span><br><span class="line">  <span class="keyword">return</span> el.offsetTop &lt;= clientHeight + scrollTop + <span class="number">100</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p><strong>方法二</strong><br>通过getBoundingClientRect()获取图片相对于浏览器视窗的位置<br><br><img src="/2021/09/05/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/4.png" alt="4.png"></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isInSight</span>(<span class="params">el</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> bound = el.getBoundingClientRect();</span><br><span class="line">  <span class="keyword">const</span> clientHeight = <span class="built_in">window</span>.innerHeight;</span><br><span class="line">  <span class="keyword">return</span> bound.top &lt;= clientHeight + <span class="number">100</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>方法三</strong><br>使用IntersectionObserver API，观察元素是否可见。“可见”的本质是目标元素与viewport是否有交叉区</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">loadImg</span>(<span class="params">el</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!el.src) &#123;</span><br><span class="line">        <span class="keyword">const</span> source = el.dataset.src</span><br><span class="line">        el.src = source</span><br><span class="line">        el.removeAttribute(<span class="string">&#x27;data-src&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> io = <span class="keyword">new</span> IntersectionObserver(<span class="function"><span class="params">entries</span> =&gt;</span> &#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">const</span> entry <span class="keyword">of</span> entries) &#123;</span><br><span class="line">        <span class="keyword">const</span> el = entry.target</span><br><span class="line">        <span class="keyword">const</span> intersectionRatio = entry.intersectionRatio</span><br><span class="line">        <span class="keyword">if</span> (intersectionRatio &gt; <span class="number">0</span> &amp;&amp; intersectionRatio &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">            loadImg(el)</span><br><span class="line">        &#125;</span><br><span class="line">        el.onload = el.onerror = <span class="function">() =&gt;</span> io.unobserve(el)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">checkImgs</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> imgs = <span class="built_in">Array</span>.from(<span class="built_in">document</span>.querySelectorAll(<span class="string">&#x27;img[data-src]&#x27;</span>))</span><br><span class="line">    imgs.forEach(<span class="function"><span class="params">item</span> =&gt;</span> io.observe(item))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="vuex的流程"><a href="#vuex的流程" class="headerlink" title="vuex的流程"></a>vuex的流程</h3><p>用户 –dispatch–&gt; action –commit–&gt; mutation –change–&gt; state –触发–&gt; 页面的更新</p>
+<h3 id="vuex原理，如何做到页面的响应"><a href="#vuex原理，如何做到页面的响应" class="headerlink" title="vuex原理，如何做到页面的响应"></a>vuex原理，如何做到页面的响应</h3><ol>
+<li><p>install过程中：会混入beforeCreate，执行$store指向options中初始化的store对象</p>
+</li>
+<li><p>在store的实例化过程中，会调用moduleCollection类构件模块树，以及执行installModule方法递归遍历每个模块，进行各模块的getters，mutations，actions初始化</p>
+</li>
+<li><p>之后会进行state与getters关联的搭建，利用vue的computed属性实现，通过在内部实例化一个Vue，在data中设置$$state以及通过将getters方法设置为computed。在Store类中，设置state的get方法，指向store._vm.$$state。以此实现state与getters的关联</p>
+<h3 id="http缓存如何实现"><a href="#http缓存如何实现" class="headerlink" title="http缓存如何实现"></a>http缓存如何实现</h3><h3 id="组件懒加载的实现"><a href="#组件懒加载的实现" class="headerlink" title="组件懒加载的实现"></a>组件懒加载的实现</h3><p>import<br>require</p>
+<h2 id="二面（主管面）"><a href="#二面（主管面）" class="headerlink" title="二面（主管面）"></a>二面（主管面）</h2><h3 id="vue-router实现原理"><a href="#vue-router实现原理" class="headerlink" title="vue router实现原理"></a>vue router实现原理</h3></li>
+<li><p>install过程中：</p>
+<ol>
+<li>采用了Mixin混入beforeCreate和destroy钩子，在beforeCreate钩子里，向上查找配置routerRoot属性，绑定父子节点路由关系，将_route使用defineReactive设置为响应式数据，以及将组件的实例和路由的规则绑定在一起</li>
+<li>注册全局的$router和$route方法</li>
+<li>注册router-link和router-view组件</li>
+</ol>
+</li>
+<li><p>router-view组件：</p>
+<ol>
+<li>通过当前路由地址所属层级，找到在matched的位置，进行对应的渲染</li>
+<li>通过判断keep-alive的状态决定如何渲染</li>
+</ol>
+</li>
+<li><p>router-link组件:</p>
+</li>
+<li><p>create-matcher过程：</p>
+<ol>
+<li>create-route-map.js中处理routes配置文件，解析成对应的路径映射表以及名称映射表</li>
+<li>create-matcher中主要包含2个重要方法，match和addRoutes，在match中根据location.name或location.path使用不同的方法，找到对应的record，创建route对象，addRoutes方法则是调用createRouteMap方法进行解析</li>
+</ol>
+</li>
+<li><p>路由模式</p>
+<ol>
+<li>通过不同的路由模式实现不同的监听事件</li>
+<li>通过transitionTo方法更新路由信息<h3 id="vue局部渲染过程"><a href="#vue局部渲染过程" class="headerlink" title="vue局部渲染过程"></a>vue局部渲染过程</h3></li>
+</ol>
+</li>
+</ol>
+<h3 id="深度搜索，有做过优化吗"><a href="#深度搜索，有做过优化吗" class="headerlink" title="深度搜索，有做过优化吗"></a>深度搜索，有做过优化吗</h3><h3 id="服务端渲染实现过程，事件什么时候挂载"><a href="#服务端渲染实现过程，事件什么时候挂载" class="headerlink" title="服务端渲染实现过程，事件什么时候挂载"></a>服务端渲染实现过程，事件什么时候挂载</h3><ul>
+<li>首先是浏览器请求URL，前端服务器接收到URL请求之后，根据不同的URL，前端服务器向后端服务器请求数据，</li>
+<li>请求完成后，前端服务器会组装一个携带了具体数据的HTML文本，并且返回给浏览器，</li>
+<li>浏览器得到HTML之后开始渲染页面，同时，浏览器加载并执行 JavaScript 脚本，给页面上的元素绑定事件，让页面变得可交互，当用户与浏览器页面进行交互，</li>
+<li>如跳转到下一个页面时，浏览器会执行 JavaScript 脚本，向后端服务器请求数据，获取完数据之后再次执行 JavaScript 代码动态渲染页面。<br>
+
+</li>
+</ul>
+<h2 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h2><p>涂鸦智能算是我面试状态最好的一家了吧，虽然二面还是败了。主要vuex和vue-router的原理没有看，服务端渲染也是一知半解，回答的时候表现不够好。</p>
+<h1 id="微店"><a href="#微店" class="headerlink" title="微店"></a>微店</h1><h2 id="电面-1"><a href="#电面-1" class="headerlink" title="电面"></a>电面</h2><h3 id="vue自定义指令"><a href="#vue自定义指令" class="headerlink" title="vue自定义指令"></a>vue自定义指令</h3><p>通过自定义指令对普通DOM元素进行底层操作</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 注册一个全局自定义指令 `v-focus`</span></span><br><span class="line">Vue.directive(<span class="string">&#x27;focus&#x27;</span>, &#123;</span><br><span class="line">  <span class="comment">// 当被绑定的元素插入到 DOM 中时……</span></span><br><span class="line">  inserted: <span class="function"><span class="keyword">function</span> (<span class="params">el</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 聚焦元素</span></span><br><span class="line">    el.focus()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p><strong>钩子函数</strong><br>bind：只调用一次，指令第一次绑定到元素时调用<br>inserted：被绑定元素第一次插入到父元素时调用<br>update：所在组件vnode更新时调用，但是可能发生在其子vnode更新之前<br>componentUpdated：指令所在组件的vnode及其子vnode全部更新后调用<br>unbind：指令与元素解绑后调用，只调用一次<br><strong>钩子函数参数</strong></p>
+<ul>
+<li><code>el</code>：指令所绑定的元素，可以用来直接操作 DOM。</li>
+<li><code>binding</code>：一个对象，包含以下 property：<ul>
+<li><code>name</code>：指令名，不包括 <code>v-</code> 前缀。</li>
+<li><code>value</code>：指令的绑定值，例如：<code>v-my-directive=&quot;1 + 1&quot;</code> 中，绑定值为 <code>2</code>。</li>
+<li><code>oldValue</code>：指令绑定的前一个值，仅在 <code>update</code> 和 <code>componentUpdated</code> 钩子中可用。无论值是否改变都可用。</li>
+<li><code>expression</code>：字符串形式的指令表达式。例如 <code>v-my-directive=&quot;1 + 1&quot;</code> 中，表达式为 <code>&quot;1 + 1&quot;</code>。</li>
+<li><code>arg</code>：传给指令的参数，可选。例如 <code>v-my-directive:foo</code> 中，参数为 <code>&quot;foo&quot;</code>。</li>
+<li><code>modifiers</code>：一个包含修饰符的对象。例如：<code>v-my-directive.foo.bar</code> 中，修饰符对象为 <code>&#123; foo: true, bar: true &#125;</code>。</li>
+</ul>
+</li>
+<li><code>vnode</code>：Vue 编译生成的虚拟节点。</li>
+<li><code>oldVnode</code>：上一个虚拟节点，仅在 <code>update</code> 和 <code>componentUpdated</code> 钩子中可用。<br>
+
+</li>
+</ul>
+<h3 id="vue响应式原理"><a href="#vue响应式原理" class="headerlink" title="vue响应式原理"></a>vue响应式原理</h3><p>Dep：发布订阅中心，即消息管理员，负责储存订阅者和消息的分发,不管是订阅者还是发布者都需要依赖于它。<br>Observer：监听者，用于监听属性值的变化<br>Watcher：订阅者<br></p>
+<h3 id="vue异步队列"><a href="#vue异步队列" class="headerlink" title="vue异步队列"></a>vue异步队列</h3><p><img src="/2021/09/05/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/5.png" alt="5.png"><br><br>在一个操作里，如果对一个数据进行了多次操作，依赖于该数据的视图也将进行多次更新，所以vue加入异步更新队列，将渲染视图使用nextTick放进下一次tick中，等数据的所有操作执行往后再进行视图更新渲染<br><strong>nextTick的原理</strong><br><strong>​</strong><br></p>
+<h3 id="vue为什么使用虚拟节点，为什么直接操作dom节点代价昂贵"><a href="#vue为什么使用虚拟节点，为什么直接操作dom节点代价昂贵" class="headerlink" title="vue为什么使用虚拟节点，为什么直接操作dom节点代价昂贵"></a>vue为什么使用虚拟节点，为什么直接操作dom节点代价昂贵</h3><p>使用js对象来描述真实DOM，把DOM的标签，属性，内容都变成对象的属性。模板编译整个过程就是将template描述成VNode，经过一系列操作形成真实DOM，它的好处有两点</p>
+<ol>
+<li>兼容性强，不受执行环境的影响。VNode因为是js对象，不管是Node环境还是浏览器环境，都可以统一操作，从而获得了SSR，原生渲染等能力</li>
+<li>减少DOM操作，任何页面的变化，都是用VNode进行操作对比，只需要在最后一步挂载更新DOM即可​</li>
+</ol>
+<p>​<br></p>
+<h3 id="vue的v-if和v-show的区别"><a href="#vue的v-if和v-show的区别" class="headerlink" title="vue的v-if和v-show的区别"></a>vue的v-if和v-show的区别</h3><p>v-if是通过控制dom节点是否存在<br>v-show则是通过设置dom元素的display样式：block为显示，none为隐藏</p>
+<h3 id="eggjs怎么搭建的"><a href="#eggjs怎么搭建的" class="headerlink" title="eggjs怎么搭建的"></a>eggjs怎么搭建的</h3><h3 id="eggjs用过哪些中间件"><a href="#eggjs用过哪些中间件" class="headerlink" title="eggjs用过哪些中间件"></a>eggjs用过哪些中间件</h3><h3 id="怎么实现的服务端渲染"><a href="#怎么实现的服务端渲染" class="headerlink" title="怎么实现的服务端渲染"></a>怎么实现的服务端渲染</h3><h3 id="同构原理是怎么样的"><a href="#同构原理是怎么样的" class="headerlink" title="同构原理是怎么样的"></a>同构原理是怎么样的</h3><p>定义：让一份代码，既可以在服务端中执行，也可以在客户端中执行，并且执行的效果都是一样的，都是完成这个html的组装，正确的显示页面<br>服务端渲染，具有2中渲染方式：</p>
+<ul>
+<li>前端服务器通过请求后端服务器获取数据并组装HTML，返回给浏览器，浏览器直接解析HTML后渲染页面</li>
+<li>浏览器在请求过程中，请求新的数据并动态更新渲染页面</li>
+</ul>
+<p><br>同构VUE项目</p>
+<ol>
+<li>构建配置<ul>
+<li>构建服务端代码：使用 <code>vue-server-renderer</code>提供的<code>server-plugin</code>，主要用于生成HTML文件</li>
+<li>构建客户端代码：使用<code>vue-server-renderer</code>提供的<code>client-server</code>，主要作用是生成构建加过清单<code>vue-ssr-client-manifest.json</code>，服务端在渲染页面时，根据这个清单来渲染HTML中的script标签（JavaScript）和link标签（CSS）。</li>
+</ul>
+</li>
+<li>模块组件共享</li>
+<li>路由的共享和同步</li>
+<li>数据模型的共享和状态同步</li>
+</ol>
+<p><br>总结：<br>当浏览器访问服务端渲染项目时，服务端将URL传给到预选构建好的VUE应用渲染器，渲染器匹配到对应的路由的组件之后，执行我们预先在组件内定义的asyncData方法获取数据，并将获取完的数据传递给渲染器的上下文，利用template组装成HTML，并将HTML和状态state一并吐给前端浏览器，浏览器加载了构建好的客户端VUE应用后，将state数据同步到前端的store中，并根据数据激活后端返回的被浏览器解析为DOM元素的HTML文本，完成了数据状态、路由、组件的同步，同时使得页面得到直出，较少了白屏时间，有了更好的加载体验，同时更有利于SEO。<br>​<br></p>
+<h3 id="eggjs在服务端渲染是做了什么"><a href="#eggjs在服务端渲染是做了什么" class="headerlink" title="eggjs在服务端渲染是做了什么"></a>eggjs在服务端渲染是做了什么</h3><h3 id="webpack原理是什么"><a href="#webpack原理是什么" class="headerlink" title="webpack原理是什么"></a>webpack原理是什么</h3><ol>
+<li>识别入口文件</li>
+<li>通过逐层识别模块依赖(Commonjs、amd或者es6的import，webpack都会对其进行分析，来获取代码的依赖)</li>
+<li>webpack做的就是分析代码，转换代码，编译代码，输出代码</li>
+<li>最终形成打包后的代码<h3 id="loader和plugins有实现过吗"><a href="#loader和plugins有实现过吗" class="headerlink" title="loader和plugins有实现过吗"></a>loader和plugins有实现过吗</h3></li>
+</ol>
+<p><strong>loader和plugins的区别：</strong><br>loader，它是一个转换器，将A文件进行编译成B文件，比如：将A.less转换为A.css，单纯的文件转换过程。<br>plugin是一个扩展器，它丰富了webpack本身，针对是loader结束后，webpack打包的整个过程，它并不直接操作文件，而是基于事件机制工作，会监听webpack打包过程中的某些节点，执行广泛的任务<br></p>
+<h3 id="loader"><a href="#loader" class="headerlink" title="loader:"></a>loader:</h3><ul>
+<li>处理一个文件可以使用多个loader，loader的执行顺序和本身的顺序是相反的</li>
+<li>第一个执行的loader接受源文件内容作为参数，其他loader接收前一个执行的loader的返回值作为参数。最后执行的loader返回此模块的javascript源码<br>
+
+</li>
+</ul>
+<p><strong>例子</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span>(<span class="params">src</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(src) &#123;</span><br><span class="line">    src = src.charAt(<span class="number">0</span>).toUpperCase() + src.slice(<span class="number">1</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">&#x27;module.exports = &#x27;</span> + src;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="plugin："><a href="#plugin：" class="headerlink" title="plugin："></a>plugin：</h3><p><strong>plugin原理</strong></p>
+<ul>
+<li>webpack启动后，在读取配置的过程中会先执行new MyPlugin(options)初始化一个MyPlugin获取得其实例</li>
+<li>在初始化compiler对象后，再调用myPlugin.apply(compiler)给插件实例传入compiler对象</li>
+<li>插件实例获取到compiler对象后，可以通过compiler.plugin(事件名称，回调函数)监听到Webpack广播出来的事件</li>
+<li>通过compiler对象去操作webpack<br>
+
+</li>
+</ul>
+<p><strong>compiler和compilation的区别</strong><br><strong>compiler对象：</strong>包含了Webpack环境所有的配置信息，在webpack启动时被实例化，相当于webpack实例。代表了整个webpack从启动到关闭的生命周期。<br><strong>compilation对象：</strong>包含当前的模块资源、编译生成资源、变化的文件等。代表一次新的编译<br><strong>例子</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyPlugin</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="title">constructor</span>(<span class="params">options</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&quot;construct&quot;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="title">apply</span>(<span class="params">compiler</span>)</span> &#123;</span><br><span class="line">    compiler.plugin(<span class="string">&#x27;compilation&#x27;</span>, <span class="function">(<span class="params">compilation, callback</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">&#x27;myplugin&#x27;</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="babel有了解吗？怎么实现的"><a href="#babel有了解吗？怎么实现的" class="headerlink" title="babel有了解吗？怎么实现的"></a>babel有了解吗？怎么实现的</h3><p>定义：babel是一个JavaScript编译器，主要用于将高版本的Javascript代码转为向后兼容的js代码<br>运行阶段：</p>
+<ol>
+<li>解析（parsing）：将源码解析成AST树</li>
+<li>转换（transforming）：由babel插件进行转换</li>
+<li>生成（generating）：将转好的AST树重新生成代码</li>
+</ol>
+<p>babel插件类型：</p>
+<ul>
+<li>语法插件：用于解析阶段</li>
+<li>转换插件：把源码转换并输出</li>
+</ul>
+<p>执行规则：</p>
+<ul>
+<li>插件比预设先执行</li>
+<li>插件执行顺序是插件数组从前向后执行</li>
+<li>预设执行顺序是预设数组从后向前执行<br>
+
+</li>
+</ul>
+<h3 id="webpack依赖树是怎么建立的"><a href="#webpack依赖树是怎么建立的" class="headerlink" title="webpack依赖树是怎么建立的"></a>webpack依赖树是怎么建立的</h3><h3 id="浏览器适配，面对不同浏览器怎么做的处理"><a href="#浏览器适配，面对不同浏览器怎么做的处理" class="headerlink" title="浏览器适配，面对不同浏览器怎么做的处理"></a>浏览器适配，面对不同浏览器怎么做的处理</h3><h3 id="rem是怎么实现的，用的多少比例，怎么计算的"><a href="#rem是怎么实现的，用的多少比例，怎么计算的" class="headerlink" title="rem是怎么实现的，用的多少比例，怎么计算的"></a>rem是怎么实现的，用的多少比例，怎么计算的</h3><h2 id="一面-1"><a href="#一面-1" class="headerlink" title="一面"></a>一面</h2><p>大部分问题都是问业务问题，比如主要干什么，负责什么，有哪些成长，优势有哪些等，这里只记录一下技能点问题</p>
+<h3 id="滚动列表性能优化"><a href="#滚动列表性能优化" class="headerlink" title="滚动列表性能优化"></a>滚动列表性能优化</h3><ul>
+<li>虚拟列表</li>
+<li>上拉加载<br>
+
+</li>
+</ul>
+<h3 id="vue的scoped原理"><a href="#vue的scoped原理" class="headerlink" title="vue的scoped原理"></a>vue的scoped原理</h3><p>vue中的scoped属性的效果主要通过PostCSS转译实现<br>PostCSS给一个组件中的所有dom添加了一个独一无二的动态属性，然后，给CSS选择器额外添加一个对应的属性选择器来选择该组件中的dom，使得样式只作用于含有该属性的dom</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;style scoped&gt;</span><br><span class="line">.example &#123;</span><br><span class="line"> color: red;</span><br><span class="line">&#125;</span><br><span class="line">&lt;&#x2F;style&gt;</span><br><span class="line">&lt;template&gt;</span><br><span class="line"> &lt;div class&#x3D;&quot;example&quot;&gt;hi&lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br></pre></td></tr></table></figure>
+<p>转译后</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;style&gt;</span><br><span class="line">.example[data-v-5558831a] &#123;</span><br><span class="line"> color: red;</span><br><span class="line">&#125;</span><br><span class="line">&lt;&#x2F;style&gt;</span><br><span class="line">&lt;template&gt;</span><br><span class="line"> &lt;div class&#x3D;&quot;example&quot; data-v-5558831a&gt;hi&lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="讲一下vue的vuex"><a href="#讲一下vue的vuex" class="headerlink" title="讲一下vue的vuex"></a>讲一下vue的vuex</h3><h3 id="做了哪些性能优化"><a href="#做了哪些性能优化" class="headerlink" title="做了哪些性能优化"></a>做了哪些性能优化</h3><h2 id="总结-2"><a href="#总结-2" class="headerlink" title="总结"></a>总结</h2><p>微店的面试感觉是偏项目，在二面时问的项目比较多。但不知道失败在何处，以为还是败在框架原理表达不够好上。后来发现还是项目过于简单，运用方面不够深入的问题</p>
+<h1 id="ZOOM"><a href="#ZOOM" class="headerlink" title="ZOOM"></a>ZOOM</h1><h2 id="一面-2"><a href="#一面-2" class="headerlink" title="一面"></a>一面</h2><h3 id="react和vue的区别"><a href="#react和vue的区别" class="headerlink" title="react和vue的区别"></a>react和vue的区别</h3><ol>
+<li>react需要关注避免不必要子组件的重渲染，而vue可以不必关注此类优化<ul>
+<li>在react中，当某组件的状态发生变化时，会以此组件为根，重新渲染整个组件子树。所以需要使用pureComponent或shouldComponentUpdate手动优化</li>
+<li>在vue中，组件依赖在渲染过程中自动追踪（响应式数据），所以系统能准确知道哪个组件需要重渲染</li>
+</ul>
+</li>
+<li>react中，所有组件的渲染功能都依靠JSX，而JSX是使用XML语法编写的JavaScript的语法糖。而Vue是把所有html、css、js组合到一起，用各自的处理方式</li>
+<li>react是单向数据流，而vue是双向数据绑定</li>
+<li>react需要调用setState进行状态的修改，而vue可直接修改数据，从而派发视图更新</li>
+<li>react是mvc模式，而vue是mvvm模式，vm表示的是vue实例</li>
+<li>react可使用HOC（高阶组件）进行扩展，而vue可使用mixin进行组件的扩展</li>
+</ol>
+<h3 id="react的hook有了解吗"><a href="#react的hook有了解吗" class="headerlink" title="react的hook有了解吗"></a>react的hook有了解吗</h3><p>hook使函数组件也能拥有react特性<br>hook解决的问题：</p>
+<ul>
+<li>复用有状态的组件</li>
+<li>生命周期钩子函数中逻辑复杂</li>
+<li>class组件中this的指向问题<br>
+
+</li>
+</ul>
+<h3 id="react的自定义hook有什么规则"><a href="#react的自定义hook有什么规则" class="headerlink" title="react的自定义hook有什么规则"></a>react的自定义hook有什么规则</h3><ol>
+<li>不能在条件判断或循环中使用hook</li>
+<li>只能在组件中或自定义hook中使用<h3 id="react的useState和useEffect分别可以应用在哪些场景"><a href="#react的useState和useEffect分别可以应用在哪些场景" class="headerlink" title="react的useState和useEffect分别可以应用在哪些场景"></a>react的useState和useEffect分别可以应用在哪些场景</h3>useState：用于在函数组件中使用状态state，以及更新state<br>useEffect：在函数组件中执行副作用操作，相当于react的componentDidMount、componentDidUpdate、componetWillUnmount生命周期<br>常见副作用：数据获取，设置订阅以及手动更改React组件中的DOM<br></li>
+</ol>
+<h3 id="vue的Object-defineProperty和Proxy的区别，以及响应式原理"><a href="#vue的Object-defineProperty和Proxy的区别，以及响应式原理" class="headerlink" title="vue的Object.defineProperty和Proxy的区别，以及响应式原理"></a>vue的Object.defineProperty和Proxy的区别，以及响应式原理</h3><p>响应式数据原理：<br>采用发布订阅的模式，结合 <code>Object.defineProperty</code> 的劫持能力，来实现双向绑定。通过创建监听者（Observer），用于监听属性值的变化。以及消息管理员（Dep），实现订阅发布中心，负责存储订阅者和消息的分发，而Watcher就是订阅者。<br>优劣对比：</p>
+<ol>
+<li>proxy可以直接监听对象而非属性</li>
+<li>proxy可以直接监听数组的变化</li>
+<li>proxy的拦截方法比Object.defineProperty多，比如apply、ownKey、has、deleteProperty等</li>
+<li>proxy返回新对象，而Object.defineProperty只能遍历对象属性直接修改</li>
+<li>Object.defineProperty的兼容性比proxy好 <br>
+
+</li>
+</ol>
+<h3 id="写过哪些Vue自定义指令"><a href="#写过哪些Vue自定义指令" class="headerlink" title="写过哪些Vue自定义指令"></a>写过哪些Vue自定义指令</h3><p>权限校验 v-permission<br>​<br></p>
+<h3 id="自定义指令原理说一下"><a href="#自定义指令原理说一下" class="headerlink" title="自定义指令原理说一下"></a>自定义指令原理说一下</h3><ol>
+<li>在生成 ast 语法树时，遇到指令会给当前元素添加 directives 属性</li>
+<li>在编译的codegen生成可执行代码过程中，通过genDirectives函数，生成指令代码</li>
+<li>在执行render function之后，生成vnode，将directives属性放置于vnode的data属性中</li>
+<li>在patch前，会将指令的各个钩子收集存储于cbs属性中，并在patch过程中调用对应的钩子执行</li>
+<li>当执行指令对应钩子函数时，调用对应指令定义的方法执行<br>
+
+</li>
+</ol>
+<h3 id="Vue的生命周期"><a href="#Vue的生命周期" class="headerlink" title="Vue的生命周期"></a>Vue的生命周期</h3><p><img src="/2021/09/05/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/6.png" alt="6.png"></p>
+<h3 id="Vue做过哪些优化"><a href="#Vue做过哪些优化" class="headerlink" title="Vue做过哪些优化"></a>Vue做过哪些优化</h3><h3 id="keep-alive的原理说一下"><a href="#keep-alive的原理说一下" class="headerlink" title="keep-alive的原理说一下"></a>keep-alive的原理说一下</h3><ol>
+<li>keep-alive是Vue的内置组件，也是个抽象组件（在组件实例建立父子关系时，会被忽略）。在组件的render渲染方法中，会根据include和exclude判断是否需要缓存<ul>
+<li>如果不缓存，则直接返回vnode</li>
+<li>如果需要缓存，则判断是否命中缓存，如果命中缓存，则从缓存中拿vnode的组件实例，否则，将vnode设置进缓存cache中。</li>
+<li>最后会设置vnode.data.keepAlive为true</li>
+</ul>
+</li>
+<li>在组件渲染过程中<ul>
+<li>首次渲染，除了在keep-alive中建立缓存，和普通组件的渲染没有区别。</li>
+<li>缓存渲染<ul>
+<li>在dom diff之前会执行prepatch钩子函数，因为keep-alive支持slot，所以会对slots做重新解析，从而触发$forceUpdate逻辑，也就是触发keep-alive的render方法。</li>
+<li>接着又会执行patch过程，因为vnode的实例存在且keepAlive为true，所以在init的钩子函数里不会再执行mount过程</li>
+<li>在isReactivated为true的情况下，还会执行reactivateComponent方法，把缓存的DOM对象直接插入到目标元素中，完成数据更新下的渲染过程<br>
+
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="vue-router有哪些钩子"><a href="#vue-router有哪些钩子" class="headerlink" title="vue-router有哪些钩子"></a>vue-router有哪些钩子</h3><ul>
+<li>全局前置守卫 <code>router.beforeEach</code> </li>
+<li>全局解析守卫 <code>router.beforeResolve</code> </li>
+<li>全局后置钩子 <code>router.afterEach</code> </li>
+<li>路由独享守卫 <code>beforeEnter</code> </li>
+<li>组件内守卫<ul>
+<li>beforeRouteEnter</li>
+<li>beforeRouteUpdate</li>
+<li>beforeRouteLeave<br>
+
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="在路由钩子里实现权限判断"><a href="#在路由钩子里实现权限判断" class="headerlink" title="在路由钩子里实现权限判断"></a>在路由钩子里实现权限判断</h3><h3 id="vue的mixin执行顺序"><a href="#vue的mixin执行顺序" class="headerlink" title="vue的mixin执行顺序"></a>vue的mixin执行顺序</h3><ol>
+<li>全局混入：按注册的顺序依次执行</li>
+<li>局部注册混入：按mixins数组里声明的顺序依次执行</li>
+<li>最后执行组件options里的钩子</li>
+</ol>
+<p><strong>mixin原理：</strong><br>mixin合并过程主要是在<code>mergeOptions</code>函数中，也就是相当于是options的合并<br>options合并过程中，针对不同key，有着不同的合并策略，共分为三种类型：</p>
+<ul>
+<li>替换型：props、methods、inject、computed</li>
+<li>合并型：data</li>
+<li>队列型：生命周期钩子函数，先进先出<br>
+
+</li>
+</ul>
+<h3 id="less有哪些特性"><a href="#less有哪些特性" class="headerlink" title="less有哪些特性"></a>less有哪些特性</h3><ul>
+<li>变量</li>
+<li>嵌套</li>
+<li>合并Merge</li>
+<li>混合mixin</li>
+<li>导入@import</li>
+<li>插件@plugin</li>
+<li>属性/变量访问器</li>
+<li>函数<br>
+
+</li>
+</ul>
+<h3 id="用less实现栅格系统"><a href="#用less实现栅格系统" class="headerlink" title="用less实现栅格系统"></a>用less实现栅格系统</h3><p>Row的实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;zvu-row&quot;&gt;</span><br><span class="line">        &lt;slot&gt;&lt;&#x2F;slot&gt;</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">    name: &quot;Row&quot;</span><br><span class="line">&#125;</span><br><span class="line">&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
+<p>Col的实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">    &lt;div :class&#x3D;&quot;classes&quot;&gt;</span><br><span class="line">        &lt;slot&gt;&lt;&#x2F;slot&gt;</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">const perfixCls &#x3D; &quot;zvu-col&quot;</span><br><span class="line">export default &#123;</span><br><span class="line">    name: &#39;Col&#39;,</span><br><span class="line">    props: &#123;</span><br><span class="line">        span: [Number, String],</span><br><span class="line">        offest: [Number, String],</span><br><span class="line">    &#125;,</span><br><span class="line">    computed: &#123;</span><br><span class="line">        classes: function() &#123;</span><br><span class="line">            return [</span><br><span class="line">                &#96;$&#123;perfixCls&#125;&#96;,</span><br><span class="line">                &#123;</span><br><span class="line">                    [&#96;$&#123;perfixCls&#125;-span-$&#123;this.span&#125;&#96;]: this.span,</span><br><span class="line">                    [&#96;$&#123;perfixCls&#125;-offset-$&#123;this.offest&#125;&#96;]: this.offest,</span><br><span class="line">                &#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
+<p>样式：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">@row-perfix-cls:</span> zvu-row;</span><br><span class="line"><span class="variable">@col-perfix-cls:</span> zvu-col;</span><br><span class="line"><span class="variable">@gird-column:</span> <span class="number">24</span>;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.@&#123;row-perfix-cls&#125;</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>: flex;</span><br><span class="line">    <span class="attribute">flex-flow</span>: row wrap;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.@&#123;col-perfix-cls&#125;</span> &#123;</span><br><span class="line">    <span class="attribute">position</span>: relative;</span><br><span class="line">    <span class="attribute">max-width</span>: <span class="number">100%</span>;</span><br><span class="line">    <span class="attribute">min-height</span>: <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 通过循环调用loop-grid-column函数，创建各个宽度的样式</span></span><br><span class="line"><span class="selector-class">.loop-grid-column</span>(<span class="variable">@index</span>) <span class="keyword">when</span> (<span class="variable">@index</span> &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="selector-class">.@&#123;col-perfix-cls&#125;</span><span class="selector-tag">-span-</span><span class="variable">@&#123;index&#125;</span> &#123;</span><br><span class="line">        <span class="attribute">display</span>: block;</span><br><span class="line">        <span class="attribute">flex</span>: <span class="number">0</span> <span class="number">0</span> percentage(<span class="variable">@index</span> / <span class="variable">@gird-column</span>);</span><br><span class="line">        <span class="attribute">max-width</span>: percentage(<span class="variable">@index</span> / <span class="variable">@gird-column</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="selector-class">.@&#123;col-perfix-cls&#125;</span><span class="selector-tag">-offset-</span><span class="variable">@&#123;index&#125;</span> &#123;</span><br><span class="line">        <span class="attribute">margin-left</span>: percentage(<span class="variable">@index</span> / <span class="variable">@gird-column</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="selector-class">.loop-grid-column</span>(<span class="variable">@index</span> - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.make-gird</span>() &#123;</span><br><span class="line">    <span class="selector-class">.loop-grid-column</span>(<span class="variable">@gird-column</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.make-gird</span>();</span><br></pre></td></tr></table></figure>
+<h3 id="typescript的特性"><a href="#typescript的特性" class="headerlink" title="typescript的特性"></a>typescript的特性</h3><h3 id="es6的数组和对象相关的特性"><a href="#es6的数组和对象相关的特性" class="headerlink" title="es6的数组和对象相关的特性"></a>es6的数组和对象相关的特性</h3><p><strong>数组特性</strong></p>
+<ul>
+<li>扩展运算符：将数组转化为以逗号隔开的参数</li>
+<li><code>Array.from</code> ：用于将类似数组的对象和可遍历的对象转化为真正的数组</li>
+<li><code>Array.of</code> ：用于将一组值转变为数组 <code>Array.of(1, 2) //[1, 2]</code> </li>
+<li><code>copyWithin()</code> ：<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 将指定位置的成员复制到其他位置，然后返回当前数组，会改变当前数组</span></span><br><span class="line"><span class="comment"> * target: 从该位置开始替换数据</span></span><br><span class="line"><span class="comment"> * start: 从该位置开始读取数据，默认为0</span></span><br><span class="line"><span class="comment"> * end: 到该位置停止数据，默认等于数组长度</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="built_in">Array</span>.prototype.copyWithin(target, start, end);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>];</span><br><span class="line">arr.copyWithin(<span class="number">0</span>, <span class="number">2</span>)</span><br><span class="line"><span class="built_in">console</span>.log(arr) <span class="comment">//[ 3, 4, 5, 6, 5, 6 ]</span></span><br></pre></td></tr></table></figure></li>
+<li><code>find()</code> 和 <code>findIndex()</code> ：用于查找符合条件的数组成员</li>
+<li><code>fill()</code> ：用于填充数组<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 用于填充数组</span></span><br><span class="line"><span class="comment"> * target: 填充值</span></span><br><span class="line"><span class="comment"> * start: 从该位置开始填充</span></span><br><span class="line"><span class="comment"> * end: 到该位置停止</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">// Array.prototype.fill(target, start, end);</span></span><br><span class="line"></span><br><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>].fill(<span class="number">0</span>, <span class="number">2</span>, <span class="number">3</span>) <span class="comment">//[ 1, 2, 0, 4 ]</span></span><br></pre></td></tr></table></figure></li>
+<li><code>entries()</code> ， <code>keys()</code> 和 <code>values()</code> </li>
+<li><code>includes()</code> ：判断是否包含某值</li>
+<li><code>flat()</code> 和 <code>flatMap()</code> ：用于将嵌套数组拉平，也就是扁平化，默认只拉平一层</li>
+</ul>
+<p><strong>对象特性</strong></p>
+<ul>
+<li>属性简洁表示法</li>
+<li>属性名表达式<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> second = <span class="string">&quot;second value&quot;</span></span><br><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">  [<span class="string">&#x27;a&#x27;</span> + <span class="string">&#x27;b&#x27;</span>]: <span class="number">1</span>,</span><br><span class="line">  [second]: <span class="number">2</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>属性的遍历</li>
+<li>super关键字：指向当前对象的原型对象</li>
+<li>对象的扩展运算符<ul>
+<li>解构赋值：用于从一个对象中取值，相当于将目标对象自身的所有可遍历的、尚未被读取的属性，分配到指定的对象上。解构赋值必须是最后一个参数<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> &#123;x, y, ...z&#125; = &#123;<span class="attr">a</span>: <span class="number">1</span>, <span class="attr">b</span>: <span class="number">2</span>, <span class="attr">c</span>: <span class="number">3</span>, <span class="attr">d</span>: <span class="number">4</span>&#125;;</span><br><span class="line"><span class="built_in">console</span>.log(z) <span class="comment">//&#123;c: 3, d: 4&#125;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>对象新增的方法<ul>
+<li><code>Object.is()</code> ：比较两个值是否相等。<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//与===的区别</span></span><br><span class="line">+<span class="number">0</span> === -<span class="number">0</span> <span class="comment">//true</span></span><br><span class="line"><span class="literal">NaN</span> === <span class="literal">NaN</span> <span class="comment">//false</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.is(+<span class="number">0</span>, -<span class="number">0</span>) <span class="comment">//false</span></span><br><span class="line"><span class="built_in">Object</span>.is(<span class="literal">NaN</span>, <span class="literal">NaN</span>) <span class="comment">//true</span></span><br></pre></td></tr></table></figure></li>
+<li><code>Object.assign()</code> ：用于对象的合并，将源对象的所有可枚举属性，复制到目标对象（target）</li>
+<li><code>Object.getOwnPropertyDescriptors()</code> ：返回指定对象所有自身属性的描述对象</li>
+<li><code>Object.setPropertyOf()</code> 和 <code>Object.getPropertyOf()</code> ：原型对象的操作方法</li>
+<li><code>Object.keys()</code> 、 <code>Object.values()</code> 和 <code>Object.entries()</code> </li>
+<li><code>Object.fromEntries()</code> ：entries方法的逆操作，将键值对转化为对象<br>
+
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="数组和对象的解构有什么区别"><a href="#数组和对象的解构有什么区别" class="headerlink" title="数组和对象的解构有什么区别"></a>数组和对象的解构有什么区别</h3><ul>
+<li>数组的解构是按顺序的，对象的解构是按属性的<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> &#123; bar, foo &#125; = &#123; <span class="attr">foo</span>: <span class="string">&#x27;aaa&#x27;</span>, <span class="attr">bar</span>: <span class="string">&#x27;bbb&#x27;</span> &#125;;</span><br><span class="line">foo <span class="comment">// &quot;aaa&quot;</span></span><br><span class="line">bar <span class="comment">// &quot;bbb&quot;</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="es6的扩展运算符说一下"><a href="#es6的扩展运算符说一下" class="headerlink" title="es6的扩展运算符说一下"></a>es6的扩展运算符说一下</h3><p>含义：将一个数组转变为用逗号分割的参数序列<br>应用场景：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 复制数组</span></span><br><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr2 = [...arr];</span><br><span class="line"><span class="keyword">var</span> [... arr3] = arr;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 合并数组</span></span><br><span class="line"><span class="keyword">var</span> arr1 = [<span class="number">1</span>, <span class="number">2</span>];</span><br><span class="line"><span class="keyword">var</span> arr2 = [<span class="number">3</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr3 = [...arr1, ...arr2];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 与解构结合赋值</span></span><br><span class="line"><span class="comment">// 扩展运算符用于数组赋值，只能放在参数的最后一位</span></span><br><span class="line"><span class="keyword">var</span> [first, ...rest] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"><span class="built_in">console</span>.log(first);  <span class="comment">// 1</span></span><br><span class="line"><span class="built_in">console</span>.log(rest);   <span class="comment">// [2, 3]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 字符串</span></span><br><span class="line"><span class="comment">// 可识别四个字节的Unicode字符</span></span><br><span class="line"><span class="keyword">var</span> str = <span class="string">&quot;hello&quot;</span>;</span><br><span class="line"><span class="built_in">console</span>.log([...str]); <span class="comment">// [&#x27;h&#x27;, &#x27;e&#x27;, &#x27;l&#x27;, &#x27;l&#x27;, &#x27;o&#x27;]</span></span><br><span class="line"><span class="built_in">console</span>.log([...<span class="string">&#x27;x\uD83D\uDE80y&#x27;</span>]) <span class="comment">//[ &#x27;x&#x27;, &#x27;🚀&#x27;, &#x27;y&#x27; ]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 实现iterator接口的对象</span></span><br><span class="line"><span class="comment">// 扩展运算符相当于内部调用了iterator接口</span></span><br><span class="line"><span class="keyword">var</span> nodeList = <span class="built_in">document</span>.querySelectorAll(<span class="string">&#x27;div&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> nodeArr = [...nodeList]; <span class="comment">// nodeList不是数组，但由于NodeList对象实现了迭代器</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// map和set结构，generator函数</span></span><br><span class="line"><span class="keyword">let</span> map = <span class="keyword">new</span> <span class="built_in">Map</span>([</span><br><span class="line">    [<span class="number">1</span>, <span class="string">&#x27;one&#x27;</span>],</span><br><span class="line">    [<span class="number">2</span>, <span class="string">&#x27;two&#x27;</span>],</span><br><span class="line">    [<span class="number">3</span>, <span class="string">&#x27;three&#x27;</span>]</span><br><span class="line">]);</span><br><span class="line"><span class="built_in">console</span>.log([...map.keys()]); <span class="comment">//[1, 2, 3]</span></span><br><span class="line"><span class="built_in">console</span>.log([...map.values()]) <span class="comment">//[ &#x27;one&#x27;, &#x27;two&#x27;, &#x27;three&#x27; ]</span></span><br></pre></td></tr></table></figure>
+<h3 id="数组和对象的区别"><a href="#数组和对象的区别" class="headerlink" title="数组和对象的区别"></a>数组和对象的区别</h3><ul>
+<li>对象是无序数据的集合，数组是有序数据的集合</li>
+<li>对象的数据需要指定名称，数组的数据没有名称，只有下标</li>
+<li>对象没有长度，数组有长度<br>
+
+</li>
+</ul>
+<h3 id="数组扁平化"><a href="#数组扁平化" class="headerlink" title="数组扁平化"></a>数组扁平化</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 递归</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">flatten</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> arr.reduce(<span class="function"><span class="keyword">function</span>(<span class="params">prev, cur</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> prev.concat(cur <span class="keyword">instanceof</span> <span class="built_in">Array</span> ? flatten(cur)  : cur)</span><br><span class="line">    &#125;, [])</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 转为字符串</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">flatten2</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> str = arr.toString();</span><br><span class="line">    <span class="keyword">return</span> str.split(<span class="string">&#x27;,&#x27;</span>).map(<span class="function"><span class="params">item</span> =&gt;</span> <span class="built_in">Number</span>(item));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 扩展运算符 能将二维数组转化为一维数组</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">flatten3</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(arr.some(<span class="function"><span class="params">item</span> =&gt;</span> item <span class="keyword">instanceof</span> <span class="built_in">Array</span>)) &#123;</span><br><span class="line">        arr = [].concat(...arr);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> arr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// es6的flat方法</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">flatten4</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> arr.flat(<span class="literal">Infinity</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="递归过深怎么处理-递归优化"><a href="#递归过深怎么处理-递归优化" class="headerlink" title="递归过深怎么处理-递归优化"></a>递归过深怎么处理-递归优化</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 递归嵌套过深优化</span></span><br><span class="line"><span class="comment">// 可以考虑尾递归-将递归转化为循环</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">tco</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> value = [];</span><br><span class="line">    <span class="keyword">var</span> active = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">var</span> args = []</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        args.push(<span class="built_in">arguments</span>);</span><br><span class="line">        <span class="keyword">if</span>(!active) &#123;</span><br><span class="line">            active = <span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">while</span>(args.length) &#123;</span><br><span class="line">                value.pop()</span><br><span class="line">                value = value.concat(fn.apply(<span class="built_in">this</span>, args.shift()));</span><br><span class="line">            &#125;</span><br><span class="line">            active = <span class="literal">false</span>;</span><br><span class="line">            <span class="keyword">return</span> value;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> flatten4 = tco(<span class="function"><span class="keyword">function</span> (<span class="params">arr</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> arr.reduce(<span class="function"><span class="keyword">function</span>(<span class="params">prev, cur</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> prev.concat(cur <span class="keyword">instanceof</span> <span class="built_in">Array</span> ? flatten4(cur)  : cur)</span><br><span class="line">    &#125;, [])</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="作用域和作用域链"><a href="#作用域和作用域链" class="headerlink" title="作用域和作用域链"></a>作用域和作用域链</h3><p>当查找变量时，会先从当前上下文的变量对象中查找，如果没找到，就会从父级执行上下文的变量对象中查找，一直找到全局上下文的变量对象（全局对象）。这样由多个执行上下文的变量对象构成的链表就叫作用域链。<br><strong>函数创建</strong><br>函数有一个内部属性 <code>[[scope]]</code> ，当函数创建时，就会保存所有父变量对象到其中。<br><code>[[scope]]</code> ：所有父变量对象的层级链<br><strong>函数激活</strong><br>当函数激活时，进入函数上下文，就会将活动对象添加到作用链的前端<br><code>Scope = [AO].concat([[Scope]])</code> <br><br></p>
+<h3 id="webpack提取公共代码实现方式"><a href="#webpack提取公共代码实现方式" class="headerlink" title="webpack提取公共代码实现方式"></a>webpack提取公共代码实现方式</h3><p>多个入口文件的情况下，可通过提取公共代码，优化打包后的文件大小，减少重复打包的问题</p>
+<ul>
+<li>optimization.splitChunks（v.4新特性）<br>
+
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">optimization: &#123;</span><br><span class="line">    splitChunks: &#123;</span><br><span class="line">        cacheGroups: &#123;</span><br><span class="line">          	<span class="comment">// 分离业务逻辑公共js</span></span><br><span class="line">            common: &#123; </span><br><span class="line">                name: <span class="string">&#x27;common&#x27;</span>, </span><br><span class="line">                chunks: <span class="string">&#x27;all&#x27;</span>, </span><br><span class="line">                minSize: <span class="number">30</span>, </span><br><span class="line">                minChunks:<span class="number">2</span>,</span><br><span class="line">                priority:<span class="number">1</span>, <span class="comment">//优先级</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="comment">// 分离第三方库公共js</span></span><br><span class="line">            vendor:&#123;</span><br><span class="line">                name: <span class="string">&#x27;vendor&#x27;</span>,</span><br><span class="line">                chunks:<span class="string">&#x27;all&#x27;</span>,</span><br><span class="line">                test:<span class="regexp">/[\\/]node_modules[\\/]/</span>, <span class="comment">//在node_modules范围内进行匹配</span></span><br><span class="line">                priority:<span class="number">10</span>, <span class="comment">//优先级，先抽离公共的第三方库，再抽离业务代码，值越大优先级越高</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>CommonsChunkPlugin插件（适用于v.4版本以下）<br>
+
+</li>
+</ul>
+<p>与splitChunks的区别：CommonsChunkPlugin插件的思路是基于父子关系的，使得其只能统一抽取到父chunk，造成父chunk过大，不可避免的存在重复引入</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    entry: &#123;</span><br><span class="line">        main1: <span class="string">&#x27;./main.js&#x27;</span>,</span><br><span class="line">        main4: <span class="string">&#x27;./main4.js&#x27;</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    output: &#123;</span><br><span class="line">        filename: <span class="string">&#x27;[name][chunkhash].js&#x27;</span>,</span><br><span class="line">        path: path.resolve(__dirname, <span class="string">&#x27;../dist&#x27;</span>),</span><br><span class="line">        publicPath: <span class="string">&#x27;./&#x27;</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    plugins: [</span><br><span class="line">        <span class="keyword">new</span> CleanWebpackPlugin([<span class="string">&#x27;dist&#x27;</span>], &#123; <span class="attr">root</span>: process.cwd() &#125;),</span><br><span class="line">        <span class="keyword">new</span> HtmlWebpackPlugin(&#123;</span><br><span class="line">            filename: <span class="string">&#x27;pagea.html&#x27;</span>,</span><br><span class="line">            template: <span class="string">&#x27;index.html&#x27;</span>,</span><br><span class="line">            minify: &#123;</span><br><span class="line">                removeComments: <span class="literal">true</span>,</span><br><span class="line">                collapseWhitespace: <span class="literal">true</span>,</span><br><span class="line">                removeAttributeQuotes: <span class="literal">true</span></span><br><span class="line">            &#125;,</span><br><span class="line">            chunks: [<span class="string">&#x27;manifest&#x27;</span>, <span class="string">&#x27;main1&#x27;</span>, <span class="string">&#x27;vendor&#x27;</span>],</span><br><span class="line">        &#125;),</span><br><span class="line">        <span class="keyword">new</span> HtmlWebpackPlugin(&#123;</span><br><span class="line">            filename: <span class="string">&#x27;pageb.html&#x27;</span>,</span><br><span class="line">            template: <span class="string">&#x27;index.html&#x27;</span>,</span><br><span class="line">            minify: &#123;</span><br><span class="line">                removeComments: <span class="literal">true</span>,</span><br><span class="line">                collapseWhitespace: <span class="literal">true</span>,</span><br><span class="line">                removeAttributeQuotes: <span class="literal">true</span></span><br><span class="line">            &#125;,</span><br><span class="line">            chunks: [<span class="string">&#x27;manifest&#x27;</span>, <span class="string">&#x27;main4&#x27;</span>, <span class="string">&#x27;vendor&#x27;</span>],</span><br><span class="line">        &#125;),</span><br><span class="line">        <span class="keyword">new</span> webpack.optimize.CommonsChunkPlugin(&#123;</span><br><span class="line">            name: <span class="string">&#x27;vendor&#x27;</span>,</span><br><span class="line">            minChunks: <span class="function"><span class="keyword">function</span>(<span class="params"><span class="built_in">module</span></span>) </span>&#123;</span><br><span class="line">              <span class="keyword">return</span> (</span><br><span class="line">                <span class="built_in">module</span>.resource &amp;&amp;</span><br><span class="line">                /\.js$/.test(<span class="built_in">module</span>.resource) &amp;&amp;</span><br><span class="line">                <span class="built_in">module</span>.resource.indexOf(</span><br><span class="line">                  path.join(__dirname, <span class="string">&#x27;../node_modules&#x27;</span>)</span><br><span class="line">                ) === <span class="number">0</span></span><br><span class="line">              )</span><br><span class="line">            &#125;,</span><br><span class="line">        &#125;),</span><br><span class="line">        <span class="keyword">new</span> webpack.optimize.CommonsChunkPlugin(&#123;</span><br><span class="line">            name: <span class="string">&#x27;manifest&#x27;</span>,</span><br><span class="line">        &#125;),</span><br><span class="line">    ],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中，mian.js引入了vue和jquery，而main4.js只引入了vue<br>结果：打包后，vender包含了vue和jquery，也就是加载pageb的时候，多加载了不需要的jquery代码<br><strong>参考资料：</strong><a target="_blank" rel="noopener" href="https://github.com/kd-cloud-web/Blog/issues/51"> </a><br><a target="_blank" rel="noopener" href="https://github.com/kd-cloud-web/Blog/issues/51">关于webpack的公共代码提取和运行</a><br><a target="_blank" rel="noopener" href="https://webpack.docschina.org/plugins/split-chunks-plugin/">webpack文档-SplitChunksPlugin</a>​</p>
+<h3 id="webpack分包加载"><a href="#webpack分包加载" class="headerlink" title="webpack分包加载"></a>webpack分包加载</h3><p>模块异步加载的两种方式：</p>
+<ul>
+<li>webpack的require.ensure()</li>
+<li>es6的import()</li>
+</ul>
+<p>​</p>
+<p>原理：</p>
+<ul>
+<li>webpack中异步加载会被替换成<code>__webpack_require__.e()</code>函数，在该函数中，主要通过jsonp的方式使用script去加载异步chunk文件，同时返回promise</li>
+<li>异步加载的代码，会被保存在一个全局的<code>jsonpFunction</code>中</li>
+<li><code>jsonpFuntion</code>数组由chunk名和该chunk的module对象组成</li>
+</ul>
+<br>
+
+<h2 id="总结-3"><a href="#总结-3" class="headerlink" title="总结"></a>总结</h2><p>这次面试虽然前面陆陆续续复习了很多知识，但面试过程因为太紧张，都没怎么回答好。但面试官还是挺好的，最后跟他聊了一下，也发现了自己不足的地方，比如运用方面过于薄弱啊，react还是需要学习一下等问题。<br></p>
+<h1 id="兑吧"><a href="#兑吧" class="headerlink" title="兑吧"></a>兑吧</h1><p>这次面试面的挺久，算是第一场面到hr的面试吧，所以好些问题都忘记了，就记录一下没回答上来且记忆深刻的问题吧</p>
+<h2 id="一面-3"><a href="#一面-3" class="headerlink" title="一面"></a>一面</h2><h3 id="执行上下文是什么？（这问题我一时想不起来怎么回答）"><a href="#执行上下文是什么？（这问题我一时想不起来怎么回答）" class="headerlink" title="执行上下文是什么？（这问题我一时想不起来怎么回答）"></a>执行上下文是什么？（这问题我一时想不起来怎么回答）</h3><p>定义：当前JavaScript代码被解析和执行时所在环境的抽象概念<br>类型：全局执行上下文、函数执行上下文、eval函数执行上下文<br>生命周期：</p>
+<ul>
+<li><strong>创建阶段</strong><ul>
+<li>创建变量对象</li>
+<li>创建作用域链</li>
+<li>确定this指向</li>
+</ul>
+</li>
+<li><strong>执行阶段</strong></li>
+<li><strong>回收阶段</strong><br>
+执行上下文栈：JavaScript引擎创建执行上下文栈，来管理执行上下文
+### 什么是原型链（这里不知道怎么描述，就举了个例子回答）
+### vue-router的params和query的区别
+|  | query | params |
+| --- | --- | --- |
+| 路由 | /router?id=123 | /router/:id |
+| 接收参数 | this.$route.query.id | this.$route.params.id |
+|  | 相当于get请求 | 相当于post请求 |
+<br>
+params：/router/:id<br>query: /router?id=123
+### vuex的abstract模式
+abstract模式是使用一个不依赖于浏览器的浏览历史虚拟管理后端。不在浏览器的环境下，会自动切换成abstract模式，适用于在原生端和nodejs中使用。<br>原理：使用一个数组stack模拟浏览器历史记录栈的功能<br>​<br>
+## 二面
+### vue-router如何添加新路由，原理是什么
+方法：router.addRoutes(routes)<br>原理：
+</li>
+</ul>
+<ol>
+<li>addRoutes方法中，主要调用了matcher.addRoutes方法，而addRoutes方法实际只调用了createRouteMap方法。</li>
+<li>这个方法中，主要是根据传入的配置信息，构建路由映射表和名称映射表，创建各个路由的Record对象</li>
+</ol>
+<h3 id="骨架屏如何实现"><a href="#骨架屏如何实现" class="headerlink" title="骨架屏如何实现"></a>骨架屏如何实现</h3><p>​<br></p>
+<h1 id="蚂蚁"><a href="#蚂蚁" class="headerlink" title="蚂蚁"></a>蚂蚁</h1><h2 id="电面-2"><a href="#电面-2" class="headerlink" title="电面"></a>电面</h2><h3 id="介绍vue-router的两种模式"><a href="#介绍vue-router的两种模式" class="headerlink" title="介绍vue-router的两种模式"></a>介绍vue-router的两种模式</h3><h3 id="vue3与vue2的区别"><a href="#vue3与vue2的区别" class="headerlink" title="vue3与vue2的区别"></a>vue3与vue2的区别</h3><h3 id="模块有哪几种，有什么区别"><a href="#模块有哪几种，有什么区别" class="headerlink" title="模块有哪几种，有什么区别"></a>模块有哪几种，有什么区别</h3><h3 id="异步加载组件是怎么实现的"><a href="#异步加载组件是怎么实现的" class="headerlink" title="异步加载组件是怎么实现的"></a>异步加载组件是怎么实现的</h3><h3 id="webpack5有哪些新特性"><a href="#webpack5有哪些新特性" class="headerlink" title="webpack5有哪些新特性"></a>webpack5有哪些新特性</h3><h3 id="vite了解多少"><a href="#vite了解多少" class="headerlink" title="vite了解多少"></a>vite了解多少</h3><h3 id="跨域问题，cors是怎么实现的"><a href="#跨域问题，cors是怎么实现的" class="headerlink" title="跨域问题，cors是怎么实现的"></a>跨域问题，cors是怎么实现的</h3><h3 id="csrf和xss是什么攻击，有哪些防御方式，为什么能防御，以及是怎么攻击的"><a href="#csrf和xss是什么攻击，有哪些防御方式，为什么能防御，以及是怎么攻击的" class="headerlink" title="csrf和xss是什么攻击，有哪些防御方式，为什么能防御，以及是怎么攻击的"></a>csrf和xss是什么攻击，有哪些防御方式，为什么能防御，以及是怎么攻击的</h3><p>​<br></p>
+<h2 id="总结-4"><a href="#总结-4" class="headerlink" title="总结"></a>总结</h2><p>对于这场面试其实一开始就没啥信心，看了岗位要求就知道其实不够格（我也不知道为啥内推会给我推这岗位），想着就面试看看距离差在哪里，果然电面就败了。主要还是对新技术没有积极的去了解学习，然后对某些知识点就了解了表面，没有深入的去探寻。这可以设定为接下来的学习方向。。。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/less/" rel="tag"># less</a>
+              <a href="/tags/js/" rel="tag"># js</a>
+              <a href="/tags/react/" rel="tag"># react</a>
+              <a href="/tags/vue/" rel="tag"># vue</a>
+              <a href="/tags/node/" rel="tag"># node</a>
+              <a href="/tags/web%E5%89%8D%E7%AB%AF/" rel="tag"># web前端</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/09/02/%E6%9C%89%E8%B6%A3%E7%9A%84%E6%99%BA%E5%8A%9B%E8%80%83%E9%AA%8C/" rel="prev" title="有趣的智力考验">
+      <i class="fa fa-chevron-left"></i> 有趣的智力考验
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/09/07/react%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA/" rel="next" title="react服务端渲染框架搭建">
+      react服务端渲染框架搭建 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%B7%E5%AE%B6%E4%B9%90"><span class="nav-number">2.</span> <span class="nav-text">酷家乐</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%B5%E8%AF%9D%E9%9D%A2%E8%AF%95"><span class="nav-number">2.1.</span> <span class="nav-text">电话面试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#js%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.1.1.</span> <span class="nav-text">js数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">2.1.2.</span> <span class="nav-text">基础类型与引用类型的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%95%BF%E5%BA%A6%E8%B6%85%E5%87%BA%E6%A0%88%E5%AD%98%E5%82%A8%E9%95%BF%E5%BA%A6%EF%BC%8C%E6%80%8E%E4%B9%88%E5%8A%9E"><span class="nav-number">2.1.3.</span> <span class="nav-text">字符串长度超出栈存储长度，怎么办</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#map%E5%92%8Cset%E4%BB%A5%E5%8F%8Aweakmap%E5%92%8Cweakset%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">2.1.4.</span> <span class="nav-text">map和set以及weakmap和weakset的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6%EF%BC%88evnet-loop%EF%BC%89"><span class="nav-number">2.1.5.</span> <span class="nav-text">浏览器运行机制（evnet loop）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%8F%E4%BB%BB%E5%8A%A1%E5%92%8C%E5%BE%AE%E4%BB%BB%E5%8A%A1%E5%90%84%E6%9C%89%E5%93%AA%E4%BA%9B"><span class="nav-number">2.1.6.</span> <span class="nav-text">宏任务和微任务各有哪些</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nodejs%E7%9A%84%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6%E8%B7%9F%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB"><span class="nav-number">2.1.7.</span> <span class="nav-text">nodejs的运行机制跟浏览器运行机制有什么区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#setimmediate%E5%92%8CsetTImeout%E7%9A%84%E6%89%A7%E8%A1%8C%E5%85%88%E5%90%8E"><span class="nav-number">2.1.8.</span> <span class="nav-text">setimmediate和setTImeout的执行先后</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B5%E9%9D%A2%E6%BB%9A%E5%8A%A8%E5%9B%BE%E7%89%87%E6%87%92%E5%8A%A0%E8%BD%BD%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.1.9.</span> <span class="nav-text">页面滚动图片懒加载实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BC%93%E5%AD%98%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%8Chttp-header%E5%88%86%E5%88%AB%E5%AF%B9%E5%BA%94%E5%93%AA%E4%BA%9B%E5%B1%9E%E6%80%A7"><span class="nav-number">2.1.10.</span> <span class="nav-text">浏览器缓存有哪些，http header分别对应哪些属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BC%93%E5%AD%98%E8%BF%98%E6%9C%89%E5%93%AA%E4%BA%9B%E7%AD%96%E7%95%A5"><span class="nav-number">2.1.11.</span> <span class="nav-text">浏览器缓存还有哪些策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ionic%E5%A4%9A%E5%B9%B3%E5%8F%B0%E9%80%9A%E4%BF%A1"><span class="nav-number">2.1.12.</span> <span class="nav-text">ionic多平台通信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%A4%9A%E9%A1%B5%E9%9D%A2%E6%BB%91%E5%8A%A8%EF%BC%8C%E5%BE%AA%E7%8E%AF%E8%BD%AE%E6%92%AD"><span class="nav-number">2.1.13.</span> <span class="nav-text">实现多页面滑动，循环轮播</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="nav-number">2.1.14.</span> <span class="nav-text">TCP三次握手</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="nav-number">2.1.15.</span> <span class="nav-text">为什么需要三次握手</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTPS%E4%B8%8Ehttp%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">2.1.16.</span> <span class="nav-text">HTTPS与http的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSL%E5%81%9A%E4%BA%86%E4%BB%80%E4%B9%88"><span class="nav-number">2.1.17.</span> <span class="nav-text">SSL做了什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP2-0%E6%9C%89%E5%93%AA%E4%BA%9B%E6%96%B0%E7%89%B9%E6%80%A7"><span class="nav-number">2.1.18.</span> <span class="nav-text">HTTP2.0有哪些新特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E9%93%BE%E8%A1%A8%E9%80%86%E5%BA%8F"><span class="nav-number">2.1.19.</span> <span class="nav-text">单链表逆序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B9%B1%E5%BA%8F%E9%9B%86%E5%90%88%E4%B8%AD%E6%89%BE%E5%88%B0%E6%9C%80%E5%A4%A7%E7%9A%84100%E4%B8%AA%E5%80%BC"><span class="nav-number">2.1.20.</span> <span class="nav-text">乱序集合中找到最大的100个值</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E9%9D%A2"><span class="nav-number">2.2.</span> <span class="nav-text">二面</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#promise%E5%8E%9F%E7%90%86"><span class="nav-number">2.2.1.</span> <span class="nav-text">promise原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#promise%E9%93%BE%E5%8E%9F%E7%90%86"><span class="nav-number">2.2.2.</span> <span class="nav-text">promise链原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#promise%E9%93%BE%E8%BF%94%E5%9B%9Efalse%EF%BC%8C%E4%B8%8B%E4%B8%80%E4%B8%AAthen%E6%98%AF%E5%90%A6%E4%BC%9A%E8%BF%9B%E5%85%A5reject"><span class="nav-number">2.2.3.</span> <span class="nav-text">promise链返回false，下一个then是否会进入reject</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#require%E5%8E%9F%E7%90%86"><span class="nav-number">2.2.4.</span> <span class="nav-text">require原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1"><span class="nav-number">2.2.5.</span> <span class="nav-text">面向对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E6%80%81"><span class="nav-number">2.2.6.</span> <span class="nav-text">多态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#typescript%E8%BD%AC%E5%8C%96%E4%B8%BAjs"><span class="nav-number">2.2.7.</span> <span class="nav-text">typescript转化为js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A3%85%E9%A5%B0%E5%99%A8"><span class="nav-number">2.2.8.</span> <span class="nav-text">装饰器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E5%8E%9F%E7%90%86%E6%97%B6%EF%BC%8C%E5%BA%94%E8%AF%A5%E6%80%8E%E4%B9%88%E5%9B%9E%E7%AD%94"><span class="nav-number">2.2.9.</span> <span class="nav-text">问原理时，应该怎么回答</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">2.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B6%82%E9%B8%A6%E6%99%BA%E8%83%BD"><span class="nav-number">3.</span> <span class="nav-text">涂鸦智能</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%B5%E9%9D%A2"><span class="nav-number">3.1.</span> <span class="nav-text">电面</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#html%E9%87%8Cdom%E8%8A%82%E7%82%B9%E7%9A%84%E8%B7%AF%E5%BE%84%E6%9F%A5%E8%AF%A2"><span class="nav-number">3.1.1.</span> <span class="nav-text">html里dom节点的路径查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E9%87%8C%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E6%B8%B2%E6%9F%93%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="nav-number">3.1.2.</span> <span class="nav-text">浏览器里从输入URL到渲染的过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DNS%E6%98%AF%E6%80%8E%E4%B9%88%E8%A7%A3%E6%9E%90%E7%9A%84"><span class="nav-number">3.1.3.</span> <span class="nav-text">DNS是怎么解析的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%B2%E6%9F%93%E6%98%AF%E7%94%A8%E4%BB%80%E4%B9%88%E6%B8%B2%E6%9F%93"><span class="nav-number">3.1.4.</span> <span class="nav-text">渲染是用什么渲染</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%96%B9%E6%B3%95%E5%92%8C%E7%AD%96%E7%95%A5%EF%BC%8C%E8%80%81%E7%94%9F%E4%BB%A3%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%81%9A%E4%BA%86%E5%93%AA%E4%BA%9B%E4%BC%98%E5%8C%96"><span class="nav-number">3.1.5.</span> <span class="nav-text">垃圾回收方法和策略，老生代垃圾回收做了哪些优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#promise%E3%80%81generator%E5%92%8Casync%E7%9A%84%E5%8C%BA%E5%88%86"><span class="nav-number">3.1.6.</span> <span class="nav-text">promise、generator和async的区分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#promise%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.1.7.</span> <span class="nav-text">promise的实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#promise-then%E6%98%AF%E4%BB%80%E4%B9%88%E4%BB%BB%E5%8A%A1"><span class="nav-number">3.1.8.</span> <span class="nav-text">promise.then是什么任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#event-loop%E6%8F%8F%E8%BF%B0%E4%B8%80%E4%B8%8B"><span class="nav-number">3.1.9.</span> <span class="nav-text">event loop描述一下</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E6%9C%89%E5%93%AA%E4%BA%9B%E6%94%B9%E5%8F%98%E8%87%AA%E8%BA%AB%E6%95%B0%E7%BB%84%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">3.1.10.</span> <span class="nav-text">数组有哪些改变自身数组的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#es5%E5%AE%9E%E7%8E%B0sort%E6%96%B9%E6%B3%95"><span class="nav-number">3.1.11.</span> <span class="nav-text">es5实现sort方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#V8%E6%9C%89%E5%93%AA%E4%BA%9B%E7%89%B9%E5%BE%81"><span class="nav-number">3.1.12.</span> <span class="nav-text">V8有哪些特征</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8A%82%E7%82%B9%E7%9A%84%E5%AE%BD%E5%BA%A6100-%E5%92%8Cauto%E4%B9%8B%E9%97%B4%E6%9C%89%E4%BB%80%E4%B9%88%E4%B8%8D%E5%90%8C"><span class="nav-number">3.1.13.</span> <span class="nav-text">节点的宽度100%和auto之间有什么不同</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#flex%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%8C%E5%A6%82%E6%9E%9C%E6%94%B9%E5%8F%98%E4%B8%BB%E8%BD%B4%E6%96%B9%E5%90%91"><span class="nav-number">3.1.14.</span> <span class="nav-text">flex是什么，如果改变主轴方向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vue%E7%9A%84%E8%99%9A%E6%8B%9F%E8%8A%82%E7%82%B9%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">3.1.15.</span> <span class="nav-text">vue的虚拟节点的数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vue%E7%9A%84patch%E8%BF%87%E7%A8%8B%E6%8F%8F%E8%BF%B0%E4%B8%80%E4%B8%8B"><span class="nav-number">3.1.16.</span> <span class="nav-text">vue的patch过程描述一下</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E9%9D%A2"><span class="nav-number">3.2.</span> <span class="nav-text">一面</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D%E4%B8%80%E4%B8%8B%E8%87%AA%E5%B7%B1%EF%BC%8C%E4%BB%A5%E5%8F%8A%E9%87%8D%E7%82%B9%E4%BB%8B%E7%BB%8D%E4%B8%80%E4%B8%8B2%E4%B8%AA%E9%A1%B9%E7%9B%AE"><span class="nav-number">3.2.1.</span> <span class="nav-text">介绍一下自己，以及重点介绍一下2个项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vue%E9%A1%B9%E7%9B%AE%E7%9A%84%E4%BC%98%E5%8C%96"><span class="nav-number">3.2.2.</span> <span class="nav-text">vue项目的优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%89%87%E6%87%92%E5%8A%A0%E8%BD%BD%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.2.3.</span> <span class="nav-text">图片懒加载的实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vuex%E7%9A%84%E6%B5%81%E7%A8%8B"><span class="nav-number">3.2.4.</span> <span class="nav-text">vuex的流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vuex%E5%8E%9F%E7%90%86%EF%BC%8C%E5%A6%82%E4%BD%95%E5%81%9A%E5%88%B0%E9%A1%B5%E9%9D%A2%E7%9A%84%E5%93%8D%E5%BA%94"><span class="nav-number">3.2.5.</span> <span class="nav-text">vuex原理，如何做到页面的响应</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http%E7%BC%93%E5%AD%98%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.2.6.</span> <span class="nav-text">http缓存如何实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%84%E4%BB%B6%E6%87%92%E5%8A%A0%E8%BD%BD%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.2.7.</span> <span class="nav-text">组件懒加载的实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E9%9D%A2%EF%BC%88%E4%B8%BB%E7%AE%A1%E9%9D%A2%EF%BC%89"><span class="nav-number">3.3.</span> <span class="nav-text">二面（主管面）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#vue-router%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">3.3.1.</span> <span class="nav-text">vue router实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vue%E5%B1%80%E9%83%A8%E6%B8%B2%E6%9F%93%E8%BF%87%E7%A8%8B"><span class="nav-number">3.3.2.</span> <span class="nav-text">vue局部渲染过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E6%90%9C%E7%B4%A2%EF%BC%8C%E6%9C%89%E5%81%9A%E8%BF%87%E4%BC%98%E5%8C%96%E5%90%97"><span class="nav-number">3.3.3.</span> <span class="nav-text">深度搜索，有做过优化吗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B%EF%BC%8C%E4%BA%8B%E4%BB%B6%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E6%8C%82%E8%BD%BD"><span class="nav-number">3.3.4.</span> <span class="nav-text">服务端渲染实现过程，事件什么时候挂载</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93-1"><span class="nav-number">3.4.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BE%AE%E5%BA%97"><span class="nav-number">4.</span> <span class="nav-text">微店</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%B5%E9%9D%A2-1"><span class="nav-number">4.1.</span> <span class="nav-text">电面</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#vue%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8C%87%E4%BB%A4"><span class="nav-number">4.1.1.</span> <span class="nav-text">vue自定义指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vue%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86"><span class="nav-number">4.1.2.</span> <span class="nav-text">vue响应式原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vue%E5%BC%82%E6%AD%A5%E9%98%9F%E5%88%97"><span class="nav-number">4.1.3.</span> <span class="nav-text">vue异步队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vue%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8%E8%99%9A%E6%8B%9F%E8%8A%82%E7%82%B9%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9Cdom%E8%8A%82%E7%82%B9%E4%BB%A3%E4%BB%B7%E6%98%82%E8%B4%B5"><span class="nav-number">4.1.4.</span> <span class="nav-text">vue为什么使用虚拟节点，为什么直接操作dom节点代价昂贵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vue%E7%9A%84v-if%E5%92%8Cv-show%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">4.1.5.</span> <span class="nav-text">vue的v-if和v-show的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#eggjs%E6%80%8E%E4%B9%88%E6%90%AD%E5%BB%BA%E7%9A%84"><span class="nav-number">4.1.6.</span> <span class="nav-text">eggjs怎么搭建的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#eggjs%E7%94%A8%E8%BF%87%E5%93%AA%E4%BA%9B%E4%B8%AD%E9%97%B4%E4%BB%B6"><span class="nav-number">4.1.7.</span> <span class="nav-text">eggjs用过哪些中间件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93"><span class="nav-number">4.1.8.</span> <span class="nav-text">怎么实现的服务端渲染</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E6%9E%84%E5%8E%9F%E7%90%86%E6%98%AF%E6%80%8E%E4%B9%88%E6%A0%B7%E7%9A%84"><span class="nav-number">4.1.9.</span> <span class="nav-text">同构原理是怎么样的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#eggjs%E5%9C%A8%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%E6%98%AF%E5%81%9A%E4%BA%86%E4%BB%80%E4%B9%88"><span class="nav-number">4.1.10.</span> <span class="nav-text">eggjs在服务端渲染是做了什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#webpack%E5%8E%9F%E7%90%86%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">4.1.11.</span> <span class="nav-text">webpack原理是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#loader%E5%92%8Cplugins%E6%9C%89%E5%AE%9E%E7%8E%B0%E8%BF%87%E5%90%97"><span class="nav-number">4.1.12.</span> <span class="nav-text">loader和plugins有实现过吗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#loader"><span class="nav-number">4.1.13.</span> <span class="nav-text">loader:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#plugin%EF%BC%9A"><span class="nav-number">4.1.14.</span> <span class="nav-text">plugin：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#babel%E6%9C%89%E4%BA%86%E8%A7%A3%E5%90%97%EF%BC%9F%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84"><span class="nav-number">4.1.15.</span> <span class="nav-text">babel有了解吗？怎么实现的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#webpack%E4%BE%9D%E8%B5%96%E6%A0%91%E6%98%AF%E6%80%8E%E4%B9%88%E5%BB%BA%E7%AB%8B%E7%9A%84"><span class="nav-number">4.1.16.</span> <span class="nav-text">webpack依赖树是怎么建立的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E9%80%82%E9%85%8D%EF%BC%8C%E9%9D%A2%E5%AF%B9%E4%B8%8D%E5%90%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E6%80%8E%E4%B9%88%E5%81%9A%E7%9A%84%E5%A4%84%E7%90%86"><span class="nav-number">4.1.17.</span> <span class="nav-text">浏览器适配，面对不同浏览器怎么做的处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rem%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%8C%E7%94%A8%E7%9A%84%E5%A4%9A%E5%B0%91%E6%AF%94%E4%BE%8B%EF%BC%8C%E6%80%8E%E4%B9%88%E8%AE%A1%E7%AE%97%E7%9A%84"><span class="nav-number">4.1.18.</span> <span class="nav-text">rem是怎么实现的，用的多少比例，怎么计算的</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E9%9D%A2-1"><span class="nav-number">4.2.</span> <span class="nav-text">一面</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BB%9A%E5%8A%A8%E5%88%97%E8%A1%A8%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96"><span class="nav-number">4.2.1.</span> <span class="nav-text">滚动列表性能优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vue%E7%9A%84scoped%E5%8E%9F%E7%90%86"><span class="nav-number">4.2.2.</span> <span class="nav-text">vue的scoped原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%B2%E4%B8%80%E4%B8%8Bvue%E7%9A%84vuex"><span class="nav-number">4.2.3.</span> <span class="nav-text">讲一下vue的vuex</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%81%9A%E4%BA%86%E5%93%AA%E4%BA%9B%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96"><span class="nav-number">4.2.4.</span> <span class="nav-text">做了哪些性能优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93-2"><span class="nav-number">4.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ZOOM"><span class="nav-number">5.</span> <span class="nav-text">ZOOM</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E9%9D%A2-2"><span class="nav-number">5.1.</span> <span class="nav-text">一面</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#react%E5%92%8Cvue%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">5.1.1.</span> <span class="nav-text">react和vue的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#react%E7%9A%84hook%E6%9C%89%E4%BA%86%E8%A7%A3%E5%90%97"><span class="nav-number">5.1.2.</span> <span class="nav-text">react的hook有了解吗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#react%E7%9A%84%E8%87%AA%E5%AE%9A%E4%B9%89hook%E6%9C%89%E4%BB%80%E4%B9%88%E8%A7%84%E5%88%99"><span class="nav-number">5.1.3.</span> <span class="nav-text">react的自定义hook有什么规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#react%E7%9A%84useState%E5%92%8CuseEffect%E5%88%86%E5%88%AB%E5%8F%AF%E4%BB%A5%E5%BA%94%E7%94%A8%E5%9C%A8%E5%93%AA%E4%BA%9B%E5%9C%BA%E6%99%AF"><span class="nav-number">5.1.4.</span> <span class="nav-text">react的useState和useEffect分别可以应用在哪些场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vue%E7%9A%84Object-defineProperty%E5%92%8CProxy%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%8C%E4%BB%A5%E5%8F%8A%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86"><span class="nav-number">5.1.5.</span> <span class="nav-text">vue的Object.defineProperty和Proxy的区别，以及响应式原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E8%BF%87%E5%93%AA%E4%BA%9BVue%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8C%87%E4%BB%A4"><span class="nav-number">5.1.6.</span> <span class="nav-text">写过哪些Vue自定义指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8C%87%E4%BB%A4%E5%8E%9F%E7%90%86%E8%AF%B4%E4%B8%80%E4%B8%8B"><span class="nav-number">5.1.7.</span> <span class="nav-text">自定义指令原理说一下</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vue%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">5.1.8.</span> <span class="nav-text">Vue的生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vue%E5%81%9A%E8%BF%87%E5%93%AA%E4%BA%9B%E4%BC%98%E5%8C%96"><span class="nav-number">5.1.9.</span> <span class="nav-text">Vue做过哪些优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#keep-alive%E7%9A%84%E5%8E%9F%E7%90%86%E8%AF%B4%E4%B8%80%E4%B8%8B"><span class="nav-number">5.1.10.</span> <span class="nav-text">keep-alive的原理说一下</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vue-router%E6%9C%89%E5%93%AA%E4%BA%9B%E9%92%A9%E5%AD%90"><span class="nav-number">5.1.11.</span> <span class="nav-text">vue-router有哪些钩子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8%E8%B7%AF%E7%94%B1%E9%92%A9%E5%AD%90%E9%87%8C%E5%AE%9E%E7%8E%B0%E6%9D%83%E9%99%90%E5%88%A4%E6%96%AD"><span class="nav-number">5.1.12.</span> <span class="nav-text">在路由钩子里实现权限判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vue%E7%9A%84mixin%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="nav-number">5.1.13.</span> <span class="nav-text">vue的mixin执行顺序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#less%E6%9C%89%E5%93%AA%E4%BA%9B%E7%89%B9%E6%80%A7"><span class="nav-number">5.1.14.</span> <span class="nav-text">less有哪些特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8less%E5%AE%9E%E7%8E%B0%E6%A0%85%E6%A0%BC%E7%B3%BB%E7%BB%9F"><span class="nav-number">5.1.15.</span> <span class="nav-text">用less实现栅格系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#typescript%E7%9A%84%E7%89%B9%E6%80%A7"><span class="nav-number">5.1.16.</span> <span class="nav-text">typescript的特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#es6%E7%9A%84%E6%95%B0%E7%BB%84%E5%92%8C%E5%AF%B9%E8%B1%A1%E7%9B%B8%E5%85%B3%E7%9A%84%E7%89%B9%E6%80%A7"><span class="nav-number">5.1.17.</span> <span class="nav-text">es6的数组和对象相关的特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E5%92%8C%E5%AF%B9%E8%B1%A1%E7%9A%84%E8%A7%A3%E6%9E%84%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB"><span class="nav-number">5.1.18.</span> <span class="nav-text">数组和对象的解构有什么区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#es6%E7%9A%84%E6%89%A9%E5%B1%95%E8%BF%90%E7%AE%97%E7%AC%A6%E8%AF%B4%E4%B8%80%E4%B8%8B"><span class="nav-number">5.1.19.</span> <span class="nav-text">es6的扩展运算符说一下</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E5%92%8C%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">5.1.20.</span> <span class="nav-text">数组和对象的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E6%89%81%E5%B9%B3%E5%8C%96"><span class="nav-number">5.1.21.</span> <span class="nav-text">数组扁平化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%92%E5%BD%92%E8%BF%87%E6%B7%B1%E6%80%8E%E4%B9%88%E5%A4%84%E7%90%86-%E9%80%92%E5%BD%92%E4%BC%98%E5%8C%96"><span class="nav-number">5.1.22.</span> <span class="nav-text">递归过深怎么处理-递归优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8%E5%9F%9F%E5%92%8C%E4%BD%9C%E7%94%A8%E5%9F%9F%E9%93%BE"><span class="nav-number">5.1.23.</span> <span class="nav-text">作用域和作用域链</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#webpack%E6%8F%90%E5%8F%96%E5%85%AC%E5%85%B1%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-number">5.1.24.</span> <span class="nav-text">webpack提取公共代码实现方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#webpack%E5%88%86%E5%8C%85%E5%8A%A0%E8%BD%BD"><span class="nav-number">5.1.25.</span> <span class="nav-text">webpack分包加载</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93-3"><span class="nav-number">5.2.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%91%E5%90%A7"><span class="nav-number">6.</span> <span class="nav-text">兑吧</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E9%9D%A2-3"><span class="nav-number">6.1.</span> <span class="nav-text">一面</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E4%B8%8A%E4%B8%8B%E6%96%87%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%EF%BC%88%E8%BF%99%E9%97%AE%E9%A2%98%E6%88%91%E4%B8%80%E6%97%B6%E6%83%B3%E4%B8%8D%E8%B5%B7%E6%9D%A5%E6%80%8E%E4%B9%88%E5%9B%9E%E7%AD%94%EF%BC%89"><span class="nav-number">6.1.1.</span> <span class="nav-text">执行上下文是什么？（这问题我一时想不起来怎么回答）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AA%A8%E6%9E%B6%E5%B1%8F%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0"><span class="nav-number">6.1.2.</span> <span class="nav-text">骨架屏如何实现</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%9A%82%E8%9A%81"><span class="nav-number">7.</span> <span class="nav-text">蚂蚁</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%B5%E9%9D%A2-2"><span class="nav-number">7.1.</span> <span class="nav-text">电面</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8Dvue-router%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%A8%A1%E5%BC%8F"><span class="nav-number">7.1.1.</span> <span class="nav-text">介绍vue-router的两种模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vue3%E4%B8%8Evue2%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">7.1.2.</span> <span class="nav-text">vue3与vue2的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97%E6%9C%89%E5%93%AA%E5%87%A0%E7%A7%8D%EF%BC%8C%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB"><span class="nav-number">7.1.3.</span> <span class="nav-text">模块有哪几种，有什么区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%82%E6%AD%A5%E5%8A%A0%E8%BD%BD%E7%BB%84%E4%BB%B6%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84"><span class="nav-number">7.1.4.</span> <span class="nav-text">异步加载组件是怎么实现的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#webpack5%E6%9C%89%E5%93%AA%E4%BA%9B%E6%96%B0%E7%89%B9%E6%80%A7"><span class="nav-number">7.1.5.</span> <span class="nav-text">webpack5有哪些新特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vite%E4%BA%86%E8%A7%A3%E5%A4%9A%E5%B0%91"><span class="nav-number">7.1.6.</span> <span class="nav-text">vite了解多少</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98%EF%BC%8Ccors%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84"><span class="nav-number">7.1.7.</span> <span class="nav-text">跨域问题，cors是怎么实现的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#csrf%E5%92%8Cxss%E6%98%AF%E4%BB%80%E4%B9%88%E6%94%BB%E5%87%BB%EF%BC%8C%E6%9C%89%E5%93%AA%E4%BA%9B%E9%98%B2%E5%BE%A1%E6%96%B9%E5%BC%8F%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E8%83%BD%E9%98%B2%E5%BE%A1%EF%BC%8C%E4%BB%A5%E5%8F%8A%E6%98%AF%E6%80%8E%E4%B9%88%E6%94%BB%E5%87%BB%E7%9A%84"><span class="nav-number">7.1.8.</span> <span class="nav-text">csrf和xss是什么攻击，有哪些防御方式，为什么能防御，以及是怎么攻击的</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93-4"><span class="nav-number">7.2.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="赵依婷"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">赵依婷</p>
+  <div class="site-description" itemprop="description">打工都是人上人！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xzhao95" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xzhao95" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zhaoyiting26@163.com" title="E-Mail → mailto:zhaoyiting26@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/u/3295465524" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;u&#x2F;3295465524" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">赵依婷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'GbmucVnm0BdUOjFle71Gu7sb-gzGzoHsz',
+      appKey     : 'XShaIHR81BPhKR7DtM27n5Qh',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+  
+
+  <script src="/js/wobblewindow.js"></script>
+  <script>
+    //只在桌面版网页启用特效
+    if( window.innerWidth > 768  ){
+      $(document).ready(function () {
+        
+          $('.header').wobbleWindow({
+            radius: 50,
+            movementTop: false,
+            movementLeft: false,
+            movementRight: false,
+            debug: false,
+          });
+        
+
+        
+
+        
+      });
+    }
+  </script>
+
+</body>
+</html>

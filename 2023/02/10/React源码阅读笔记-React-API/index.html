@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="当前react最新版本为18.2.0。从主包React中开始阅读，文件地址为：react&#x2F;packages&#x2F;react&#x2F;src&#x2F;React.js可以从当前文件中看到，当前文件主要导出一些React APIReact包中主要是对这些API的封装 123456789101112131415161718192021222324252627282930313233343536373839404142434">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React源码阅读笔记-React API">
+<meta property="og:url" content="http://example.com/2023/02/10/React%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-React-API/index.html">
+<meta property="og:site_name" content="阿赵的烂笔头">
+<meta property="og:description" content="当前react最新版本为18.2.0。从主包React中开始阅读，文件地址为：react&#x2F;packages&#x2F;react&#x2F;src&#x2F;React.js可以从当前文件中看到，当前文件主要导出一些React APIReact包中主要是对这些API的封装 123456789101112131415161718192021222324252627282930313233343536373839404142434">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-02-10T07:51:03.000Z">
+<meta property="article:modified_time" content="2023-03-24T10:48:21.143Z">
+<meta property="article:author" content="赵依婷">
+<meta property="article:tag" content="js">
+<meta property="article:tag" content="react">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2023/02/10/React%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-React-API/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>React源码阅读笔记-React API | 阿赵的烂笔头</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">阿赵的烂笔头</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/10/React%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-React-API/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="赵依婷">
+      <meta itemprop="description" content="打工都是人上人！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="阿赵的烂笔头">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          React源码阅读笔记-React API
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-02-10 15:51:03" itemprop="dateCreated datePublished" datetime="2023-02-10T15:51:03+08:00">2023-02-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">web前端</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2023/02/10/React%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-React-API/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2023/02/10/React%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-React-API/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>当前react最新版本为18.2.0。从主包React中开始阅读，文件地址为：react/packages/react/src/React.js<br>可以从当前文件中看到，当前文件主要导出一些React API<br>React包中主要是对这些API的封装</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> createElement: any = __DEV__</span><br><span class="line">  ? createElementWithValidation</span><br><span class="line">  : createElementProd;</span><br><span class="line"><span class="keyword">const</span> cloneElement: any = __DEV__</span><br><span class="line">  ? cloneElementWithValidation</span><br><span class="line">  : cloneElementProd;</span><br><span class="line"><span class="keyword">const</span> createFactory: any = __DEV__</span><br><span class="line">  ? createFactoryWithValidation</span><br><span class="line">  : createFactoryProd;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Children = &#123;</span><br><span class="line">  map,</span><br><span class="line">  forEach,</span><br><span class="line">  count,</span><br><span class="line">  toArray,</span><br><span class="line">  only,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> &#123;</span><br><span class="line">  Children,</span><br><span class="line">  createMutableSource,</span><br><span class="line">  createRef,</span><br><span class="line">  Component,</span><br><span class="line">  PureComponent,</span><br><span class="line">  createContext,</span><br><span class="line">  createServerContext,</span><br><span class="line">  forwardRef,</span><br><span class="line">  lazy,</span><br><span class="line">  memo,</span><br><span class="line">  cache,</span><br><span class="line">  useCallback,</span><br><span class="line">  useContext,</span><br><span class="line">  useEffect,</span><br><span class="line">  useEffectEvent <span class="keyword">as</span> experimental_useEffectEvent,</span><br><span class="line">  useImperativeHandle,</span><br><span class="line">  useDebugValue,</span><br><span class="line">  useInsertionEffect,</span><br><span class="line">  useLayoutEffect,</span><br><span class="line">  useMemo,</span><br><span class="line">  useMutableSource,</span><br><span class="line">  useSyncExternalStore,</span><br><span class="line">  useReducer,</span><br><span class="line">  useRef,</span><br><span class="line">  useState,</span><br><span class="line">  REACT_FRAGMENT_TYPE <span class="keyword">as</span> Fragment,</span><br><span class="line">  REACT_PROFILER_TYPE <span class="keyword">as</span> Profiler,</span><br><span class="line">  REACT_STRICT_MODE_TYPE <span class="keyword">as</span> StrictMode,</span><br><span class="line">  REACT_DEBUG_TRACING_MODE_TYPE <span class="keyword">as</span> unstable_DebugTracingMode,</span><br><span class="line">  REACT_SUSPENSE_TYPE <span class="keyword">as</span> Suspense,</span><br><span class="line">  createElement,</span><br><span class="line">  cloneElement,</span><br><span class="line">  isValidElement,</span><br><span class="line">  ReactVersion <span class="keyword">as</span> version,</span><br><span class="line">  ReactSharedInternals <span class="keyword">as</span> __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,</span><br><span class="line">  <span class="comment">// Deprecated behind disableCreateFactory</span></span><br><span class="line">  createFactory,</span><br><span class="line">  <span class="comment">// Concurrent Mode</span></span><br><span class="line">  useTransition,</span><br><span class="line">  startTransition,</span><br><span class="line">  useDeferredValue,</span><br><span class="line">  REACT_SUSPENSE_LIST_TYPE <span class="keyword">as</span> SuspenseList,</span><br><span class="line">  REACT_LEGACY_HIDDEN_TYPE <span class="keyword">as</span> unstable_LegacyHidden,</span><br><span class="line">  REACT_OFFSCREEN_TYPE <span class="keyword">as</span> unstable_Offscreen,</span><br><span class="line">  getCacheSignal <span class="keyword">as</span> unstable_getCacheSignal,</span><br><span class="line">  getCacheForType <span class="keyword">as</span> unstable_getCacheForType,</span><br><span class="line">  useCacheRefresh <span class="keyword">as</span> unstable_useCacheRefresh,</span><br><span class="line">  REACT_CACHE_TYPE <span class="keyword">as</span> unstable_Cache,</span><br><span class="line">  use,</span><br><span class="line">  useMemoCache <span class="keyword">as</span> unstable_useMemoCache,</span><br><span class="line">  <span class="comment">// enableScopeAPI</span></span><br><span class="line">  REACT_SCOPE_TYPE <span class="keyword">as</span> unstable_Scope,</span><br><span class="line">  <span class="comment">// enableTransitionTracing</span></span><br><span class="line">  REACT_TRACING_MARKER_TYPE <span class="keyword">as</span> unstable_TracingMarker,</span><br><span class="line">  useId,</span><br><span class="line">  act,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+
+<p><a name="Ma9S6"></a></p>
+<h3 id="React-Children"><a href="#React-Children" class="headerlink" title="React.Children"></a>React.Children</h3><p>提供map、forEach、count、toArray、only方法，用于处理props.children，对children进行批量处理。<br>在forEach、count、toArray方法中，主要都使用了map方法</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// count方法，用于返回children长度</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">countChildren</span>(<span class="params">children</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> n = <span class="number">0</span>;</span><br><span class="line">  mapChildren(children, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    n++;</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="keyword">return</span> n;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// forEach方法，用于遍历children，无返回</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">forEachChildren</span>(<span class="params">children,forEachFunc,forEachContext</span>) </span>&#123;</span><br><span class="line">  mapChildren(</span><br><span class="line">    children,</span><br><span class="line">    <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      forEachFunc.apply(<span class="built_in">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    forEachContext,</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// forEach方法，用于将children转化为数组</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">toArray</span>(<span class="params">children</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">return</span> mapChildren(children, <span class="function"><span class="params">child</span> =&gt;</span> child) || [];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>核心方法mapChildren：主要用于调用回调函数，递归调用mapIntoArray方法扁平化children，并赋予每一个child新key</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mapChildren</span>(<span class="params">children,func,context</span>)</span>&#123;</span><br><span class="line">  <span class="comment">// 如果children不存在，直接返回</span></span><br><span class="line">  <span class="keyword">if</span> (children == <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> children;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">const</span> result = [];</span><br><span class="line">  <span class="keyword">let</span> count = <span class="number">0</span>;</span><br><span class="line">  mapIntoArray(children, result, <span class="string">&#x27;&#x27;</span>, <span class="string">&#x27;&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">child</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> func.call(context, child, count++);</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mapIntoArray</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  children,</span></span></span><br><span class="line"><span class="function"><span class="params">  array,</span></span></span><br><span class="line"><span class="function"><span class="params">  escapedPrefix,</span></span></span><br><span class="line"><span class="function"><span class="params">  nameSoFar,</span></span></span><br><span class="line"><span class="function"><span class="params">  callback,</span></span></span><br><span class="line"><span class="function"><span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> type = <span class="keyword">typeof</span> children;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 判断children类型，如果类型为undefined和boolean则子为空</span></span><br><span class="line">  <span class="keyword">if</span> (type === <span class="string">&#x27;undefined&#x27;</span> || type === <span class="string">&#x27;boolean&#x27;</span>) &#123;</span><br><span class="line">    children = <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> invokeCallback = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (children === <span class="literal">null</span>) &#123;</span><br><span class="line">    invokeCallback = <span class="literal">true</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">switch</span> (type) &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;string&#x27;</span>:</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;number&#x27;</span>:</span><br><span class="line">        invokeCallback = <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;object&#x27;</span>:</span><br><span class="line">        <span class="keyword">switch</span> ((children: any).$$typeof) &#123;</span><br><span class="line">          <span class="keyword">case</span> REACT_ELEMENT_TYPE:</span><br><span class="line">          <span class="keyword">case</span> REACT_PORTAL_TYPE:</span><br><span class="line">            invokeCallback = <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (invokeCallback) &#123;</span><br><span class="line">    <span class="keyword">const</span> child = children;</span><br><span class="line">    <span class="keyword">let</span> mappedChild = callback(child);</span><br><span class="line">    <span class="comment">// If it&#x27;s the only child, treat the name as if it was wrapped in an array</span></span><br><span class="line">    <span class="comment">// so that it&#x27;s consistent if the number of children grows:</span></span><br><span class="line">    <span class="keyword">const</span> childKey =</span><br><span class="line">      nameSoFar === <span class="string">&#x27;&#x27;</span> ? SEPARATOR + getElementKey(child, <span class="number">0</span>) : nameSoFar;</span><br><span class="line">    <span class="keyword">if</span> (isArray(mappedChild)) &#123;</span><br><span class="line">      <span class="comment">// 如果child执行回调方法后还是一个array，则递归执行mapIntoArray直至扁平化</span></span><br><span class="line">      <span class="keyword">let</span> escapedChildKey = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">      <span class="keyword">if</span> (childKey != <span class="literal">null</span>) &#123;</span><br><span class="line">        escapedChildKey = escapeUserProvidedKey(childKey) + <span class="string">&#x27;/&#x27;</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      mapIntoArray(mappedChild, array, escapedChildKey, <span class="string">&#x27;&#x27;</span>, <span class="function"><span class="params">c</span> =&gt;</span> c);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mappedChild != <span class="literal">null</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (isValidElement(mappedChild)) &#123;</span><br><span class="line">        <span class="comment">// 用于处理child的key值，使用ReactElement方法新创建一个ReactElement,传入新key值</span></span><br><span class="line">        mappedChild = cloneAndReplaceKey(</span><br><span class="line">          mappedChild,</span><br><span class="line">          <span class="comment">// Keep both the (mapped) and old keys if they differ, just as</span></span><br><span class="line">          <span class="comment">// traverseAllChildren used to do for objects as children</span></span><br><span class="line">          escapedPrefix +</span><br><span class="line">            <span class="comment">// $FlowFixMe Flow incorrectly thinks React.Portal doesn&#x27;t have a key</span></span><br><span class="line">            (mappedChild.key &amp;&amp; (!child || child.key !== mappedChild.key)</span><br><span class="line">              ? escapeUserProvidedKey(</span><br><span class="line">                  <span class="comment">// $FlowFixMe[unsafe-addition]</span></span><br><span class="line">                  <span class="string">&#x27;&#x27;</span> + mappedChild.key, <span class="comment">// eslint-disable-line react-internal/safe-string-coercion</span></span><br><span class="line">                ) + <span class="string">&#x27;/&#x27;</span></span><br><span class="line">              : <span class="string">&#x27;&#x27;</span>) +</span><br><span class="line">            childKey,</span><br><span class="line">        );</span><br><span class="line">      &#125;</span><br><span class="line">      array.push(mappedChild);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> child;</span><br><span class="line">  <span class="keyword">let</span> nextName;</span><br><span class="line">  <span class="keyword">let</span> subtreeCount = <span class="number">0</span>; <span class="comment">// Count of children found in the current subtree.</span></span><br><span class="line">  <span class="keyword">const</span> nextNamePrefix =</span><br><span class="line">    nameSoFar === <span class="string">&#x27;&#x27;</span> ? SEPARATOR : nameSoFar + SUBSEPARATOR;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (isArray(children)) &#123;</span><br><span class="line">    <span class="comment">// 如果children是个数组，则递归遍历children，扁平化childre</span></span><br><span class="line">    <span class="comment">// 例如：[[a,b],c], 输出[a,b,c]</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; children.length; i++) &#123;</span><br><span class="line">      child = children[i];</span><br><span class="line">      nextName = nextNamePrefix + getElementKey(child, i);</span><br><span class="line">      subtreeCount += mapIntoArray(</span><br><span class="line">        child,</span><br><span class="line">        array,</span><br><span class="line">        escapedPrefix,</span><br><span class="line">        nextName,</span><br><span class="line">        callback,</span><br><span class="line">      );</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> iteratorFn = getIteratorFn(children);</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> iteratorFn === <span class="string">&#x27;function&#x27;</span>) &#123;</span><br><span class="line">      <span class="keyword">const</span> iterableChildren: Iterable&lt;React$Node&gt; &amp; &#123;</span><br><span class="line">        entries: any,</span><br><span class="line">      &#125; = (children: any);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">const</span> iterator = iteratorFn.call(iterableChildren);</span><br><span class="line">      <span class="keyword">let</span> step;</span><br><span class="line">      <span class="keyword">let</span> ii = <span class="number">0</span>;</span><br><span class="line">      <span class="comment">// $FlowFixMe `iteratorFn` might return null according to typing.</span></span><br><span class="line">      <span class="keyword">while</span> (!(step = iterator.next()).done) &#123;</span><br><span class="line">        child = step.value;</span><br><span class="line">        nextName = nextNamePrefix + getElementKey(child, ii++);</span><br><span class="line">        subtreeCount += mapIntoArray(</span><br><span class="line">          child,</span><br><span class="line">          array,</span><br><span class="line">          escapedPrefix,</span><br><span class="line">          nextName,</span><br><span class="line">          callback,</span><br><span class="line">        );</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (type === <span class="string">&#x27;object&#x27;</span>) &#123;</span><br><span class="line">      <span class="comment">// eslint-disable-next-line react-internal/safe-string-coercion</span></span><br><span class="line">      <span class="keyword">const</span> childrenString = <span class="built_in">String</span>((children: any));</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 报错，抛出error</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> subtreeCount;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a name="Acjt7"></a></p>
+<h3 id="React-Component"><a href="#React-Component" class="headerlink" title="React.Component"></a>React.Component</h3><p>用于创建一个React组件</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 一些赋值操作</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Component</span>(<span class="params">props, context, updater</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">this</span>.props = props;</span><br><span class="line">  <span class="built_in">this</span>.context = context;</span><br><span class="line">  <span class="built_in">this</span>.refs = emptyObject;</span><br><span class="line">  <span class="built_in">this</span>.updater = updater || ReactNoopUpdateQueue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由setState和forceUpdate方法可见，主要是调用updater方法</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Component.prototype.setState = <span class="function"><span class="keyword">function</span> (<span class="params">partialState, callback</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (</span><br><span class="line">    <span class="keyword">typeof</span> partialState !== <span class="string">&#x27;object&#x27;</span> &amp;&amp;</span><br><span class="line">    <span class="keyword">typeof</span> partialState !== <span class="string">&#x27;function&#x27;</span> &amp;&amp;</span><br><span class="line">    partialState != <span class="literal">null</span></span><br><span class="line">  ) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(</span><br><span class="line">      <span class="string">&#x27;setState(...): takes an object of state variables to update or a &#x27;</span> +</span><br><span class="line">        <span class="string">&#x27;function which returns an object of state variables.&#x27;</span>,</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">this</span>.updater.enqueueSetState(<span class="built_in">this</span>, partialState, callback, <span class="string">&#x27;setState&#x27;</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Component.prototype.forceUpdate = <span class="function"><span class="keyword">function</span> (<span class="params">callback</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">this</span>.updater.enqueueForceUpdate(<span class="built_in">this</span>, callback, <span class="string">&#x27;forceUpdate&#x27;</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><a name="iHAoW"></a></p>
+<h3 id="React-PureComponent"><a href="#React-PureComponent" class="headerlink" title="React.PureComponent"></a>React.PureComponent</h3><p>继承自Component，并赋值了一个isPureReactComponent的标识</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ComponentDummy</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line">ComponentDummy.prototype = Component.prototype;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">PureComponent</span>(<span class="params">props, context, updater</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">this</span>.props = props;</span><br><span class="line">  <span class="built_in">this</span>.context = context;</span><br><span class="line">  <span class="built_in">this</span>.refs = emptyObject;</span><br><span class="line">  <span class="built_in">this</span>.updater = updater || ReactNoopUpdateQueue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 继承Component原型</span></span><br><span class="line"><span class="keyword">const</span> pureComponentPrototype = (PureComponent.prototype = <span class="keyword">new</span> ComponentDummy());</span><br><span class="line">pureComponentPrototype.constructor = PureComponent;</span><br><span class="line"><span class="comment">// Avoid an extra prototype jump for these methods.</span></span><br><span class="line">assign(pureComponentPrototype, Component.prototype);</span><br><span class="line">pureComponentPrototype.isPureReactComponent = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> &#123;Component, PureComponent&#125;;</span><br></pre></td></tr></table></figure>
+<p><a name="Iykb6"></a></p>
+<h3 id="React-createElement"><a href="#React-createElement" class="headerlink" title="React.createElement"></a>React.createElement</h3><p>根据参数，用于创建节点，该方法中主要处理属性配置以及子节点，并将处理好的参数传进ReactElement方法中</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;*&#125;</span> </span>type 节点标签，如div</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;*&#125;</span> </span>config 配置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;*&#125;</span> </span>children 子节点</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns </span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">createElement</span>(<span class="params">type, config, children</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> propName;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Reserved names are extracted</span></span><br><span class="line">  <span class="keyword">const</span> props = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> key = <span class="literal">null</span>;</span><br><span class="line">  <span class="keyword">let</span> ref = <span class="literal">null</span>;</span><br><span class="line">  <span class="keyword">let</span> self = <span class="literal">null</span>;</span><br><span class="line">  <span class="keyword">let</span> source = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (config != <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (hasValidRef(config)) &#123;</span><br><span class="line">      ref = config.ref;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (hasValidKey(config)) &#123;</span><br><span class="line">      key = <span class="string">&#x27;&#x27;</span> + config.key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    self = config.__self === <span class="literal">undefined</span> ? <span class="literal">null</span> : config.__self;</span><br><span class="line">    source = config.__source === <span class="literal">undefined</span> ? <span class="literal">null</span> : config.__source;</span><br><span class="line">    <span class="comment">// Remaining properties are added to a new props object</span></span><br><span class="line">    <span class="comment">// 遍历config里的每一个属性，排除ref、key等属性</span></span><br><span class="line">    <span class="keyword">for</span> (propName <span class="keyword">in</span> config) &#123;</span><br><span class="line">      <span class="keyword">if</span> (</span><br><span class="line">        hasOwnProperty.call(config, propName) &amp;&amp;</span><br><span class="line">        !RESERVED_PROPS.hasOwnProperty(propName)</span><br><span class="line">      ) &#123;</span><br><span class="line">        props[propName] = config[propName];</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Children can be more than one argument, and those are transferred onto</span></span><br><span class="line">  <span class="comment">// the newly allocated props object.</span></span><br><span class="line">  <span class="comment">// 除了前两个参数，剩下的参数都是children</span></span><br><span class="line">  <span class="keyword">const</span> childrenLength = <span class="built_in">arguments</span>.length - <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">if</span> (childrenLength === <span class="number">1</span>) &#123;</span><br><span class="line">    props.children = children;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (childrenLength &gt; <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="comment">// 将剩下参数组装成array，并赋值给props.children</span></span><br><span class="line">    <span class="keyword">const</span> childArray = <span class="built_in">Array</span>(childrenLength);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; childrenLength; i++) &#123;</span><br><span class="line">      childArray[i] = <span class="built_in">arguments</span>[i + <span class="number">2</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    props.children = childArray;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Resolve default props</span></span><br><span class="line">  <span class="comment">// 处理默认属性，如果组件存在默认属性，则在props上添加默认属性</span></span><br><span class="line">  <span class="keyword">if</span> (type &amp;&amp; type.defaultProps) &#123;</span><br><span class="line">    <span class="keyword">const</span> defaultProps = type.defaultProps;</span><br><span class="line">    <span class="keyword">for</span> (propName <span class="keyword">in</span> defaultProps) &#123;</span><br><span class="line">      <span class="keyword">if</span> (props[propName] === <span class="literal">undefined</span>) &#123;</span><br><span class="line">        props[propName] = defaultProps[propName];</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> ReactElement(</span><br><span class="line">    type,</span><br><span class="line">    key,</span><br><span class="line">    ref,</span><br><span class="line">    self,</span><br><span class="line">    source,</span><br><span class="line">    ReactCurrentOwner.current,</span><br><span class="line">    props,</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回一个element对象</span></span><br><span class="line"><span class="keyword">const</span> ReactElement = <span class="function"><span class="keyword">function</span> (<span class="params">type, key, ref, self, source, owner, props</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> element = &#123;</span><br><span class="line">    <span class="comment">// This tag allows us to uniquely identify this as a React Element</span></span><br><span class="line">    <span class="comment">// React element标识</span></span><br><span class="line">    $$typeof: REACT_ELEMENT_TYPE,</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Built-in properties that belong on the element</span></span><br><span class="line">    type: type,</span><br><span class="line">    key: key,</span><br><span class="line">    ref: ref,</span><br><span class="line">    props: props,</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Record the component responsible for creating this element.</span></span><br><span class="line">    _owner: owner,</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> element;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/js/" rel="tag"># js</a>
+              <a href="/tags/react/" rel="tag"># react</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/10/08/typescript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="prev" title="typescript学习笔记">
+      <i class="fa fa-chevron-left"></i> typescript学习笔记
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/02/22/React%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-%E5%88%9D%E6%AC%A1%E5%88%9B%E5%BB%BA%E6%B8%B2%E6%9F%93/" rel="next" title="React源码阅读笔记-初次创建渲染">
+      React源码阅读笔记-初次创建渲染 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#React-Children"><span class="nav-number">1.</span> <span class="nav-text">React.Children</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#React-Component"><span class="nav-number">2.</span> <span class="nav-text">React.Component</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#React-PureComponent"><span class="nav-number">3.</span> <span class="nav-text">React.PureComponent</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#React-createElement"><span class="nav-number">4.</span> <span class="nav-text">React.createElement</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="赵依婷"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">赵依婷</p>
+  <div class="site-description" itemprop="description">打工都是人上人！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xzhao95" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xzhao95" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zhaoyiting26@163.com" title="E-Mail → mailto:zhaoyiting26@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/u/3295465524" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;u&#x2F;3295465524" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">赵依婷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'GbmucVnm0BdUOjFle71Gu7sb-gzGzoHsz',
+      appKey     : 'XShaIHR81BPhKR7DtM27n5Qh',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+  
+
+  <script src="/js/wobblewindow.js"></script>
+  <script>
+    //只在桌面版网页启用特效
+    if( window.innerWidth > 768  ){
+      $(document).ready(function () {
+        
+          $('.header').wobbleWindow({
+            radius: 50,
+            movementTop: false,
+            movementLeft: false,
+            movementRight: false,
+            debug: false,
+          });
+        
+
+        
+
+        
+      });
+    }
+  </script>
+
+</body>
+</html>
